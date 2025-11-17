@@ -21,6 +21,14 @@ export class UserService {
 
       if (existingUser) throw new Error("User with this email already exists");
 
+   const activeUsersCount = await this.userRepository.count({
+      where: { status: UserStatus.ACTIVE, tenantId },
+    });
+
+    if (activeUsersCount >= 3) {
+      throw new Error("Tenant already has 3 active users");
+    }
+
       const user = this.userRepository.create({ ...userData, tenantId });
       const savedUser = await this.userRepository.save(user);
 

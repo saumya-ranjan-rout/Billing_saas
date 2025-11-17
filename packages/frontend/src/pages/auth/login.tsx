@@ -64,7 +64,12 @@ const Login: React.FC = () => {
         if (response.user.role == "super_admin") {
           router.replace("/SuperAdminPage");
         } else {
-          router.replace("/app/dashboard");
+      if (response.check_subscription) {
+  router.replace("/app/dashboard");
+} else {
+  router.replace("/app/billing");
+}
+        
         }
       } else {
         router.replace("/auth/login");

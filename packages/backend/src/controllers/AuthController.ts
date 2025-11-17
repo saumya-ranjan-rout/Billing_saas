@@ -91,6 +91,7 @@ async meWithTenant(req: Request, res: Response) {
         //token: result.token,
         accessToken: result.accessToken,
   refreshToken: result.refreshToken,
+  check_subscription: result.check_subscription
       });
 
      // console.log('Login successful for user:', result.user);

@@ -6,7 +6,7 @@ export const authApi = api.injectEndpoints({
     login: builder.mutation<
       // { user: User; token: string; tenants: Tenant[] }, 
       // { email: string; password: string }
-        { user: any; accessToken: string; refreshToken: string }, // response type
+        { user: any; accessToken: string; refreshToken: string, check_subscription: boolean }, // response type
       { email: string; password: string; }    // request type  tenantId: string 
     >({
       query: (credentials) => ({

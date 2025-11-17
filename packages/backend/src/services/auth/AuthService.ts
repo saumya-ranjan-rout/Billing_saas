@@ -1,9 +1,10 @@
 import * as jwt from "jsonwebtoken";
 // import * as bcrypt from "bcryptjs";
 import bcrypt from "bcryptjs";
-import { Repository,QueryRunner,Not } from "typeorm";
+import { Repository,QueryRunner,Not,MoreThanOrEqual } from "typeorm";
 import { User, UserStatus,UserRole } from "../../entities/User";
 import { Tenant,TenantStatus } from "../../entities/Tenant";
+import { Subscription } from "../../entities/Subscription";
 import { AppDataSource } from "../../config/database";
 import { BaseService } from "../BaseService";
 import { BadRequestError, UnauthorizedError } from "../../utils/errors";
@@ -23,12 +24,14 @@ export interface AuthPayload {
 export class AuthService extends BaseService<User> {
   private emailService: EmailService;
   private tenantRepository: Repository<Tenant>;
+  private subscriptionRepository: Repository<Subscription>;
   private refreshTokens: Set<string>; // store valid refresh tokens (in-memory, replace with DB/Redis in prod)
 
   constructor() {
     super(AppDataSource.getRepository(User));
     this.emailService = new EmailService();
     this.tenantRepository = AppDataSource.getRepository(Tenant);
+    this.subscriptionRepository = AppDataSource.getRepository(Subscription);
     this.refreshTokens = new Set();
   }
 
@@ -173,27 +176,18 @@ async switchTenant(updatedPayload: AuthPayload): Promise<{ user: User; accessTok
    * Login a user with credentials
    */
   async login(
-    email: string,
-    password: string
-    // tenantId: string
-  ): Promise<{ user: User; accessToken: string; refreshToken: string }> {
-
-       // const test= await bcrypt.hash('123456', 12);
-    // console.log('Hashed test password:', test);
-    // console.log('Login attempt for email:', email, 'tenantId:', tenantId);
-
-    // const user = await this.repository.findOne({
-    //   where: { email },  //tenantId
-    //   relations: ["tenant"],
-    // });
-
+  email: string,
+  password: string
+): Promise<{ user: User; accessToken: string; refreshToken: string; check_subscription: boolean }> {
+  try {
+    // Find the user
     const user = await this.repository.findOne({
-  where: {
-    email: email,
-    role: Not(UserRole.SUPER_USER)
-  },
-  relations: ['tenant'],
-});
+      where: {
+        email: email,
+        role: Not(UserRole.SUPER_USER),
+      },
+      relations: ['tenant'],
+    });
 
     if (!user || !user.password) {
       throw new UnauthorizedError("Invalid credentials");
@@ -202,52 +196,68 @@ async switchTenant(updatedPayload: AuthPayload): Promise<{ user: User; accessTok
     if (user.status !== UserStatus.ACTIVE) {
       throw new UnauthorizedError("Account is not active");
     }
-// console.log('🔹 Password provided:', password);
-// console.log('🔹 Stored hash:', user.password);
-const isValid = await bcrypt.compare(password, user.password);
-//console.log('🔹 Compare result:', isValid);
+
+    // Compare password with stored hash
+    const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) {
       throw new UnauthorizedError("Invalid credentials");
     }
 
+    // Update last login timestamp
     user.lastLoginAt = new Date();
-   // console.log("About to save user:", user);
-await this.repository.save(user);
+    await this.repository.save(user);
 
-   // console.log('Login successful for user:', user);
-const rolePermissions: Record<string, string[]> = {
-  admin: [
-    "read:customers",
-    "create:customers",
-    "update:customers",
-    "delete:customers",
-    "read:vendors",
-    "create:vendors",
-    "update:vendors",
-    "delete:vendors",
-  ],
-  user: [
-    "read:customers",
-  ],
-};
+    // Check subscription status
+  const check_subscription = await this.subscriptionRepository.findOne({
+      where: {
+        tenantId: user.tenant?.id, // Ensure tenant exists
+        endDate: MoreThanOrEqual(new Date()), // Ensure the subscription is active
+      },
+    });
+
+    // Determine if the user has an active subscription (true/false)
+    const hasActiveSubscription = check_subscription !== null;
+
+    // Define role permissions
+    const rolePermissions: Record<string, string[]> = {
+      admin: [
+        "read:customers",
+        "create:customers",
+        "update:customers",
+        "delete:customers",
+        "read:vendors",
+        "create:vendors",
+        "update:vendors",
+        "delete:vendors",
+      ],
+      user: ["read:customers"],
+    };
+
+    // Prepare the payload for token generation
     const payload: AuthPayload = {
-  userId: user.id,
-  tenantId: user.tenantId,
-  email: user.email,
-  role: user.role,
-  permissions: rolePermissions[user.role] || [], // ✅ derive permissions here
-  firstName: user.firstName,
-  lastName: user.lastName
-};
-    //console.log('Payload:', payload);
+      userId: user.id,
+      tenantId: user.tenantId,
+      email: user.email,
+      role: user.role,
+      permissions: rolePermissions[user.role] || [], // Derive permissions based on role
+      firstName: user.firstName,
+      lastName: user.lastName,
+    };
 
+    // Generate tokens
     const accessToken = this.generateToken(payload);
     const refreshToken = this.generateRefreshToken(payload);
-//console.log('Generated tokens:', { accessToken, refreshToken });
+
+    // Store the refresh token
     this.refreshTokens.add(refreshToken);
 
-    return { user, accessToken, refreshToken };
+    // Return user, tokens, and subscription info (can be null if no active subscription)
+    return { user, accessToken, refreshToken, check_subscription: hasActiveSubscription };
+  } catch (error) {
+   // logger.error("Error during login:", error);
+    throw error;
   }
+}
 
 async superUserlogin(
   tenantId: string,
