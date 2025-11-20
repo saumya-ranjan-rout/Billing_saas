@@ -4,7 +4,7 @@ import { AppDataSource } from '../config/database';
 
 export const professionalAuth = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id;
     
     const professionalRepository = AppDataSource.getRepository(ProfessionalUser);
     const professional = await professionalRepository.findOne({

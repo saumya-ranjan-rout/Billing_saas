@@ -1,0 +1,24 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const LoyaltyController_1 = require("../controllers/LoyaltyController");
+const LoyaltyService_1 = require("../services/loyalty/LoyaltyService");
+const auth_1 = require("../middleware/auth");
+const tenant_1 = require("../middleware/tenant");
+const validation_1 = require("../middleware/validation");
+const validators_1 = require("../utils/validators");
+const cache_1 = require("../middleware/cache");
+const checkSubscription_1 = require("../middleware/checkSubscription");
+const router = (0, express_1.Router)();
+const loyaltyService = new LoyaltyService_1.LoyaltyService();
+const loyaltyController = new LoyaltyController_1.LoyaltyController(loyaltyService);
+router.use(auth_1.authMiddleware, tenant_1.tenantMiddleware, checkSubscription_1.checkSubscription);
+router.put('/program/:programId', (0, validation_1.validationMiddleware)(validators_1.updateProgramSchema), loyaltyController.updateProgram.bind(loyaltyController));
+router.get('/program/:programId/stats', (0, cache_1.cacheMiddleware)('5m'), loyaltyController.getProgramStats.bind(loyaltyController));
+router.post('/calculate-cashback', (0, validation_1.validationMiddleware)(validators_1.calculateCashbackSchema), loyaltyController.calculateCashback.bind(loyaltyController));
+router.get('/program', (0, cache_1.cacheMiddleware)('10m'), loyaltyController.getActiveProgram.bind(loyaltyController));
+router.get('/customer/:customerId/summary', (0, cache_1.cacheMiddleware)('3m'), loyaltyController.getCustomerSummary.bind(loyaltyController));
+router.post('/redeem-cashback', (0, validation_1.validationMiddleware)(validators_1.redeemCashbackSchema), loyaltyController.redeemCashback.bind(loyaltyController));
+router.post('/process-invoice/:invoiceId', loyaltyController.processInvoice.bind(loyaltyController));
+exports.default = router;
+//# sourceMappingURL=loyaltyRoutes.js.map

@@ -18,6 +18,7 @@ export enum InvoiceStatus {
   CANCELLED = 'cancelled',
   OPEN = 'open',
   PENDING = 'pending',
+  ISSUED = 'issued'
 }
 
 export enum InvoiceType {
@@ -71,7 +72,7 @@ export class Invoice extends TenantAwareEntity {
   dueDate: Date;
 
   @Column({ type: 'date', nullable: true })
-  paidDate: Date;
+  paidDate: Date | null;
 
   @Column({ type: 'enum', enum: PaymentTerms, default: PaymentTerms.NET_15 })
   paymentTerms: PaymentTerms;

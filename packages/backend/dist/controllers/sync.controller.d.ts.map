@@ -1,0 +1,1 @@
+{"version":3,"file":"sync.controller.d.ts","sourceRoot":"","sources":["../../src/controllers/sync.controller.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,OAAO,EAAE,QAAQ,EAAE,MAAM,SAAS,CAAC;AAG5C,qBAAa,cAAc;IACzB,OAAO,CAAC,WAAW,CAAc;;IAMjC,QAAQ,QAAe,OAAO,OAAO,QAAQ,KAAG,QAAQ,IAAI,CAAC,CAiB3D;IAEF,UAAU,QAAe,OAAO,OAAO,QAAQ,KAAG,QAAQ,IAAI,CAAC,CAmB7D;CACH"}

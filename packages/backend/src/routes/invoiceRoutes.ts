@@ -4,6 +4,7 @@ import { InvoiceService } from '../services/invoice/InvoiceService';
 import { SettingService } from '../services/SettingService';
 import { CacheService } from '../services/cache/CacheService';
 import { QueueService } from '../services/queue/QueueService';
+import { LoyaltyService } from '../services/loyalty/LoyaltyService';
 import { authMiddleware } from '../middleware/auth';
 import { tenantMiddleware } from '../middleware/tenant';
 import { rbacMiddleware } from '../middleware/rbac';
@@ -12,17 +13,20 @@ import { invoiceSchema, paymentSchema } from '../utils/validators';
 import { cacheMiddleware } from "../middleware/cache";  // ✅ add import
 import { checkSubscription } from "../middleware/checkSubscription";
 
+
 const router = Router();
 const invoiceService = new InvoiceService();
 const settingService = new SettingService();
 const cacheService = new CacheService();
 const queueService = new QueueService();
+const loyaltyService = new LoyaltyService();
 
 const invoiceController = new InvoiceController(
   invoiceService,
   settingService,
   cacheService,
-  queueService
+  queueService,
+  loyaltyService
 );
 
 // All routes require authentication and tenant context

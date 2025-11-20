@@ -24,6 +24,21 @@
             "date": 1763353794644,
             "name": "E:\\BillingSoftware\\packages\\backend\\logs\\audit-2025-11-17.log",
             "hash": "75f63c154e955af2b368c7cf8072197cae5e88b3846d232e00c14549674c0e95"
+        },
+        {
+            "date": 1763441421417,
+            "name": "E:\\BillingSoftware\\packages\\backend\\logs\\audit-2025-11-18.log",
+            "hash": "b57aea1c5bb82284cd14fd913c550e55b3c577ec04b6ba4b7f2976dbef758307"
+        },
+        {
+            "date": 1763526419764,
+            "name": "E:\\BillingSoftware\\packages\\backend\\logs\\audit-2025-11-19.log",
+            "hash": "5cab4c156e221d68f464a5b604a1274f9cd36ca5ca1ba6e3328cce250fab0d2d"
+        },
+        {
+            "date": 1763612778191,
+            "name": "E:\\BillingSoftware\\packages\\backend\\logs\\audit-2025-11-20.log",
+            "hash": "d0f9549ccbcb49f2948605ae385c5517e6c2db498fe74fabeaf6b9cb8da97c63"
         }
     ],
     "hashType": "sha256"

@@ -56,7 +56,7 @@ const ProfessionalRequestList: React.FC = () => {
     pages: 0,
   });
 
-  const { get, patch } = useApi<any>();
+  const { get, patch,del } = useApi<any>();
 
   // ✅ Fetch requests
   const fetchRequests = useCallback(async () => {
@@ -120,7 +120,18 @@ const ProfessionalRequestList: React.FC = () => {
     setFilters((prev) => ({ ...prev, [key]: newValue }));
     setPagination((prev) => ({ ...prev, page: 1 }));
   };
+const handleDelete = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this access?')) return;
 
+    try {
+      await del(`/api/customers/${id}`);
+      toast.success('Access Deleted successfully 🗑️');
+      fetchRequests(); // refresh list
+    } catch (error: any) {
+      console.error('Delete failed:', error);
+      toast.error(error?.message ||'Failed to delete customer ❌');
+    }
+  };
   // ✅ Badge component for status
   const getStatusBadge = (status: string) => {
     const config: Record<string, { variant: string; label: string }> = {
@@ -194,21 +205,35 @@ const ProfessionalRequestList: React.FC = () => {
     return (
       <div className="flex gap-2">
         {/* Show Approve button only if logged-in user is NOT the requester */}
-        {user?.id !== row.requestedBy?.id && (
-          <button
-            onClick={() => updateStatus(row.id, "Approved")}
-            className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
-          >
-            Approve
-          </button>
-        )}
 
-        <button
-          onClick={() => updateStatus(row.id, "Rejected")}
-          className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
-        >
-          Reject 
-        </button>
+      {row?.status !== "Approved" ? (
+  <>
+    {user?.id !== row.requestedBy?.id && (
+      <button
+        onClick={() => updateStatus(row.id, "Approved")}
+        className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
+      >
+        Approve
+      </button>
+    )}
+
+    <button
+      onClick={() => updateStatus(row.id, "Rejected")}
+      className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+    >
+      Reject
+    </button>
+  </>
+) : (
+  <button
+    onClick={() => handleDelete(row.id)}
+    className="bg-yellow-500 text-white px-3 py-1 rounded text-sm hover:bg-yellow-600"
+  >
+    Delete Access
+  </button>
+)}
+
+        
       </div>
     );
   },

@@ -10,7 +10,7 @@ class RedisClusterManager {
       this.instance = new Redis({
         host: process.env.REDIS_HOST || 'redis',
         port: parseInt(process.env.REDIS_PORT || '6379'),
-        retryDelayOnFailover: 100,
+      //  retryDelayOnFailover: 100,
         maxRetriesPerRequest: 3,
         enableReadyCheck: true,
         connectTimeout: 10000,

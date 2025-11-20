@@ -1,0 +1,1 @@
+{"version":3,"file":"SettingService.d.ts","sourceRoot":"","sources":["../../src/services/SettingService.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,OAAO,EAAE,MAAM,qBAAqB,CAAC;AAE9C,qBAAa,cAAc;IACzB,OAAO,CAAC,IAAI,CAAwC;IAE9C,WAAW,CAAC,QAAQ,EAAE,MAAM;IAI5B,MAAM,CAAC,QAAQ,EAAE,MAAM,EAAE,IAAI,EAAE,OAAO,CAAC,OAAO,CAAC;CAWtD"}

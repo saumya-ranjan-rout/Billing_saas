@@ -10,10 +10,10 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 import { Tenant } from "./Tenant";
-import { User } from "./User";
-import { Product } from "./Product";
-import { HsnCode } from "./HsnCode";
-import { Invoice } from "./Invoice";
+// import { User } from "./User";
+// import { Product } from "./Product";
+// import { HsnCode } from "./HSN";
+// import { Invoice } from "./Invoice";
 
 // ---------------------- CLIENT ----------------------
 @Entity("client")

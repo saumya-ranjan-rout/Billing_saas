@@ -14,56 +14,58 @@ const seed = async () => {
     // -------------------------------
     const planRepository = connection.getRepository(SubscriptionPlan);
 
-    const plans = planRepository.create([
-      {
-        planType: PlanType.BASIC,
-        name: 'Basic',
-        description: 'Basic plan with limited features',
-        price: 999,
-        billingCycle: BillingCycle.MONTHLY,
-        features: {
-          maxUsers: 2,
-          maxStorage: 500,
-          gstFiling: false,
-          taxFiling: false,
-          advancedReporting: false,
-          apiAccess: false,
-          prioritySupport: false,
-        },
+   const plans = planRepository.create(
+  [
+    {
+      planType: PlanType.BASIC,
+      name: 'Basic',
+      description: 'Basic plan with limited features',
+      price: 999,
+      billingCycle: BillingCycle.MONTHLY,
+      features: {
+        maxUsers: 2,
+        maxStorage: 500,
+        gstFiling: false,
+        taxFiling: false,
+        advancedReporting: false,
+        apiAccess: false,
+        prioritySupport: false,
       },
-      {
-        planType: PlanType.PREMIUM,
-        name: 'Professional',
-        description: 'Professional plan with extended features',
-        price: 2999,
-        billingCycle: BillingCycle.MONTHLY,
-        features: {
-          maxUsers: 5,
-          maxStorage: 2000,
-          gstFiling: true,
-          taxFiling: true,
-          advancedReporting: true,
-          apiAccess: false,
-          prioritySupport: true,
-        },
+    },
+    {
+      planType: PlanType.PROFESSIONAL,
+      name: 'Professional',
+      description: 'Professional plan with extended features',
+      price: 2999,
+      billingCycle: BillingCycle.MONTHLY,
+      features: {
+        maxUsers: 5,
+        maxStorage: 2000,
+        gstFiling: true,
+        taxFiling: true,
+        advancedReporting: true,
+        apiAccess: false,
+        prioritySupport: true,
       },
-      {
-        planType: PlanType.ENTERPRISE,
-        name: 'Enterprise',
-        description: 'Enterprise plan with all features',
-        price: 4999,
-        billingCycle: BillingCycle.MONTHLY,
-        features: {
-          maxUsers: 10,
-          maxStorage: 10000,
-          gstFiling: true,
-          taxFiling: true,
-          advancedReporting: true,
-          apiAccess: true,
-          prioritySupport: true,
-        },
+    },
+    {
+      planType: PlanType.ENTERPRISE,
+      name: 'Enterprise',
+      description: 'Enterprise plan with all features',
+      price: 4999,
+      billingCycle: BillingCycle.MONTHLY,
+      features: {
+        maxUsers: 10,
+        maxStorage: 10000,
+        gstFiling: true,
+        taxFiling: true,
+        advancedReporting: true,
+        apiAccess: true,
+        prioritySupport: true,
       },
-    ]);
+    },
+  ] as any
+);
 
     await planRepository.save(plans);
     logger.info('Subscription plans created');

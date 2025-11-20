@@ -157,7 +157,7 @@ const fetchCategories = async () => {
     try { 
       const payload = { 
         ...data, 
-        ...(productType !== 'goods' ? { stockQuantity: 0, lowStockThreshold: 0 } : {}), 
+        ...(productType !== 'goods' ? { stockQuantity: 0, lowStockThreshold: 0,unit: '' } : {}), 
       }; 
  
       // If creating a new category, ensure categoryName is provided 

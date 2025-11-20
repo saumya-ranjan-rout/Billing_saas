@@ -1,4 +1,4 @@
-import { Entity, Column, ManyToOne, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, ManyToOne, ManyToMany, JoinTable, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './User';
 import { Tenant } from './Tenant';
 import { BaseEntity } from './BaseEntity';
@@ -15,6 +15,8 @@ export class ProfessionalUser extends BaseEntity {
   @Column({ type: 'uuid' })
   userId: string;
 
+  @PrimaryGeneratedColumn('uuid')
+  id: string;   // ✅ REQUIRED
 @ManyToOne(() => User, (user) => user.professionals, { onDelete: 'CASCADE' })
 user: User;
 

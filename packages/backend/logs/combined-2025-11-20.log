@@ -1,0 +1,36 @@
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-20 09:57:22:5722"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-20 09:57:24:5724"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-20 09:57:24:5724"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-20 09:57:24:5724"}
+{"amount":29900,"currency":"INR","level":"info","message":"🧾 Razorpay createOrder options:","notes":{"paymentId":"8d4f8194-99ea-4497-baf7-378a432f6043","subscriptionId":"eee28df4-0953-4814-a994-2e1ea3ba2984","userId":"4eb22303-2c90-4123-a8c2-92a9027388ba"},"payment_capture":1,"receipt":"rcpt_8d4f8194-99ea-4497-baf7-378a43","service":"billing-saas-api","timestamp":"2025-11-20 10:17:13:1713"}
+{"level":"info","message":"✅ Razorpay order created successfully: order_RhrrJC914Azd2p","service":"billing-saas-api","timestamp":"2025-11-20 10:17:14:1714"}
+{"amount":29900,"currency":"INR","level":"info","message":"🧾 Razorpay createOrder options:","notes":{"paymentId":"4cd077a4-8f04-47b4-a854-f427dc227110","subscriptionId":"d76bb0ac-476a-46df-972c-f6d2cf4e2a91","userId":"4eb22303-2c90-4123-a8c2-92a9027388ba"},"payment_capture":1,"receipt":"rcpt_4cd077a4-8f04-47b4-a854-f427dc","service":"billing-saas-api","timestamp":"2025-11-20 10:24:28:2428"}
+{"level":"info","message":"✅ Razorpay order created successfully: order_RhrywunEKX2JcT","service":"billing-saas-api","timestamp":"2025-11-20 10:24:28:2428"}
+{"amount":149900,"currency":"INR","level":"info","message":"🧾 Razorpay createOrder options:","notes":{"paymentId":"d8f4cd18-3831-40f0-95ab-59f2fc7b7978","subscriptionId":"6e177d20-f712-458f-9a83-499f0a14909b","userId":"4eb22303-2c90-4123-a8c2-92a9027388ba"},"payment_capture":1,"receipt":"rcpt_d8f4cd18-3831-40f0-95ab-59f2fc","service":"billing-saas-api","timestamp":"2025-11-20 10:24:36:2436"}
+{"level":"info","message":"✅ Razorpay order created successfully: order_Rhrz6A9G5Tp7QC","service":"billing-saas-api","timestamp":"2025-11-20 10:24:37:2437"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-20 11:51:39:5139"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-20 11:51:40:5140"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-20 11:51:40:5140"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-20 11:51:40:5140"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-20 12:38:26:3826"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-20 12:38:27:3827"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-20 12:38:27:3827"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-20 12:38:27:3827"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-20 12:54:04:544"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-20 12:54:05:545"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-20 12:54:05:545"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-20 12:54:05:545"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-20 13:05:51:551"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-20 13:05:52:552"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-20 13:05:52:552"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-20 13:05:52:552"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-20 13:08:56:856"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-20 13:08:57:857"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-20 13:08:57:857"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-20 13:08:57:857"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching products:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-20 13:09:07:97"}
+{"level":"info","message":"🧹 Cleared 2 cache keys matching cache:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:/api/products*","service":"billing-saas-api","timestamp":"2025-11-20 13:09:07:97"}
+{"id":"2de3691d-b791-4a02-ae02-2491241be824","level":"info","message":"Product updated in 50ms","service":"billing-saas-api","tenantId":"221ccd12-e9b2-4f39-9cfe-81bdbed59edc","timestamp":"2025-11-20 13:09:07:97"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching products:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-20 13:09:12:912"}
+{"level":"info","message":"🧹 Cleared 2 cache keys matching cache:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:/api/products*","service":"billing-saas-api","timestamp":"2025-11-20 13:09:12:912"}
+{"id":"2de3691d-b791-4a02-ae02-2491241be824","level":"info","message":"Product updated in 28ms","service":"billing-saas-api","tenantId":"221ccd12-e9b2-4f39-9cfe-81bdbed59edc","timestamp":"2025-11-20 13:09:12:912"}

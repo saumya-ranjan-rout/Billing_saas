@@ -11,18 +11,38 @@ export class VendorService {
   }
 
   async createVendor(tenantId: string, vendorData: any): Promise<Vendor> {
-    try {
-      const vendor = this.vendorRepository.create({
-        ...vendorData,
-        tenantId
-      });
+  try {
+    const vendor = this.vendorRepository.create({
+      ...vendorData,
+      tenantId
+    });
 
-      return await this.vendorRepository.save(vendor);
-    } catch (error) {
-      logger.error('Error creating vendor:', error);
-      throw error;
-    }
+    const savedVendor = await this.vendorRepository.save(vendor);
+
+    // Ensure single vendor object
+    const vendorObj = Array.isArray(savedVendor) ? savedVendor[0] : savedVendor;
+
+    return vendorObj;
+  } catch (error) {
+    logger.error('Error creating vendor:', error);
+    throw error;
   }
+}
+
+
+  // async createVendor(tenantId: string, vendorData: any): Promise<Vendor> {
+  //   try {
+  //     const vendor = this.vendorRepository.create({
+  //       ...vendorData,
+  //       tenantId
+  //     });
+
+  //     return await this.vendorRepository.save(vendor);
+  //   } catch (error) {
+  //     logger.error('Error creating vendor:', error);
+  //     throw error;
+  //   }
+  // }
 
   async getVendor(tenantId: string, vendorId: string): Promise<Vendor> {
     try {

@@ -20,6 +20,25 @@ export class SubscriptionService {
     this.paymentRepository = AppDataSource.getRepository(Payment);
     this.userRepository = AppDataSource.getRepository(User);
   }
+async initializeDefaultPlans() {
+  const repo = AppDataSource.getRepository(SubscriptionPlan);
+
+  const defaultPlans = [
+    { name: "Free Trial", price: 0, durationDays: 7, isActive: true },
+    { name: "Basic", price: 299, durationDays: 30, isActive: true },
+    { name: "Pro", price: 1499, durationDays: 365, isActive: true },
+  ];
+
+  // Insert only if not exists
+  for (const plan of defaultPlans) {
+    const exists = await repo.findOne({ where: { name: plan.name } });
+    if (!exists) {
+      await repo.save(repo.create(plan));
+    }
+  }
+
+  return true;
+}
 
   async getActivePlans(): Promise<SubscriptionPlan[]> {
     return this.planRepository.find({
@@ -413,5 +432,136 @@ async createSubscriptionAfterPayment(
     await queryRunner.release();
   }
 }
+
+  async professionalOnboardsTenant(
+    professionalId: string,
+    tenantData: any,
+    planId: string,
+    paymentMethodId: string
+  ) {
+    const queryRunner = AppDataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      // 1. Create Tenant
+      const tenant = new Tenant();
+      tenant.name = tenantData.name;
+      // tenant.email = tenantData.email;
+      // tenant.phone = tenantData.phone;
+
+      const savedTenant = await queryRunner.manager.save(tenant);
+
+      // 2. Create Subscription for tenant
+      const subscription = new Subscription();
+      subscription.tenant = savedTenant;
+      subscription.planId = planId;
+      // subscription.professionalId = professionalId;
+      // subscription.paymentMethodId = paymentMethodId;
+      // subscription.status = "ACTIVE";
+      subscription.startDate = new Date();
+
+      const savedSubscription = await queryRunner.manager.save(subscription);
+
+      await queryRunner.commitTransaction();
+
+      return {
+        tenant: savedTenant,
+        subscription: savedSubscription
+      };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  // -----------------------------------------------------
+  // 2. GET SUBSCRIPTIONS FOR A PROFESSIONAL
+  // -----------------------------------------------------
+  async getProfessionalSubscriptions(professionalId: string) {
+    const subscriptionRepo = AppDataSource.getRepository(Subscription);
+
+    const subscriptions = await subscriptionRepo.find({
+      // where: { professionalId },
+      relations: ["tenant"]   // ensures tenant details are also returned
+    });
+
+    return subscriptions;
+  }
+
+  async subscribeTenant(
+    tenantId: string,
+    planId: string,
+    paymentMethodId: string,
+    professionalId?: string
+  ) {
+    const queryRunner = AppDataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      // 1. Create Subscription for tenant
+      const subscription = new Subscription();
+      subscription.tenantId = tenantId;
+      subscription.planId = planId;
+      // subscription.paymentMethodId = paymentMethodId;
+      // subscription.status = "ACTIVE";
+      subscription.startDate = new Date();
+
+      // If professional is involved, link them to the subscription
+      if (professionalId) {
+       // subscription.professionalId = professionalId;
+      }
+
+      // Save the subscription
+      const savedSubscription = await queryRunner.manager.save(subscription);
+
+      // Commit transaction
+      await queryRunner.commitTransaction();
+      return savedSubscription;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  // -----------------------------------------------------
+  // 2. GET SUBSCRIPTION PLANS (This could be replaced with a real method if you have a "plans" entity)
+  // -----------------------------------------------------
+  async getSubscriptionPlans() {
+    // Assuming you have a "SubscriptionPlan" or similar entity
+    const planRepo = AppDataSource.getRepository(SubscriptionPlan);
+    const plans = await planRepo.find();
+    return plans;
+  }
+
+  async checkAccess(userId: string, tenantId: string) {
+const subscription = await this.getUserSubscription(userId);
+
+  if (!subscription) return false;
+
+  const now = new Date();
+  const end = new Date(subscription.endDate);
+
+  return end > now && subscription.status === 'active';
+}
+async markPaymentFailed(paymentId: string, reason: string) {
+  const repo = AppDataSource.getRepository(Payment);
+
+  const payment = await repo.findOne({ where: { id: paymentId } });
+  if (!payment) throw new Error("Payment not found");
+
+  payment.status = PaymentStatus.FAILED;
+  payment.failureReason = reason || 'Unknown error';
+
+  await repo.save(payment);
+  return true;
+}
+
 }
 

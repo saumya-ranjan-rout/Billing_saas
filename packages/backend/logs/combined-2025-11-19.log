@@ -1,0 +1,136 @@
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-19 09:57:44:5744"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-19 09:57:45:5745"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-19 09:57:45:5745"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-19 09:57:45:5745"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching cache:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:/api/invoices*","service":"billing-saas-api","timestamp":"2025-11-19 10:21:31:2131"}
+{"level":"info","message":"Processing loyalty for invoice: 3615f000-6545-4e67-bc83-9061f0a1d212, totalAmount: 11025.00, type: string","service":"billing-saas-api","timestamp":"2025-11-19 10:21:31:2131"}
+{"level":"info","message":"Cashback calculation: amount=11025, percentage=5.00, cashback=500","service":"billing-saas-api","timestamp":"2025-11-19 10:21:31:2131"}
+{"level":"info","message":"Customer loyalty update - totalSpent: 37768.5, availableCashback: 500, totalCashbackEarned: 1500","service":"billing-saas-api","timestamp":"2025-11-19 10:21:31:2131"}
+{"level":"info","message":"Processed cashback of ₹500 for customer 047f643f-6c30-463c-b2dd-3bf35ac8066d","service":"billing-saas-api","timestamp":"2025-11-19 10:21:31:2131"}
+{"invoiceId":"3615f000-6545-4e67-bc83-9061f0a1d212","level":"info","message":"Invoice created in 157ms","service":"billing-saas-api","tenantId":"221ccd12-e9b2-4f39-9cfe-81bdbed59edc","timestamp":"2025-11-19 10:21:31:2131"}
+{"level":"info","message":"Notification sent successfully for user 4eb22303-2c90-4123-a8c2-92a9027388ba","service":"billing-saas-api","timestamp":"2025-11-19 10:21:32:2132"}
+{"level":"info","message":"Loyalty processing completed for invoice: 3615f000-6545-4e67-bc83-9061f0a1d212","service":"billing-saas-api","timestamp":"2025-11-19 10:21:33:2133"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-19 10:31:36:3136"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-19 10:31:37:3137"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-19 10:31:37:3137"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-19 10:31:37:3137"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-19 10:46:00:460"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-19 10:46:01:461"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-19 10:46:01:461"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-19 10:46:01:461"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-19 12:28:58:2858"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-19 12:28:58:2858"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-19 12:28:58:2858"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-19 12:28:58:2858"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-19 12:34:39:3439"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-19 12:34:40:3440"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-19 12:34:40:3440"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-19 12:34:40:3440"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-19 12:49:40:4940"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-19 12:49:41:4941"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-19 12:49:41:4941"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-19 12:49:41:4941"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-19 12:57:56:5756"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-19 12:57:57:5757"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-19 12:57:57:5757"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-19 12:57:57:5757"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-19 12:59:41:5941"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-19 12:59:42:5942"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-19 12:59:42:5942"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-19 12:59:42:5942"}
+{"level":"error","message":"Uncaught Exception ⨯ Unable to compile TypeScript:\n\u001b[96msrc/services/loyalty/LoyaltyService.ts\u001b[0m:\u001b[93m298\u001b[0m:\u001b[93m13\u001b[0m - \u001b[91merror\u001b[0m\u001b[90m TS2322: \u001b[0mType 'undefined' is not assignable to type 'LoyaltyTransaction'.\r\n\r\n\u001b[7m298\u001b[0m             return ;\r\n\u001b[7m   \u001b[0m \u001b[91m            ~~~~~~~~\u001b[0m\r\n","service":"billing-saas-api","stack":"TSError: ⨯ Unable to compile TypeScript:\n\u001b[96msrc/services/loyalty/LoyaltyService.ts\u001b[0m:\u001b[93m298\u001b[0m:\u001b[93m13\u001b[0m - \u001b[91merror\u001b[0m\u001b[90m TS2322: \u001b[0mType 'undefined' is not assignable to type 'LoyaltyTransaction'.\r\n\r\n\u001b[7m298\u001b[0m             return ;\r\n\u001b[7m   \u001b[0m \u001b[91m            ~~~~~~~~\u001b[0m\r\n\n    at createTSError (E:\\BillingSoftware\\node_modules\\ts-node\\src\\index.ts:859:12)\n    at reportTSError (E:\\BillingSoftware\\node_modules\\ts-node\\src\\index.ts:863:19)\n    at getOutput (E:\\BillingSoftware\\node_modules\\ts-node\\src\\index.ts:1077:36)\n    at Object.compile (E:\\BillingSoftware\\node_modules\\ts-node\\src\\index.ts:1433:41)\n    at Module.m._compile (E:\\BillingSoftware\\node_modules\\ts-node\\src\\index.ts:1617:30)\n    at node:internal/modules/cjs/loader:1895:10\n    at Object.require.extensions.<computed> [as .ts] (E:\\BillingSoftware\\node_modules\\ts-node\\src\\index.ts:1621:12)\n    at Module.load (node:internal/modules/cjs/loader:1465:32)\n    at Function._load (node:internal/modules/cjs/loader:1282:12)\n    at TracingChannel.traceSync (node:diagnostics_channel:322:14)","timestamp":"2025-11-19 13:00:10:010"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-19 13:00:10:010"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-19 13:01:59:159"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-19 13:02:00:20"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-19 13:02:00:20"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-19 13:02:00:20"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-19 13:04:32:432"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-19 13:04:33:433"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-19 13:04:33:433"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-19 13:04:33:433"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-19 13:30:44:3044"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-19 13:30:45:3045"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-19 13:30:45:3045"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-19 13:30:45:3045"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-19 14:55:19:5519"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-19 14:55:20:5520"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-19 14:55:20:5520"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-19 14:55:20:5520"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-19 14:59:10:5910"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-19 14:59:11:5911"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-19 14:59:11:5911"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-19 14:59:11:5911"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-19 15:13:08:138"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-19 15:13:08:138"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-19 15:13:08:138"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-19 15:13:08:138"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-19 15:14:09:149"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-19 15:14:10:1410"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-19 15:14:10:1410"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-19 15:14:10:1410"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-19 15:14:29:1429"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching cache:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:/api/invoices*","service":"billing-saas-api","timestamp":"2025-11-19 15:14:29:1429"}
+{"level":"info","message":"🧹 Cleared 2 cache keys matching *Invoice*221ccd12-e9b2-4f39-9cfe-81bdbed59edc*","service":"billing-saas-api","timestamp":"2025-11-19 15:14:29:1429"}
+{"level":"info","message":"Processing loyalty for invoice: ebd4421e-84fb-4c31-b641-2575eee99777, totalAmount: 1575.00, type: string","service":"billing-saas-api","timestamp":"2025-11-19 15:14:29:1429"}
+{"level":"info","message":"No cashback earned for invoice ebd4421e-84fb-4c31-b641-2575eee99777 - amount below threshold","service":"billing-saas-api","timestamp":"2025-11-19 15:14:29:1429"}
+{"invoiceId":"ebd4421e-84fb-4c31-b641-2575eee99777","level":"info","message":"Invoice created in 186ms","service":"billing-saas-api","tenantId":"221ccd12-e9b2-4f39-9cfe-81bdbed59edc","timestamp":"2025-11-19 15:14:29:1429"}
+{"level":"info","message":"Notification sent successfully for user 4eb22303-2c90-4123-a8c2-92a9027388ba","service":"billing-saas-api","timestamp":"2025-11-19 15:14:30:1430"}
+{"level":"info","message":"Processing loyalty for invoice: ebd4421e-84fb-4c31-b641-2575eee99777, totalAmount: 1575.00, type: string","service":"billing-saas-api","timestamp":"2025-11-19 15:14:31:1431"}
+{"level":"info","message":"No cashback earned for invoice ebd4421e-84fb-4c31-b641-2575eee99777 - amount below threshold","service":"billing-saas-api","timestamp":"2025-11-19 15:14:31:1431"}
+{"level":"info","message":"Loyalty processing completed for invoice: ebd4421e-84fb-4c31-b641-2575eee99777","service":"billing-saas-api","timestamp":"2025-11-19 15:14:31:1431"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-19 15:17:17:1717"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching cache:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:/api/invoices*","service":"billing-saas-api","timestamp":"2025-11-19 15:17:17:1717"}
+{"level":"info","message":"🧹 Cleared 2 cache keys matching *Invoice*221ccd12-e9b2-4f39-9cfe-81bdbed59edc*","service":"billing-saas-api","timestamp":"2025-11-19 15:17:17:1717"}
+{"level":"info","message":"Processing loyalty for invoice: ebd4421e-84fb-4c31-b641-2575eee99777, totalAmount: 1575.00, type: string","service":"billing-saas-api","timestamp":"2025-11-19 15:17:17:1717"}
+{"level":"info","message":"No cashback earned for invoice ebd4421e-84fb-4c31-b641-2575eee99777 - amount below threshold","service":"billing-saas-api","timestamp":"2025-11-19 15:17:17:1717"}
+{"id":"ebd4421e-84fb-4c31-b641-2575eee99777","level":"info","message":"Invoice updated in 164ms","service":"billing-saas-api","tenantId":"221ccd12-e9b2-4f39-9cfe-81bdbed59edc","timestamp":"2025-11-19 15:17:17:1717"}
+{"level":"info","message":"Processing loyalty for invoice: ebd4421e-84fb-4c31-b641-2575eee99777, totalAmount: 1575.00, type: string","service":"billing-saas-api","timestamp":"2025-11-19 15:17:19:1719"}
+{"level":"info","message":"No cashback earned for invoice ebd4421e-84fb-4c31-b641-2575eee99777 - amount below threshold","service":"billing-saas-api","timestamp":"2025-11-19 15:17:19:1719"}
+{"level":"info","message":"Loyalty processing completed for invoice: ebd4421e-84fb-4c31-b641-2575eee99777","service":"billing-saas-api","timestamp":"2025-11-19 15:17:19:1719"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-19 15:19:54:1954"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching cache:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:/api/invoices*","service":"billing-saas-api","timestamp":"2025-11-19 15:19:54:1954"}
+{"level":"info","message":"🧹 Cleared 2 cache keys matching *Invoice*221ccd12-e9b2-4f39-9cfe-81bdbed59edc*","service":"billing-saas-api","timestamp":"2025-11-19 15:19:54:1954"}
+{"level":"info","message":"Processing loyalty for invoice: c72e331e-cb90-4398-ba7f-df822d9d8653, totalAmount: 1575.00, type: string","service":"billing-saas-api","timestamp":"2025-11-19 15:19:54:1954"}
+{"level":"info","message":"No cashback earned for invoice c72e331e-cb90-4398-ba7f-df822d9d8653 - amount below threshold","service":"billing-saas-api","timestamp":"2025-11-19 15:19:54:1954"}
+{"invoiceId":"c72e331e-cb90-4398-ba7f-df822d9d8653","level":"info","message":"Invoice created in 85ms","service":"billing-saas-api","tenantId":"221ccd12-e9b2-4f39-9cfe-81bdbed59edc","timestamp":"2025-11-19 15:19:54:1954"}
+{"level":"info","message":"Notification sent successfully for user 4eb22303-2c90-4123-a8c2-92a9027388ba","service":"billing-saas-api","timestamp":"2025-11-19 15:19:55:1955"}
+{"level":"info","message":"Processing loyalty for invoice: c72e331e-cb90-4398-ba7f-df822d9d8653, totalAmount: 1575.00, type: string","service":"billing-saas-api","timestamp":"2025-11-19 15:19:56:1956"}
+{"level":"info","message":"No cashback earned for invoice c72e331e-cb90-4398-ba7f-df822d9d8653 - amount below threshold","service":"billing-saas-api","timestamp":"2025-11-19 15:19:56:1956"}
+{"level":"info","message":"Loyalty processing completed for invoice: c72e331e-cb90-4398-ba7f-df822d9d8653","service":"billing-saas-api","timestamp":"2025-11-19 15:19:56:1956"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-19 15:20:04:204"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching cache:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:/api/invoices*","service":"billing-saas-api","timestamp":"2025-11-19 15:20:04:204"}
+{"level":"info","message":"🧹 Cleared 2 cache keys matching *Invoice*221ccd12-e9b2-4f39-9cfe-81bdbed59edc*","service":"billing-saas-api","timestamp":"2025-11-19 15:20:04:204"}
+{"level":"info","message":"Processing loyalty for invoice: c72e331e-cb90-4398-ba7f-df822d9d8653, totalAmount: 11025.00, type: string","service":"billing-saas-api","timestamp":"2025-11-19 15:20:04:204"}
+{"level":"info","message":"Cashback calculation: amount=11025, percentage=5.00, cashback=500","service":"billing-saas-api","timestamp":"2025-11-19 15:20:04:204"}
+{"level":"info","message":"Customer loyalty update - totalSpent: 48793.5, availableCashback: 500, totalCashbackEarned: 2000","service":"billing-saas-api","timestamp":"2025-11-19 15:20:04:204"}
+{"level":"info","message":"Processed cashback of ₹500 for customer 047f643f-6c30-463c-b2dd-3bf35ac8066d","service":"billing-saas-api","timestamp":"2025-11-19 15:20:04:204"}
+{"id":"c72e331e-cb90-4398-ba7f-df822d9d8653","level":"info","message":"Invoice updated in 112ms","service":"billing-saas-api","tenantId":"221ccd12-e9b2-4f39-9cfe-81bdbed59edc","timestamp":"2025-11-19 15:20:04:204"}
+{"level":"info","message":"Loyalty processing completed for invoice: c72e331e-cb90-4398-ba7f-df822d9d8653","service":"billing-saas-api","timestamp":"2025-11-19 15:20:06:206"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-19 15:22:03:223"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-19 15:22:04:224"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-19 15:22:04:224"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-19 15:22:04:224"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-19 15:33:43:3343"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching cache:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:/api/invoices*","service":"billing-saas-api","timestamp":"2025-11-19 15:33:43:3343"}
+{"level":"info","message":"🧹 Cleared 2 cache keys matching *Invoice*221ccd12-e9b2-4f39-9cfe-81bdbed59edc*","service":"billing-saas-api","timestamp":"2025-11-19 15:33:43:3343"}
+{"id":"c72e331e-cb90-4398-ba7f-df822d9d8653","level":"info","message":"Invoice updated in 136ms","service":"billing-saas-api","tenantId":"221ccd12-e9b2-4f39-9cfe-81bdbed59edc","timestamp":"2025-11-19 15:33:43:3343"}
+{"level":"info","message":"Loyalty processing completed for invoice: c72e331e-cb90-4398-ba7f-df822d9d8653","service":"billing-saas-api","timestamp":"2025-11-19 15:33:45:3345"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching cache:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:/api/invoices*","service":"billing-saas-api","timestamp":"2025-11-19 15:49:07:497"}
+{"level":"info","message":"Processing loyalty for invoice: 05cad29d-1161-42a1-a270-b3936e40d8d4, totalAmount: 1575.00, type: string","service":"billing-saas-api","timestamp":"2025-11-19 15:49:07:497"}
+{"level":"info","message":"No cashback earned for invoice 05cad29d-1161-42a1-a270-b3936e40d8d4 - amount below threshold","service":"billing-saas-api","timestamp":"2025-11-19 15:49:07:497"}
+{"invoiceId":"05cad29d-1161-42a1-a270-b3936e40d8d4","level":"info","message":"Invoice created in 147ms","service":"billing-saas-api","tenantId":"221ccd12-e9b2-4f39-9cfe-81bdbed59edc","timestamp":"2025-11-19 15:49:07:497"}
+{"level":"info","message":"Notification sent successfully for user 4eb22303-2c90-4123-a8c2-92a9027388ba","service":"billing-saas-api","timestamp":"2025-11-19 15:49:08:498"}
+{"level":"info","message":"Processing loyalty for invoice: 05cad29d-1161-42a1-a270-b3936e40d8d4, totalAmount: 1575.00, type: string","service":"billing-saas-api","timestamp":"2025-11-19 15:49:09:499"}
+{"level":"info","message":"No cashback earned for invoice 05cad29d-1161-42a1-a270-b3936e40d8d4 - amount below threshold","service":"billing-saas-api","timestamp":"2025-11-19 15:49:09:499"}
+{"level":"info","message":"Loyalty processing completed for invoice: 05cad29d-1161-42a1-a270-b3936e40d8d4","service":"billing-saas-api","timestamp":"2025-11-19 15:49:09:499"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-19 15:49:20:4920"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching cache:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:/api/invoices*","service":"billing-saas-api","timestamp":"2025-11-19 15:49:20:4920"}
+{"level":"info","message":"🧹 Cleared 2 cache keys matching *Invoice*221ccd12-e9b2-4f39-9cfe-81bdbed59edc*","service":"billing-saas-api","timestamp":"2025-11-19 15:49:20:4920"}
+{"level":"info","message":"Processing loyalty for invoice: 05cad29d-1161-42a1-a270-b3936e40d8d4, totalAmount: 1575.00, type: string","service":"billing-saas-api","timestamp":"2025-11-19 15:49:20:4920"}
+{"level":"info","message":"No cashback earned for invoice 05cad29d-1161-42a1-a270-b3936e40d8d4 - amount below threshold","service":"billing-saas-api","timestamp":"2025-11-19 15:49:20:4920"}
+{"id":"05cad29d-1161-42a1-a270-b3936e40d8d4","level":"info","message":"Invoice updated in 124ms","service":"billing-saas-api","tenantId":"221ccd12-e9b2-4f39-9cfe-81bdbed59edc","timestamp":"2025-11-19 15:49:20:4920"}
+{"level":"info","message":"Processing loyalty for invoice: 05cad29d-1161-42a1-a270-b3936e40d8d4, totalAmount: 1575.00, type: string","service":"billing-saas-api","timestamp":"2025-11-19 15:49:22:4922"}
+{"level":"info","message":"No cashback earned for invoice 05cad29d-1161-42a1-a270-b3936e40d8d4 - amount below threshold","service":"billing-saas-api","timestamp":"2025-11-19 15:49:22:4922"}
+{"level":"info","message":"Loyalty processing completed for invoice: 05cad29d-1161-42a1-a270-b3936e40d8d4","service":"billing-saas-api","timestamp":"2025-11-19 15:49:22:4922"}
+{"id":"c72e331e-cb90-4398-ba7f-df822d9d8653","level":"info","message":"Invoice updated in 109ms","service":"billing-saas-api","tenantId":"221ccd12-e9b2-4f39-9cfe-81bdbed59edc","timestamp":"2025-11-19 15:52:47:5247"}
+{"level":"info","message":"Loyalty processing completed for invoice: c72e331e-cb90-4398-ba7f-df822d9d8653","service":"billing-saas-api","timestamp":"2025-11-19 15:52:49:5249"}

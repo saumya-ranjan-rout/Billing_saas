@@ -6,7 +6,7 @@ dotenv.config();
 
 // import { createApp } from './app';
 // import logger from './utils/logger';
-import {createApp }from './app';
+import ApplicationServer from './app';
 import logger  from './utils/logger';
 
 const PORT = process.env.PORT || 3001;
@@ -14,7 +14,8 @@ const HOST = process.env.HOST || '0.0.0.0';
 
 const startServer = async (): Promise<void> => {
   try {
-    const app = await createApp();
+    const serverInstance = new ApplicationServer();
+    const app = serverInstance.getApp();
 
     const server = app.listen(PORT as number, HOST, () => {
       logger.info(`Server running on http://${HOST}:${PORT}`);

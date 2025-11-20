@@ -1,0 +1,1 @@
+{"version":3,"file":"switchTenantMiddleware.d.ts","sourceRoot":"","sources":["../../src/middleware/switchTenantMiddleware.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,OAAO,EAAE,QAAQ,EAAE,YAAY,EAAE,MAAM,SAAS,CAAC;AAI1D,eAAO,MAAM,sBAAsB,QAC5B,OAAO,OACP,QAAQ,QACP,YAAY,4DAyBnB,CAAC"}

@@ -37,7 +37,8 @@ export class DashboardController {
         const duration = Date.now() - startTime;
         logger.debug(`Dashboard data served from cache in ${duration}ms`, { tenantId, duration });
 
-        res.json({ ...JSON.parse(cachedData), cached: true });
+     //   res.json({ ...JSON.parse(cachedData), cached: true });
+     res.json({ ...cachedData, cached: true });
         return;
       }
 

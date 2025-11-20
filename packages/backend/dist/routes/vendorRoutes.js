@@ -1,0 +1,26 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const VendorController_1 = require("../controllers/VendorController");
+const VendorService_1 = require("../services/vendor/VendorService");
+const CacheService_1 = require("../services/cache/CacheService");
+const auth_1 = require("../middleware/auth");
+const tenant_1 = require("../middleware/tenant");
+const rbac_1 = require("../middleware/rbac");
+const validation_1 = require("../middleware/validation");
+const validators_1 = require("../utils/validators");
+const cache_1 = require("../middleware/cache");
+const checkSubscription_1 = require("../middleware/checkSubscription");
+const router = (0, express_1.Router)();
+const vendorService = new VendorService_1.VendorService();
+const cacheService = new CacheService_1.CacheService();
+const vendorController = new VendorController_1.VendorController(vendorService, cacheService);
+router.use(auth_1.authMiddleware, tenant_1.tenantMiddleware, checkSubscription_1.checkSubscription);
+router.post('/', (0, rbac_1.rbacMiddleware)(['create:vendors']), (0, validation_1.validationMiddleware)(validators_1.vendorSchema), vendorController.createVendor.bind(vendorController));
+router.get('/', (0, rbac_1.rbacMiddleware)(['read:vendors']), (0, cache_1.cacheMiddleware)('3 minutes'), vendorController.getVendors.bind(vendorController));
+router.get('/search', (0, rbac_1.rbacMiddleware)(['read:vendors']), (0, cache_1.cacheMiddleware)('2 minutes'), vendorController.searchVendors.bind(vendorController));
+router.get('/:id', (0, rbac_1.rbacMiddleware)(['read:vendors']), (0, cache_1.cacheMiddleware)('5 minutes'), vendorController.getVendor.bind(vendorController));
+router.put('/:id', (0, rbac_1.rbacMiddleware)(['update:vendors']), (0, validation_1.validationMiddleware)(validators_1.vendorSchema), vendorController.updateVendor.bind(vendorController));
+router.delete('/:id', (0, rbac_1.rbacMiddleware)(['delete:vendors']), vendorController.deleteVendor.bind(vendorController));
+exports.default = router;
+//# sourceMappingURL=vendorRoutes.js.map

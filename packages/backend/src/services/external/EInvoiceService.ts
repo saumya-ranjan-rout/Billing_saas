@@ -134,18 +134,19 @@ export class EInvoiceService {
         OthChrg: 0,
         TotItemVal: item.amount + (item.taxAmount ?? 0) + (item.cessAmount ?? 0),
       })),
-      ValDtls: {
-        AssVal: Number(invoice.total ?? invoice.amount ?? 0),
-        CgstVal: 0,
-        SgstVal: 0,
-        IgstVal: 0,
-        CesVal: 0,
-        StCesVal: 0,
-        Discount: 0,
-        OthChrg: 0,
-        RndOffAmt: 0,
-        TotInvVal: Number(invoice.total ?? invoice.amount ?? 0),
-      },
+ValDtls: {
+  AssVal: Number(invoice.subTotal ?? 0),
+  CgstVal: 0,
+  SgstVal: 0,
+  IgstVal: 0,
+  CesVal: 0,
+  StCesVal: 0,
+  Discount: Number(invoice.discountTotal ?? 0),
+  OthChrg: 0,
+  RndOffAmt: 0,
+  TotInvVal: Number(invoice.totalAmount ?? 0),
+},
+
     };
   }
 

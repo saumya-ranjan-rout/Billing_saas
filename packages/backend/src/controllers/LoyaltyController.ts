@@ -42,6 +42,8 @@ export class LoyaltyController {
       const tenantId = (req as any).user?.tenantId;
       const { customerId, amount, invoiceId } = req.body;
 
+   //   console.log("redeemCashback_customerId",customerId,"amount",amount,"invoiceId",invoiceId);
+
       const transaction = await this.loyaltyService.redeemCashback(
         tenantId,
         customerId,

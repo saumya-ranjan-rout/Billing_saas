@@ -4,6 +4,7 @@ import { JWTPayload } from '../customTypes';
 import { SuperAdmin } from '../../entities/SuperAdmin';
 import { Tenant } from '../../entities/Tenant';
 import { User } from '../../entities/User';
+import { Professional } from "../../entities/Professional";
 
 declare global {
   namespace Express {
@@ -11,6 +12,7 @@ declare global {
       user?: JWTPayload | User; // ✅ can be token payload or DB user
       tenant?: Tenant;
       superAdmin?: SuperAdmin;
+            professional?: Professional;
     }
   }
 }

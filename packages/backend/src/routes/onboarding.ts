@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { TenantOnboardingController } from '../controllers/TenantOnboardingController';
 import { ProfessionalOnboardingController } from '../controllers/ProfessionalOnboardingController';
-import { authenticate } from '../middleware/authenticate';
+import { authMiddleware } from '../middleware/auth';
 import { professionalAuth } from '../middleware/professionalAuth';
 import { cacheMiddleware } from '../middleware/cache'; // ✅ add cache
 
@@ -22,14 +22,14 @@ router.post(
 // Professional onboarding routes
 router.post(
   '/professional/onboard-tenant',
-  authenticate,
+  authMiddleware,
   professionalAuth,
   ProfessionalOnboardingController.onboardTenant
 );
 
 router.get(
   '/professional/subscriptions',
-  authenticate,
+  authMiddleware,
   professionalAuth,
   cacheMiddleware('2m'), // ✅ short cache for professional subscriptions
   ProfessionalOnboardingController.getProfessionalSubscriptions

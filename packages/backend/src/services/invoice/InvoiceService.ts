@@ -413,6 +413,7 @@ private calculateDueDate(issueDate: Date, paymentTerms: PaymentTerms): Date {
       discountTotal = this.roundToTwoDecimals(discountTotal);
       taxTotal = this.roundToTwoDecimals(taxTotal);
       const totalAmount = this.roundToTwoDecimals(subTotal - discountTotal + taxTotal);
+      const DueTotal = this.roundToTwoDecimals(totalAmount - invoiceData.cashBack);
 
       const invoice = this.invoiceRepository.create({
         invoiceNumber,
@@ -429,7 +430,7 @@ private calculateDueDate(issueDate: Date, paymentTerms: PaymentTerms): Date {
         taxTotal,
         discountTotal,
         totalAmount,
-        balanceDue: totalAmount,
+        balanceDue: DueTotal,
         taxDetails,
         discountDetails,
         isRecurring: invoiceData.isRecurring || false,
@@ -439,6 +440,9 @@ private calculateDueDate(issueDate: Date, paymentTerms: PaymentTerms): Date {
       });
 
       const savedInvoice = await queryRunner.manager.save(invoice);
+      if(invoiceData.cashBack > 0){
+          await this.loyaltyService.redeemCashback(tenantId,invoiceData.customerId,invoiceData.cashBack);
+      }
 
       // Update customer credit balance
       customer.creditBalance = this.roundToTwoDecimals(Number(customer.creditBalance) + totalAmount);
@@ -625,11 +629,15 @@ this.cacheService.invalidatePattern(`cache:${tenantId}:/api/invoices*`),
       invoice.taxTotal = taxTotal;
       invoice.discountTotal = discountTotal;
       invoice.totalAmount = totalAmount;
-      invoice.balanceDue = this.roundToTwoDecimals(totalAmount - amountPaid);
+      invoice.balanceDue = this.roundToTwoDecimals(totalAmount - amountPaid-invoiceData.cashBack);
       invoice.discountDetails = discountDetails;
       invoice.items = newItems;
 
       const savedInvoice = await queryRunner.manager.save(invoice);
+    if(invoiceData.cashBack > 0){
+          await this.loyaltyService.redeemCashback(tenantId,invoiceData.customerId,invoiceData.cashBack);
+      }
+      
 
       // Create new tax details with valid invoiceId
       const taxDetailEntities: TaxDetail[] = this.taxDetailRepository.create(

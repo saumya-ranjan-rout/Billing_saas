@@ -1,0 +1,24 @@
+import Joi from 'joi';
+export declare const validateEmail: (email: string) => boolean;
+export declare const validateGSTIN: (gstin: string) => boolean;
+export declare const validatePAN: (pan: string) => boolean;
+export declare const validatePhone: (phone: string) => boolean;
+export declare const customerSchema: Joi.ObjectSchema<any>;
+export declare const vendorSchema: Joi.ObjectSchema<any>;
+export declare const createUserSchema: Joi.ObjectSchema<any>;
+export declare const updateUserSchema: Joi.ObjectSchema<any>;
+export declare const createTenantSchema: Joi.ObjectSchema<any>;
+export declare const updateTenantSchema: Joi.ObjectSchema<any>;
+export declare const categorySchema: Joi.ObjectSchema<any>;
+export declare const productSchema: Joi.ObjectSchema<any>;
+export declare const purchaseItemSchema: Joi.ObjectSchema<any>;
+export declare const purchaseOrderSchema: Joi.ObjectSchema<any>;
+export declare const invoiceItemSchema: Joi.ObjectSchema<any>;
+export declare const invoiceSchema: Joi.ObjectSchema<any>;
+export declare const paymentSchema: Joi.ObjectSchema<any>;
+export declare const createSubscriptionSchema: Joi.ObjectSchema<any>;
+export declare const reportGenerationSchema: Joi.ObjectSchema<any>;
+export declare const redeemCashbackSchema: Joi.ObjectSchema<any>;
+export declare const updateProgramSchema: Joi.ObjectSchema<any>;
+export declare const calculateCashbackSchema: Joi.ObjectSchema<any>;
+//# sourceMappingURL=validators.d.ts.map

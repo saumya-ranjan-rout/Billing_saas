@@ -1,0 +1,24 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const TenantController_1 = require("../controllers/TenantController");
+const TenantService_1 = require("../services/tenant/TenantService");
+const TenantProvisioningService_1 = require("../services/tenant/TenantProvisioningService");
+const CacheService_1 = require("../services/cache/CacheService");
+const auth_1 = require("../middleware/auth");
+const tenant_1 = require("../middleware/tenant");
+const rbac_1 = require("../middleware/rbac");
+const validation_1 = require("../middleware/validation");
+const validators_1 = require("../utils/validators");
+const cache_1 = require("../middleware/cache");
+const router = (0, express_1.Router)();
+const tenantService = new TenantService_1.TenantService();
+const provisioningService = new TenantProvisioningService_1.TenantProvisioningService();
+const cacheService = new CacheService_1.CacheService();
+const tenantController = new TenantController_1.TenantController(tenantService, provisioningService, cacheService);
+router.post('/', (0, validation_1.validationMiddleware)(validators_1.createTenantSchema), tenantController.createTenant.bind(tenantController));
+router.use(auth_1.authMiddleware, tenant_1.tenantMiddleware);
+router.get('/', (0, rbac_1.rbacMiddleware)(['read:tenant']), (0, cache_1.cacheMiddleware)('5 minutes'), tenantController.getTenantDetails.bind(tenantController));
+router.put('/', (0, rbac_1.rbacMiddleware)(['manage:tenant']), (0, validation_1.validationMiddleware)(validators_1.updateTenantSchema), tenantController.updateTenant.bind(tenantController));
+exports.default = router;
+//# sourceMappingURL=tenantRoutes.js.map

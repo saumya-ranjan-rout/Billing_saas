@@ -1,0 +1,20 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const SubscriptionController_1 = require("../controllers/SubscriptionController");
+const auth_1 = require("../middleware/auth");
+const tenant_1 = require("../middleware/tenant");
+const rbac_1 = require("../middleware/rbac");
+const validation_1 = require("../middleware/validation");
+const validators_1 = require("../utils/validators");
+const cache_1 = require("../middleware/cache");
+const router = (0, express_1.Router)();
+const subscriptionController = new SubscriptionController_1.SubscriptionController();
+router.use(auth_1.authMiddleware, tenant_1.tenantMiddleware);
+router.get('/plans', (0, rbac_1.rbacMiddleware)(['read:subscription']), (0, cache_1.cacheMiddleware)('5 minutes'), subscriptionController.getPlans.bind(subscriptionController));
+router.post('/create-order', (0, rbac_1.rbacMiddleware)(['manage:subscription']), (0, validation_1.validationMiddleware)(validators_1.createSubscriptionSchema), subscriptionController.createSubscription.bind(subscriptionController));
+router.post('/payment/success', subscriptionController.handlePaymentSuccess.bind(subscriptionController));
+router.get('/current', (0, rbac_1.rbacMiddleware)(['read:subscription']), subscriptionController.getCurrentSubscription.bind(subscriptionController));
+router.delete('/', (0, rbac_1.rbacMiddleware)(['manage:subscription']), subscriptionController.cancelSubscription.bind(subscriptionController));
+exports.default = router;
+//# sourceMappingURL=subscriptionRoutes.js.map

@@ -57,7 +57,7 @@ const getTierColor = (tier: string) => {
           </div>
         </div>
 
-        {summary?.availableCashback > 0 && (
+        {/* {summary?.availableCashback > 0 && (
           <div className="mt-4 flex justify-center">
             <Button
               onClick={() => onRedeem(summary.availableCashback)}
@@ -67,7 +67,7 @@ const getTierColor = (tier: string) => {
               Redeem Cashback
             </Button>
           </div>
-        )}
+        )} */}
       </div>
 
       {/* Program Info */}

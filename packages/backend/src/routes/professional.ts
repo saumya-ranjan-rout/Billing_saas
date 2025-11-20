@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { ProfessionalController } from '../controllers/ProfessionalController';
 import { GSTFilingController } from '../controllers/GSTFilingController';
-import { authenticate } from '../middleware/authenticate';
+import { authMiddleware } from '../middleware/auth';
 import { professionalAuth } from '../middleware/professionalAuth';
 import { cacheMiddleware } from '../middleware/cache';
 
@@ -15,7 +15,7 @@ router.post(
 
 router.get(
   '/professionals/dashboard',
-  authenticate,
+  authMiddleware,
   professionalAuth,
   cacheMiddleware('2m'), // dashboard data changes frequently
   ProfessionalController.getDashboard
@@ -23,7 +23,7 @@ router.get(
 
 router.get(
   '/professionals/tenants',
-  authenticate,
+  authMiddleware,
   professionalAuth,
   cacheMiddleware('5m'), // tenant list less volatile
   ProfessionalController.getManagedTenants
@@ -31,7 +31,7 @@ router.get(
 
 router.post(
   '/professionals/tenants/:tenantId',
-  authenticate,
+  authMiddleware,
   professionalAuth,
   ProfessionalController.assignToTenant
 );
@@ -39,7 +39,7 @@ router.post(
 // GST filing routes
 router.get(
   '/gst/returns/:type',
-  authenticate,
+  authMiddleware,
   professionalAuth,
   cacheMiddleware('5m'), // returns data can be cached briefly
   GSTFilingController.getReturn
@@ -47,14 +47,14 @@ router.get(
 
 router.post(
   '/gst/returns/:type/file',
-  authenticate,
+  authMiddleware,
   professionalAuth,
   GSTFilingController.fileReturn
 );
 
 router.get(
   '/gst/filing-history',
-  authenticate,
+  authMiddleware,
   professionalAuth,
   cacheMiddleware('10m'), // history less frequently updated
   GSTFilingController.getFilingHistory
@@ -62,7 +62,7 @@ router.get(
 
 router.get(
   '/gst/compliance-calendar',
-  authenticate,
+  authMiddleware,
   professionalAuth,
   cacheMiddleware('30m'), // calendar data changes rarely
   GSTFilingController.getComplianceCalendar

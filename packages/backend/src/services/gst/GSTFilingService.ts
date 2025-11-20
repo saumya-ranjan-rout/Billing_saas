@@ -1,6 +1,7 @@
-import { Repository } from 'typeorm';
+import { Repository,Between  } from 'typeorm';
 import { AppDataSource } from '../../config/database';
 import { ProfessionalUser } from '../../entities/ProfessionalUser';
+import { ProfessionalTenant } from '../../entities/ProfessionalTenant';
 import { Tenant } from '../../entities/Tenant';
 import logger from '../../utils/logger';
 
@@ -22,7 +23,7 @@ export class GSTFilingService {
   async prepareGSTR1(professionalId: string, tenantId: string, period: string): Promise<any> {
     try {
       // Verify the professional has access to this tenant
-      await this.verifyProfessionalAccess(professionalId, tenantId);
+  await this.verifyProfessionalAccess(professionalId, tenantId, "GSTR1");
 
       // Generate GSTR-1 data
       const gstr1Data = await this.generateGSTR1Data(tenantId, period);
@@ -36,7 +37,7 @@ export class GSTFilingService {
 
   async prepareGSTR3B(professionalId: string, tenantId: string, period: string): Promise<any> {
     try {
-      await this.verifyProfessionalAccess(professionalId, tenantId);
+    await this.verifyProfessionalAccess(professionalId, tenantId, "GSTR3B");
       
       const gstr3bData = await this.generateGSTR3BData(tenantId, period);
       
@@ -55,7 +56,7 @@ export class GSTFilingService {
     returnData: any
   ): Promise<{ success: boolean; acknowledgmentNumber: string }> {
     try {
-      await this.verifyProfessionalAccess(professionalId, tenantId);
+  await this.verifyProfessionalAccess(professionalId, tenantId, returnType);
 
       // Validate return data
       this.validateReturnData(returnData);
@@ -91,7 +92,11 @@ export class GSTFilingService {
     }
   }
 
-  private async verifyProfessionalAccess(professionalId: string, tenantId: string): Promise<void> {
+  private async verifyProfessionalAccess(
+  professionalId: string,
+  tenantId: string,
+  returnType?: string
+): Promise<void> {
     const assignment = await AppDataSource.getRepository(ProfessionalTenant)
       .findOne({
         where: {
@@ -105,9 +110,9 @@ export class GSTFilingService {
       throw new Error('Professional does not have access to this tenant');
     }
 
-    if (returnType.includes('GSTR') && !assignment.specificPermissions?.canFileGST) {
-      throw new Error('Professional does not have GST filing permissions for this tenant');
-    }
+  if (returnType?.includes('GSTR') && !assignment.specificPermissions?.canFileGST) {
+  throw new Error('Professional does not have GST filing permissions for this tenant');
+}
   }
 
   private async generateGSTR1Data(tenantId: string, period: string): Promise<any> {

@@ -128,7 +128,7 @@ export const productSchema = Joi.object({
   sellingPrice: Joi.number().min(0).required(),
   stockQuantity: Joi.number().min(0).default(0),
   lowStockThreshold: Joi.number().min(0).default(0),
-  unit: Joi.string().optional(),
+   unit: Joi.string().allow("").optional(),
   taxRate: Joi.number().min(0).max(100).default(0),
   categoryName: Joi.string().optional(),
     categoryId: Joi.string().optional(),
@@ -182,6 +182,7 @@ export const invoiceSchema = Joi.object({
   notes: Joi.string().allow('', null).optional(),
   items: Joi.array().items(invoiceItemSchema).min(1).required(),
   isRecurring: Joi.boolean().default(false),
+  cashBack: Joi.number().min(0).default(0),
   recurringSettings: Joi.object({
     frequency: Joi.string().valid('weekly', 'monthly', 'quarterly', 'yearly').required(),
     interval: Joi.number().min(1).default(1),
@@ -249,7 +250,7 @@ export const reportGenerationSchema = Joi.object({
 });
 
 export const redeemCashbackSchema = Joi.object({
-  customerId: Joi.number(),
+  customerId: Joi.string(),
   amount: Joi.number().positive(),
 });
 

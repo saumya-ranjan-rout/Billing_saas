@@ -112,8 +112,8 @@ async getRequests(user: any) {
  // console.log("user", user);
   return this.customerRepo.find({
     where: [
-      { status: In(["Pending", "Rejected"]), requestedBy: { id: user.id } },
-      { status: In(["Pending", "Rejected"]), requestedTo: { id: user.id } },
+      { status: In(["Pending", "Rejected", "Approved"]), requestedBy: { id: user.id } },
+      { status: In(["Pending", "Rejected", "Approved"]), requestedTo: { id: user.id } },
     ],
     relations: ["requestedBy", "requestedTo"],
     order: { createdAt: "DESC" },

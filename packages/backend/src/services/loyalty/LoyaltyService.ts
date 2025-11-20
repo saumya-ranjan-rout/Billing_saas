@@ -126,6 +126,19 @@ export class LoyaltyService {
         await queryRunner.startTransaction(); 
 
         try { 
+
+            //srr
+          const check = await this.transactionRepository.findOne({
+            where: { invoiceId },
+        });
+
+   
+    if (check) {
+      await queryRunner.release();
+        return;
+               }
+//srr
+
             const invoice = await this.invoiceRepository.findOne({ 
                 where: { id: invoiceId }, 
                 relations: ['customer'] 
@@ -252,6 +265,7 @@ export class LoyaltyService {
         const queryRunner = AppDataSource.createQueryRunner(); 
         await queryRunner.connect(); 
         await queryRunner.startTransaction(); 
+       // console.log(`Redeeming cashback of ${redeemAmount} for customer ${customerId}  for invoice ${invoiceId}`);
 
         try { 
             const customerLoyalty = await this.customerLoyaltyRepository.findOne({ 
@@ -263,6 +277,7 @@ export class LoyaltyService {
             } 
 
             // Create redemption transaction 
+   
             const transaction = this.transactionRepository.create({ 
                 customerId, 
                 invoiceId, 
@@ -273,7 +288,7 @@ export class LoyaltyService {
                 tenantId 
             }); 
 
-            await queryRunner.manager.save(transaction); 
+             await queryRunner.manager.save(transaction); 
 
             // Update customer loyalty balance 
             customerLoyalty.availableCashback = this.safeAdd(customerLoyalty.availableCashback, -redeemAmount);

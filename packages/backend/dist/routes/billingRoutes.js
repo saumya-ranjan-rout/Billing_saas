@@ -1,0 +1,22 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const BillingController_1 = require("../controllers/BillingController");
+const BillingService_1 = require("../services/billing/BillingService");
+const auth_1 = require("../middleware/auth");
+const validation_1 = require("../middleware/validation");
+const validators_1 = require("../utils/validators");
+const cache_1 = require("../middleware/cache");
+const router = (0, express_1.Router)();
+const billingService = new BillingService_1.BillingService();
+const billingController = new BillingController_1.BillingController(billingService);
+router.post('/webhook/razorpay', billingController.handleRazorpayWebhook.bind(billingController));
+router.post('/subscriptions', auth_1.authMiddleware, (0, validation_1.validationMiddleware)(validators_1.createSubscriptionSchema), billingController.createSubscription.bind(billingController));
+router.post('/payments/success', auth_1.authMiddleware, billingController.handlePaymentSuccess.bind(billingController));
+router.post('/payments/failure', auth_1.authMiddleware, billingController.handlePaymentFailure.bind(billingController));
+router.post('/professional/clients', auth_1.authMiddleware, billingController.createProfessionalClient.bind(billingController));
+router.get('/subscriptions/:entityId/:planType/status', auth_1.authMiddleware, (0, cache_1.cacheMiddleware)('2 minutes'), billingController.getSubscriptionStatus.bind(billingController));
+router.delete('/subscriptions/:subscriptionId', auth_1.authMiddleware, billingController.cancelSubscription.bind(billingController));
+router.get('/subscriptions/:subscriptionId/payments', auth_1.authMiddleware, (0, cache_1.cacheMiddleware)('5 minutes'), billingController.getSubscriptionPayments.bind(billingController));
+exports.default = router;
+//# sourceMappingURL=billingRoutes.js.map

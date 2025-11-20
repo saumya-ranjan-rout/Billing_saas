@@ -3,12 +3,12 @@ import { Router } from 'express';
 import { BillingController } from '../controllers/BillingController';
 import { BillingService } from '../services/billing/BillingService';
 import { authMiddleware } from '../middleware/auth';
-import { requireAuth } from '../middleware/auth';
+// import { requireAuth } from '../middleware/auth';
 import { validationMiddleware } from '../middleware/validation';
 import { 
   createSubscriptionSchema, 
-  paymentSuccessSchema,
-  professionalClientSchema
+ // paymentSuccessSchema,
+ // professionalClientSchema
 } from '../utils/validators';
 import { cacheMiddleware } from '../middleware/cache'; // ✅ add cache middleware
 
@@ -17,7 +17,7 @@ const billingService = new BillingService();
 const billingController = new BillingController(billingService);
 
 // Initialize default plans
-billingService.initializePlans();
+//billingService.initializePlans();
 
 // ----------------- Public routes (webhooks) -----------------
 router.post(
@@ -36,7 +36,7 @@ router.post(
 router.post(
   '/payments/success',
   authMiddleware,
-  validationMiddleware(paymentSuccessSchema),
+ // validationMiddleware(paymentSuccessSchema),
   billingController.handlePaymentSuccess.bind(billingController)
 );
 
@@ -49,8 +49,8 @@ router.post(
 router.post(
   '/professional/clients',
   authMiddleware,
-  requireAuth(['professional']),
-  validationMiddleware(professionalClientSchema),
+  // requireAuth(['professional']),
+  //validationMiddleware(professionalClientSchema),
   billingController.createProfessionalClient.bind(billingController)
 );
 

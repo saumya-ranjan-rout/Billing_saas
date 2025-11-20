@@ -109,6 +109,7 @@ export class ProductController {
 
       const { id } = req.params;
       const tenantId = req.user.tenantId;
+    console.log("oye:",req.body);
       const product = await this.productService.updateProduct(tenantId, id, req.body);
 
       await Promise.all([

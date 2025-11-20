@@ -1,6 +1,6 @@
 import { Between, IsNull } from 'typeorm';
 import { AppDataSource } from '../../config/database';
-import { Invoice } from '../../entities/Invoice';
+import { Invoice,InvoiceStatus  } from '../../entities/Invoice';
 import { Customer } from '../../entities/Customer';
 import { Payment } from '../../entities/Payment';
 import { CacheService } from '../cache/CacheService';
@@ -39,19 +39,23 @@ export class DashboardService {
         .getRawOne();
 
       const totalCustomers = await AppDataSource.getRepository(Customer).count({
-        where: { tenantId, deletedAt: null },
+        where: { tenantId, deletedAt: IsNull() },
       });
 
       // ⚡ Fetch only small sets (limit 5)
       const recentInvoices = await AppDataSource.getRepository(Invoice).find({
-        where: { tenantId, deletedAt: null },
+       where: { tenantId, deletedAt: IsNull() },
         relations: ['customer'],
         take: 5,
         order: { createdAt: 'DESC' },
       });
 
       const pendingInvoices = await AppDataSource.getRepository(Invoice).find({
-        where: { tenantId, status: 'pending', deletedAt: null },
+     where: { 
+  tenantId, 
+  status: InvoiceStatus.PENDING,
+  deletedAt: IsNull()
+},
         relations: ['customer'],
         take: 5,
         order: { dueDate: 'ASC' },
@@ -122,11 +126,11 @@ export class DashboardService {
   private async getPendingInvoices(tenantId: string) {
     const repo = AppDataSource.getRepository(Invoice);
     return await repo.find({
-      where: { 
-        tenantId, 
-        status: 'pending',
-        deletedAt: IsNull() 
-      },
+where: { 
+  tenantId, 
+  status: InvoiceStatus.PENDING,
+  deletedAt: IsNull()
+},
       relations: ['customer'],
       take: 10,
       order: { dueDate: 'ASC' }

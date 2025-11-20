@@ -1,0 +1,26 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const UserController_1 = require("../controllers/UserController");
+const UserService_1 = require("../services/user/UserService");
+const CacheService_1 = require("../services/cache/CacheService");
+const auth_1 = require("../middleware/auth");
+const tenant_1 = require("../middleware/tenant");
+const rbac_1 = require("../middleware/rbac");
+const validation_1 = require("../middleware/validation");
+const validators_1 = require("../utils/validators");
+const cache_1 = require("../middleware/cache");
+const checkSubscription_1 = require("../middleware/checkSubscription");
+const router = (0, express_1.Router)();
+const userService = new UserService_1.UserService();
+const cacheService = new CacheService_1.CacheService();
+const userController = new UserController_1.UserController(userService, cacheService);
+router.use(auth_1.authMiddleware, tenant_1.tenantMiddleware, checkSubscription_1.checkSubscription);
+router.post("/", (0, rbac_1.rbacMiddleware)(["create:users"]), (0, validation_1.validationMiddleware)(validators_1.createUserSchema), userController.createUser.bind(userController));
+router.get("/", (0, rbac_1.rbacMiddleware)(["read:users"]), (0, cache_1.cacheMiddleware)("5 minutes"), userController.getUsers.bind(userController));
+router.get("/:id", (0, rbac_1.rbacMiddleware)(["read:users"]), (0, cache_1.cacheMiddleware)("10 minutes"), userController.getUser.bind(userController));
+router.put("/:id", (0, rbac_1.rbacMiddleware)(["update:users"]), (0, validation_1.validationMiddleware)(validators_1.updateUserSchema), userController.updateUser.bind(userController));
+router.delete("/:id", (0, rbac_1.rbacMiddleware)(["delete:users"]), userController.deleteUser.bind(userController));
+router.post("/:id/reset-password", (0, rbac_1.rbacMiddleware)(["admin:users"]), userController.resetPassword.bind(userController));
+exports.default = router;
+//# sourceMappingURL=userRoutes.js.map

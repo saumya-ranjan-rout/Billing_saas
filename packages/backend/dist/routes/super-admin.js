@@ -1,0 +1,28 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const SuperAdminController_1 = require("../controllers/SuperAdminController");
+const auth_1 = require("../middleware/auth");
+const superAdminAuth_1 = require("../middleware/superAdminAuth");
+const cache_1 = require("../middleware/cache");
+const router = (0, express_1.Router)();
+router.use(auth_1.authMiddleware, superAdminAuth_1.superAdminAuth);
+router.get('/dashboard', (0, cache_1.cacheMiddleware)('2 minutes'), SuperAdminController_1.SuperAdminController.getDashboard);
+router.get('/users', (0, cache_1.cacheMiddleware)('5 minutes'), SuperAdminController_1.SuperAdminController.getUsers);
+router.post('/users', SuperAdminController_1.SuperAdminController.createUser);
+router.put('/users/:id', SuperAdminController_1.SuperAdminController.updateUser);
+router.get('/users/:id', SuperAdminController_1.SuperAdminController.getUserById);
+router.patch('/users/:id/status', SuperAdminController_1.SuperAdminController.updateUserStatus);
+router.get('/tenants', (0, cache_1.cacheMiddleware)('5 minutes'), SuperAdminController_1.SuperAdminController.getTenants);
+router.post('/tenants', SuperAdminController_1.SuperAdminController.createTenant);
+router.put('/tenants/:id', SuperAdminController_1.SuperAdminController.updateTenant);
+router.patch('/tenants/:id/status', SuperAdminController_1.SuperAdminController.updateTenantStatus);
+router.get('/professionals', (0, cache_1.cacheMiddleware)('5 minutes'), SuperAdminController_1.SuperAdminController.getProfessionals);
+router.post('/professionals', SuperAdminController_1.SuperAdminController.createProfessional);
+router.put('/professionals/:id', SuperAdminController_1.SuperAdminController.updateProfessional);
+router.patch('/professionals/:id/:userId/status', SuperAdminController_1.SuperAdminController.updateProfessionalStatus);
+router.get('/audit-logs', (0, cache_1.cacheMiddleware)('2 minutes'), SuperAdminController_1.SuperAdminController.getAuditLogs);
+router.get('/export/:resource/:format', (0, cache_1.cacheMiddleware)('4 minutes'), SuperAdminController_1.SuperAdminController.exportData);
+router.get('/subscriptions', SuperAdminController_1.SuperAdminController.getSubscriptions);
+exports.default = router;
+//# sourceMappingURL=super-admin.js.map

@@ -174,6 +174,37 @@ const currentPlan = history.find((s: any) => {
       return errorResponse(res, 'Failed to fetch subscription stats');
     }
   }
+
+  async checkAccess(req: Request, res: Response) {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const userId = req.user.id;
+    const tenantId = req.user.tenantId;
+
+    const hasAccess = await this.subscriptionService.checkAccess(userId, tenantId);
+
+    return ok(res, { access: hasAccess }, 'Access verified');
+  } catch (error) {
+    logger.error('Error checking access:', error);
+    return errorResponse(res, 'Failed to verify access');
+  }
+}
+async handlePaymentFailure(req: Request, res: Response) {
+  try {
+    const { payment_id, reason } = req.body;
+
+    await this.subscriptionService.markPaymentFailed(payment_id, reason);
+
+    return ok(res, { paymentId: payment_id }, 'Payment failure recorded');
+  } catch (error) {
+    logger.error('Error handling payment failure:', error);
+    return errorResponse(res, 'Failed to record payment failure');
+  }
+}
+
 }
 
 

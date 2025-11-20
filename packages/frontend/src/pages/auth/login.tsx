@@ -67,7 +67,7 @@ const Login: React.FC = () => {
       if (response.check_subscription) {
   router.replace("/app/dashboard");
 } else {
-  router.replace("/app/billing");
+  router.replace("/app/subscription");
 }
         
         }

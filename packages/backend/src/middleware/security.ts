@@ -2,31 +2,24 @@ import helmet from 'helmet';
 import compression from 'compression';
 import cors from 'cors';
 import { RateLimiterRedis } from 'rate-limiter-flexible';
-import { redis } from '../config/redis-optimized';
-import { logger } from '../utils/logger-optimized';
+import { redis } from '../config/redis';
+import logger  from '../utils/logger';
 
 // Advanced rate limiting with Redis storage
 const rateLimiter = new RateLimiterRedis({
   storeClient: redis,
-  keyGenerator: (req) => {
-    const tenantId = (req as any).tenantId || 'unknown';
-    const ip = req.ip || req.connection.remoteAddress || 'unknown';
-    return `${tenantId}:${ip}`;
-  },
-  points: parseInt(process.env.RATE_LIMIT_POINTS || '100'), // Requests
-  duration: parseInt(process.env.RATE_LIMIT_DURATION || '1'), // Per second
-  blockDuration: parseInt(process.env.RATE_LIMIT_BLOCK_DURATION || '60'), // Seconds
+  points: parseInt(process.env.RATE_LIMIT_POINTS || '100'),
+  duration: parseInt(process.env.RATE_LIMIT_DURATION || '1'),
+  blockDuration: parseInt(process.env.RATE_LIMIT_BLOCK_DURATION || '60'),
 });
 
 export const securityMiddleware = [
-  // CORS with caching
   cors({
     origin: process.env.CORS_ORIGIN?.split(',') || true,
     credentials: true,
-    maxAge: 86400, // 24 hours cache
+    maxAge: 86400,
   }),
 
-  // Helmet with optimized security headers
   helmet({
     contentSecurityPolicy: {
       directives: {
@@ -43,7 +36,6 @@ export const securityMiddleware = [
     },
   }),
 
-  // Compression with brotli support
   compression({
     level: 6,
     threshold: 1024,
@@ -53,13 +45,17 @@ export const securityMiddleware = [
     },
   }),
 
-  // Rate limiting middleware
   async (req: any, res: any, next: any) => {
     try {
-      await rateLimiter.consume(req.rateLimitKey || 'global');
+      const tenantId = req.tenantId || 'unknown';
+      const ip = req.ip || req.connection.remoteAddress || 'unknown';
+
+      const rateKey = `${tenantId}:${ip}`;
+
+      await rateLimiter.consume(rateKey);
       next();
     } catch (rejRes: any) {
-      logger.warn(`Rate limit exceeded for ${req.rateLimitKey}`);
+      logger.warn(`Rate limit exceeded for a user`);
       res.status(429).json({
         error: 'Too Many Requests',
         retryAfter: Math.ceil(rejRes.msBeforeNext / 1000),

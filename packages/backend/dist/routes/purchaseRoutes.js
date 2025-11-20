@@ -1,0 +1,26 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const PurchaseController_1 = require("../controllers/PurchaseController");
+const PurchaseService_1 = require("../services/purchases/PurchaseService");
+const auth_1 = require("../middleware/auth");
+const tenant_1 = require("../middleware/tenant");
+const rbac_1 = require("../middleware/rbac");
+const validation_1 = require("../middleware/validation");
+const validators_1 = require("../utils/validators");
+const cache_1 = require("../middleware/cache");
+const checkSubscription_1 = require("../middleware/checkSubscription");
+const router = (0, express_1.Router)();
+const purchaseService = new PurchaseService_1.PurchaseService();
+const purchaseController = new PurchaseController_1.PurchaseController(purchaseService);
+router.use(auth_1.authMiddleware, tenant_1.tenantMiddleware, checkSubscription_1.checkSubscription);
+router.post('/', (0, rbac_1.rbacMiddleware)(['create:purchases']), (0, validation_1.validationMiddleware)(validators_1.purchaseOrderSchema), purchaseController.createPurchaseOrder.bind(purchaseController));
+router.get('/', (0, rbac_1.rbacMiddleware)(['read:purchases']), (0, cache_1.cacheMiddleware)('3 minutes'), purchaseController.getPurchaseOrders.bind(purchaseController));
+router.get('/summary', (0, rbac_1.rbacMiddleware)(['read:purchases']), (0, cache_1.cacheMiddleware)('2 minutes'), purchaseController.getPurchaseOrderSummary.bind(purchaseController));
+router.get('/vendor/:vendorId', (0, rbac_1.rbacMiddleware)(['read:purchases']), (0, cache_1.cacheMiddleware)('5 minutes'), purchaseController.getVendorPurchaseOrders.bind(purchaseController));
+router.get('/:id', (0, rbac_1.rbacMiddleware)(['read:purchases']), (0, cache_1.cacheMiddleware)('10 minutes'), purchaseController.getPurchaseOrder.bind(purchaseController));
+router.put('/:id', (0, rbac_1.rbacMiddleware)(['update:purchases']), (0, validation_1.validationMiddleware)(validators_1.purchaseOrderSchema), purchaseController.updatePurchaseOrder.bind(purchaseController));
+router.patch('/:id/status', (0, rbac_1.rbacMiddleware)(['update:purchases']), purchaseController.updatePurchaseOrderStatus.bind(purchaseController));
+router.delete('/:id', (0, rbac_1.rbacMiddleware)(['delete:purchases']), purchaseController.deletePurchaseOrder.bind(purchaseController));
+exports.default = router;
+//# sourceMappingURL=purchaseRoutes.js.map

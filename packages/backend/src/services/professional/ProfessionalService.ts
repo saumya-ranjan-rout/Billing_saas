@@ -6,6 +6,7 @@ import { Tenant } from '../../entities/Tenant';
 import { User } from '../../entities/User';
 import logger from '../../utils/logger';
 
+
 export class ProfessionalService {
   private professionalRepository: Repository<ProfessionalUser>;
   private professionalTenantRepository: Repository<ProfessionalTenant>;
@@ -19,27 +20,40 @@ export class ProfessionalService {
     this.userRepository = AppDataSource.getRepository(User);
   }
 
-  async registerProfessional(
-    userData: any,
-    professionalData: any
-  ): Promise<ProfessionalUser> {
-    try {
-      // First create the user
-      const user = this.userRepository.create(userData);
-      await this.userRepository.save(user);
+async registerProfessional(
+  userData: Partial<User>,
+  professionalData: Partial<ProfessionalUser>
+): Promise<ProfessionalUser> {
+  try {
+    if (Array.isArray(userData)) {
+      throw new Error('userData should be an object, not an array');
+    }
+    if (Array.isArray(professionalData)) {
+      throw new Error('professionalData should be an object, not an array');
+    }
 
-      // Then create the professional profile
-      const professional = this.professionalRepository.create({
+    const user = await this.userRepository.save(
+      this.userRepository.create(userData)
+    );
+
+    const professional = await this.professionalRepository.save(
+      this.professionalRepository.create({
         ...professionalData,
         userId: user.id
-      });
+      })
+    );
 
-      return await this.professionalRepository.save(professional);
-    } catch (error) {
-      logger.error('Error registering professional:', error);
-      throw error;
-    }
+    return professional;
+  } catch (error) {
+    logger.error('Error registering professional:', error);
+    throw error;
   }
+}
+
+
+
+
+
 
   async assignProfessionalToTenant(
     professionalId: string,

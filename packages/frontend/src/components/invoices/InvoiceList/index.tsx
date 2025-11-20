@@ -2,8 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useApi } from '../../../hooks/useApi';
 import { Invoice, PaginatedResponse, Customer } from '../../../types';
 import { toast } from 'sonner';
-import { Table } from '@/components/ui/Table';
-import { Pagination } from '@/components/ui/Pagination';
+import { Table } from '../../../components/ui/Table';
+import { Pagination } from '../../../components/ui/Pagination';
 import {
   Select,
   SelectTrigger,
@@ -11,9 +11,9 @@ import {
   SelectItem,
   SelectValue
 } from '@/components/ui/Select';
-import { Badge } from '@/components/ui/Badge';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { Badge } from '../../../components/ui/Badge';
+import { Button } from '../../../components/ui/Button';
+import { Input } from '../../../components/ui/Input';
 
 interface InvoiceListProps {
   onEditInvoice: (invoice: Invoice) => void;

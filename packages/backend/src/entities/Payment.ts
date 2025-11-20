@@ -1,6 +1,7 @@
 import { Entity, Column, ManyToOne, JoinColumn, Index } from 'typeorm';
 import { TenantAwareEntity } from './BaseEntity';
 import { Subscription } from './Subscription';
+import { Invoice } from './Invoice';
 import { User } from './User';
 
 export enum PaymentStatus {
@@ -64,4 +65,19 @@ export class Payment extends TenantAwareEntity {
 
   @Column({ type: 'timestamp', nullable: true })
   refundedAt: Date;
+
+  @Column({ type: "timestamp", nullable: true })
+deletedAt: Date;
+@Column({ nullable: true })
+invoiceId: string;
+
+@ManyToOne(() => Invoice)
+@JoinColumn({ name: "invoiceId" })
+invoice: Invoice;
+
+@Column({ type: 'text', nullable: true })
+failureReason?: string;
+
+@Column({ nullable: true })
+razorpayPaymentId: string;
 }

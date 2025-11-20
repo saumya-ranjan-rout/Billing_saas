@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
 import { Between, IsNull } from 'typeorm';
-import { AppDataSource } from '../../config/database-optimized';
-import { Payment } from '../../entities/Payment';
-import { Invoice } from '../../entities/Invoice';
-import { CacheService } from '../../services/cache/CacheService';
-import { logger } from '../../utils/logger-optimized';
-import { ok, errorResponse } from '../../utils/response-optimized';
+import { AppDataSource } from '../config/database';
+import { Payment } from '../entities/Payment';
+import { Invoice, InvoiceStatus } from '../entities/Invoice';
+import { CacheService } from '../services/cache/CacheService';
+import logger from '../utils/logger';
+import { ok, errorResponse } from '../utils/response';
 
 export class OptimizedPaymentController {
   private static paymentRepository = AppDataSource.getRepository(Payment);
@@ -45,7 +45,8 @@ export class OptimizedPaymentController {
         const [data, total] = await this.paymentRepository.findAndCount({
           where,
           relations: ['invoice', 'customer'],
-          order: { paymentDate: 'DESC' },
+          // order: { paymentDate: 'DESC' },
+          order: { createdAt: 'DESC' },
           skip,
           take: Number(limit),
         });
@@ -69,78 +70,84 @@ export class OptimizedPaymentController {
   }
 
   static async create(req: Request, res: Response) {
-    const queryRunner = AppDataSource.createQueryRunner();
+  const queryRunner = AppDataSource.createQueryRunner();
     
-    try {
-      await queryRunner.connect();
-      await queryRunner.startTransaction();
+  try {
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-      const tenantId = (req as any).tenantId;
-      const { invoiceId, amount, ...paymentData } = req.body;
+    const tenantId = (req as any).tenantId;
+    const { invoiceId, amount, ...paymentData } = req.body;
 
-      // Verify invoice exists and belongs to tenant
-      const invoice = await this.invoiceRepository.findOne({
-        where: { id: invoiceId, tenantId, deletedAt: IsNull() }
-      });
+    // Verify invoice exists and belongs to tenant
+    const invoice = await this.invoiceRepository.findOne({
+      where: { id: invoiceId, tenantId, deletedAt: IsNull() }
+    });
 
-      if (!invoice) {
-        return errorResponse(res, 'Invoice not found', 404);
-      }
-
-      // Check if payment amount is valid
-      if (amount <= 0) {
-        return errorResponse(res, 'Payment amount must be greater than 0', 400);
-      }
-
-      if (amount > invoice.balanceDue) {
-        return errorResponse(res, 'Payment amount exceeds invoice balance due', 400);
-      }
-
-      const payment = this.paymentRepository.create({
-        ...paymentData,
-        amount,
-        invoiceId,
-        customerId: invoice.customerId,
-        tenantId,
-      });
-
-      const savedPayment = await queryRunner.manager.save(payment);
-
-      // Update invoice balance
-      invoice.balanceDue -= amount;
-      
-      // Update invoice status if fully paid
-      if (invoice.balanceDue <= 0) {
-        invoice.status = 'paid';
-        invoice.paidAt = new Date();
-      } else if (invoice.balanceDue < invoice.totalAmount) {
-        invoice.status = 'partial';
-      }
-
-      await queryRunner.manager.save(invoice);
-
-      // Invalidate caches
-      await this.cacheService.invalidatePattern(`payments:${tenantId}:*`);
-      await this.cacheService.del(`invoice:${tenantId}:${invoiceId}`);
-   //   await this.cacheService.invalidatePattern(`invoices:${tenantId}:*`);
-      await this.cacheService.invalidatePattern(`cache:${tenantId}:/api/invoices*`),
-      await this.cacheService.invalidatePattern(`customer:${tenantId}:${invoice.customerId}`);
-      // await this.cacheService.invalidatePattern(`customers:${tenantId}:*`);
-      await this.cacheService.invalidatePattern(`cache:${tenantId}:/api/customers*`),
-      await this.cacheService.invalidatePattern(`dashboard:${tenantId}`);
-
-      await queryRunner.commitTransaction();
-
-      logger.info(`Payment created: ${savedPayment.id} for invoice: ${invoiceId}`);
-      return ok(res, savedPayment, 201);
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-      logger.error('Error creating payment:', error);
-      return errorResponse(res, 'Failed to create payment');
-    } finally {
-      await queryRunner.release();
+    if (!invoice) {
+      return errorResponse(res, 'Invoice not found', 404);
     }
+
+    // Check if payment amount is valid
+    if (amount <= 0) {
+      return errorResponse(res, 'Payment amount must be greater than 0', 400);
+    }
+
+    if (amount > invoice.balanceDue) {
+      return errorResponse(res, 'Payment amount exceeds invoice balance due', 400);
+    }
+
+    const payment = this.paymentRepository.create({
+      ...paymentData,
+      amount,
+      invoiceId,
+      customerId: invoice.customerId,
+      tenantId,
+    });
+
+const savedPayment = await queryRunner.manager.save(payment);
+
+// Safe: handles both Payment and Payment[]
+const paymentEntity = Array.isArray(savedPayment)
+  ? savedPayment[0]
+  : savedPayment;
+
+const paymentId = paymentEntity.id;
+
+    // Update invoice balance
+    invoice.balanceDue -= amount;
+    
+    // Update invoice status if fully paid
+    if (invoice.balanceDue <= 0) {
+      invoice.status = InvoiceStatus.PAID;
+      invoice.paidDate = new Date();  // Set to current date
+    } else if (invoice.balanceDue < invoice.totalAmount) {
+      invoice.status = InvoiceStatus.PARTIAL;
+    }
+
+    await queryRunner.manager.save(invoice);
+
+    // Invalidate caches
+    await this.cacheService.invalidatePattern(`payments:${tenantId}:*`);
+    await this.cacheService.del(`invoice:${tenantId}:${invoiceId}`);
+    await this.cacheService.invalidatePattern(`cache:${tenantId}:/api/invoices*`);
+    await this.cacheService.invalidatePattern(`customer:${tenantId}:${invoice.customerId}`);
+    await this.cacheService.invalidatePattern(`cache:${tenantId}:/api/customers*`);
+    await this.cacheService.invalidatePattern(`dashboard:${tenantId}`);
+
+    await queryRunner.commitTransaction();
+
+    logger.info(`Payment created: ${paymentId} for invoice: ${invoiceId}`);
+    return ok(res, savedPayment);
+  } catch (error) {
+    await queryRunner.rollbackTransaction();
+    logger.error('Error creating payment:', error);
+    return errorResponse(res, 'Failed to create payment');
+  } finally {
+    await queryRunner.release();
   }
+}
+
 
   static async get(req: Request, res: Response) {
     try {
@@ -167,63 +174,62 @@ export class OptimizedPaymentController {
     }
   }
 
-  static async delete(req: Request, res: Response) {
-    const queryRunner = AppDataSource.createQueryRunner();
+ static async delete(req: Request, res: Response) {
+  const queryRunner = AppDataSource.createQueryRunner();
     
-    try {
-      await queryRunner.connect();
-      await queryRunner.startTransaction();
+  try {
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-      const tenantId = (req as any).tenantId;
-      const { id } = req.params;
+    const tenantId = (req as any).tenantId;
+    const { id } = req.params;
 
-      const payment = await this.paymentRepository.findOne({
-        where: { id, tenantId, deletedAt: IsNull() },
-        relations: ['invoice'],
-      });
+    const payment = await this.paymentRepository.findOne({
+      where: { id, tenantId, deletedAt: IsNull() },
+      relations: ['invoice'],
+    });
 
-      if (!payment) {
-        return errorResponse(res, 'Payment not found', 404);
-      }
-
-      // Restore invoice balance
-      const invoice = payment.invoice;
-      invoice.balanceDue += payment.amount;
-      
-      // Update invoice status
-      if (invoice.balanceDue === invoice.totalAmount) {
-        invoice.status = 'pending';
-        invoice.paidAt = null;
-      } else if (invoice.balanceDue > 0) {
-        invoice.status = 'partial';
-      }
-
-      // Soft delete payment
-      payment.deletedAt = new Date();
-
-      await queryRunner.manager.save(invoice);
-      await queryRunner.manager.save(payment);
-
-      // Invalidate caches
-      await this.cacheService.del(`payment:${tenantId}:${id}`);
-      await this.cacheService.invalidatePattern(`payments:${tenantId}:*`);
-      await this.cacheService.del(`invoice:${tenantId}:${invoice.id}`);
-      // await this.cacheService.invalidatePattern(`invoices:${tenantId}:*`);
-      await this.cacheService.invalidatePattern(`cache:${tenantId}:/api/invoices*`),
-      await this.cacheService.invalidatePattern(`dashboard:${tenantId}`);
-
-      await queryRunner.commitTransaction();
-
-      logger.info(`Payment deleted: ${id}`);
-      return ok(res, { message: 'Payment deleted successfully' });
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-      logger.error('Error deleting payment:', error);
-      return errorResponse(res, 'Failed to delete payment');
-    } finally {
-      await queryRunner.release();
+    if (!payment) {
+      return errorResponse(res, 'Payment not found', 404);
     }
+
+    // Restore invoice balance
+    const invoice = payment.invoice;
+    invoice.balanceDue += payment.amount;
+    
+    // Update invoice status
+    if (invoice.balanceDue === invoice.totalAmount) {
+      invoice.status = InvoiceStatus.PENDING;
+      invoice.paidDate = null; // Avoid assigning null
+    } else if (invoice.balanceDue > 0) {
+      invoice.status = InvoiceStatus.PARTIAL;
+    }
+
+    // Soft delete payment
+    payment.deletedAt = new Date();
+
+    await queryRunner.manager.save(invoice);
+    await queryRunner.manager.save(payment);
+
+    // Invalidate caches
+    await this.cacheService.del(`payment:${tenantId}:${id}`);
+    await this.cacheService.invalidatePattern(`payments:${tenantId}:*`);
+    await this.cacheService.del(`invoice:${tenantId}:${invoice.id}`);
+    await this.cacheService.invalidatePattern(`cache:${tenantId}:/api/invoices*`);
+    await this.cacheService.invalidatePattern(`dashboard:${tenantId}`);
+
+    await queryRunner.commitTransaction();
+
+    logger.info(`Payment deleted: ${id}`);
+    return ok(res, { message: 'Payment deleted successfully' });
+  } catch (error) {
+    await queryRunner.rollbackTransaction();
+    logger.error('Error deleting payment:', error);
+    return errorResponse(res, 'Failed to delete payment');
+  } finally {
+    await queryRunner.release();
   }
+}
 
   static async getPaymentMethodsSummary(req: Request, res: Response) {
     try {

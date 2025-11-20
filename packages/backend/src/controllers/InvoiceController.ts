@@ -4,6 +4,7 @@ import { InvoiceService } from '../services/invoice/InvoiceService';
 import { SettingService } from '../services/SettingService';
 import { CacheService } from '../services/cache/CacheService';
 import { QueueService } from '../services/queue/QueueService';
+import { LoyaltyService } from '../services/loyalty/LoyaltyService';
 import { InvoiceStatus, InvoiceType } from '../entities/Invoice';
 import logger from '../utils/logger';
 import { ok, errorResponse } from '../utils/response';
@@ -17,7 +18,8 @@ export class InvoiceController {
     private invoiceService: InvoiceService,
     private settingService: SettingService,
     private cacheService: CacheService,
-    private queueService: QueueService
+    private queueService: QueueService,
+    private loyaltyService: LoyaltyService
   ) {}
 
 
@@ -135,6 +137,8 @@ delete payloadForService.customerEmail;
         })
         .catch(err => logger.error('Failed to queue invoice_created notification', err));
 
+         await this.loyaltyService.processInvoiceForLoyalty(invoice.id);
+
       logger.info(`Invoice created in ${Date.now() - startTime}ms`, { invoiceId: invoice.id, tenantId });
       res.status(201).json(invoice);
     } catch (error) {
@@ -177,6 +181,8 @@ const invoice = await this.invoiceService.updateInvoice(tenantId, id, payloadFor
         this.cacheService.invalidatePattern(`cache:${tenantId}:/api/invoices*`),
           this.cacheService.invalidatePattern(`*Invoice*${tenantId}*`)
       ]);
+
+await this.loyaltyService.processInvoiceForLoyalty(invoice.id);
 
       logger.info(`Invoice updated in ${Date.now() - startTime}ms`, { id, tenantId });
       res.json(invoice);

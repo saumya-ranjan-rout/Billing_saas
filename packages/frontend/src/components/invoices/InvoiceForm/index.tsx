@@ -55,17 +55,28 @@ interface InvoiceFormProps {
   onSuccess: () => void;
   onCancel: () => void;
 }
-
+interface ApiResponse {
+  success?: boolean;
+  data?: any[];
+  summary?: any;
+  recentTransactions?: any[];
+  program?: any;
+  error?: string;
+}
 // ------------------ Component ------------------
 const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoice, onSuccess, onCancel }) => {
+  const [redeemStatus, setRedeemStatus] = useState<"redeem" | "redeemed">("redeem");
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+   const [cashBack, setCashbackAmount] = useState(0);
+      const [cashbackInvoiceId, setCashbackInvoiceId] = useState<string[]>([]);
 //srr
  const [customerName, setCustomerName] = useState("");
  const [customerEmail, setCustomerEmail] = useState("");
 //srr
   const { post, put, get } = useApi<Invoice>();
+    const { get:gett } = useApi<ApiResponse>();
   const {
     register,
     handleSubmit,
@@ -98,13 +109,40 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoice, onSuccess, onCancel 
   });
 
   const { fields, append, remove } = useFieldArray({ control, name: 'items' });
-
+   const [selectedCustomerId, setSelectedCustomerId] = useState<string>('');
+    const [loyaltyData, setLoyaltyData] = useState<any>(null);
   const items = watch('items');
  // const customerId = watch('customerId');
   const paymentTerms = watch('paymentTerms');
   const issueDate = watch('issueDate');
   
+  useEffect(() => {
+    if (selectedCustomerId) {
+      fetchLoyaltyData(selectedCustomerId);
+      
+    }
+  }, [selectedCustomerId]);
 
+    const fetchLoyaltyData = async (customerId: string) => {
+      if (!customerId) return;
+      try {
+        const res = await gett(`/api/loyalty/customer/${customerId}/summary`);
+        if (res.success) {
+          const invoiceIds = res.recentTransactions?.map((t: any) => t.invoiceId) || [];
+setCashbackInvoiceId(invoiceIds);
+          setLoyaltyData({
+            summary: res.summary,
+            recentTransactions: res.recentTransactions,
+            program: res.program,
+          });
+          console.log(loyaltyData);
+        } else {
+          toast.error(res.error || 'Failed to load loyalty data');
+        }
+      } catch (err: any) {
+        toast.error(err.message || 'Error fetching loyalty data');
+      }
+    };
   // ------------------ Fetch Customers & Products ------------------
   useEffect(() => {
     const fetchData = async () => {
@@ -141,7 +179,9 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoice, onSuccess, onCancel 
 
   // ------------------ Reset with existing invoice ------------------
    useEffect(() => {
+   // alert(cashBack);
     if (invoice) {
+      setSelectedCustomerId(invoice.customer?.id || '');
       console.log('Resetting form with invoice:', invoice);
       reset({
         customerName: invoice.customer?.name || '',
@@ -198,6 +238,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoice, onSuccess, onCancel 
   };
 
   const calculateOrderTotals = (items: any[]) => {
+  //  alert('redeemedPoints'+redeemedPoints);
     let subTotal = 0, taxTotal = 0, discountTotal = 0;
     items.forEach((item) => {
       const totals = calculateItemTotals(item);
@@ -205,7 +246,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoice, onSuccess, onCancel 
       discountTotal += totals.discountAmount;
       taxTotal += totals.taxAmount;
     });
-    return { subTotal, taxTotal, discountTotal, totalAmount: subTotal - discountTotal + taxTotal };
+    return { subTotal, taxTotal, discountTotal, totalAmount: subTotal - discountTotal + taxTotal,dueTotal:(subTotal - discountTotal + taxTotal)-cashBack};
   };
 
   const handleProductChange = (index: number, productId: string) => {
@@ -221,10 +262,14 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoice, onSuccess, onCancel 
 
   // Submit: send customerName & customerEmail; backend will create/get customer
   const onSubmit = async (data: InvoiceFormData) => {
-   // alert('Form submitted');  
+   // alert('Form submitted'); 
+ // "redeem" or "redeemed"
+
+  // console.log(data); 
     try {
       const payload = {
         ...data,
+        cashBack :cashBack,
         issueDate: new Date(data.issueDate).toISOString(),
         dueDate: calculateDueDate(data.issueDate, data.paymentTerms),
       };
@@ -277,6 +322,8 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoice, onSuccess, onCancel 
       if (selected) {
         setValue('customerName', selected.name, { shouldDirty: true });
         setValue('customerEmail', selected.email || '', { shouldDirty: true });
+          setSelectedCustomerId(selected.id);
+     
       } else {
         // new customer typed
         setValue('customerName', newValue.label, { shouldDirty: true });
@@ -534,6 +581,44 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoice, onSuccess, onCancel 
           <div className="text-right border-t pt-2 font-semibold">
             ₹{totals.totalAmount.toFixed(2)}
           </div>
+{loyaltyData?.summary?.availableCashback > 0 &&
+ totals.totalAmount >= loyaltyData?.summary?.availableCashback &&
+ !cashbackInvoiceId.includes(invoice?.id ?? "") && (
+              <>
+           <div className=""></div>
+<div className="text-right pt-2 font-semibold">
+  <button
+    type="button"
+    onClick={() => {
+      const newState = redeemStatus === "redeemed" ? "redeem" : "redeemed";
+      setRedeemStatus(newState);
+
+      if (newState === "redeemed") {
+        setCashbackAmount(loyaltyData?.summary?.availableCashback || 0);
+        calculateOrderTotals(items);
+      }else{
+        setCashbackAmount(0);
+        calculateOrderTotals(items);
+      }
+    }}
+    className={`px-2 py-1 text-xs rounded-md text-white font-semibold
+      ${redeemStatus === "redeemed" ? "bg-green-600" : "bg-blue-600"}
+    `}
+  >
+    {redeemStatus === "redeemed" ? "Redeemed" : "Redeem"}
+  </button> <span className="ml-2 text-sm">
+  (₹{loyaltyData?.summary?.availableCashback})
+</span>
+
+  
+</div>
+</>
+    )}
+   <div className="text-right border-t pt-2 font-semibold">Due:</div>
+          <div className="text-right border-t pt-2 font-semibold">
+            ₹{totals.dueTotal.toFixed(2)}
+          </div>
+
         </div>
       </div>
 

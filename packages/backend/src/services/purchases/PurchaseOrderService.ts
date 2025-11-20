@@ -3,23 +3,22 @@ import { AppDataSource } from '../../config/database';
 import { PurchaseOrder, PurchaseOrderStatus } from '../../entities/PurchaseOrder';
 import { PurchaseOrderItem } from '../../entities/PurchaseOrderItem';
 import { VendorService } from './VendorService';
-import { GSTCalculationService } from '../billing/GSTCalculationService';
+// import { GSTCalculationService } from '../billing/GSTCalculationService';
 import logger from '../../utils/logger';
 
 export class PurchaseOrderService {
   private poRepository: Repository<PurchaseOrder>;
   private poItemRepository: Repository<PurchaseOrderItem>;
   private vendorService: VendorService;
-  private gstCalculationService: GSTCalculationService;
+  // private gstCalculationService: GSTCalculationService;
 
   constructor() {
     this.poRepository = AppDataSource.getRepository(PurchaseOrder);
     this.poItemRepository = AppDataSource.getRepository(PurchaseOrderItem);
     this.vendorService = new VendorService();
-    this.gstCalculationService = new GSTCalculationService();
+    // this.gstCalculationService = new GSTCalculationService();
   }
-
-  async createPurchaseOrder(tenantId: string, poData: any): Promise<PurchaseOrder> {
+async createPurchaseOrder(tenantId: string, poData: any): Promise<PurchaseOrder> {
     try {
       // Verify vendor exists
       await this.vendorService.getVendor(tenantId, poData.vendorId);
@@ -40,24 +39,68 @@ export class PurchaseOrderService {
         status: PurchaseOrderStatus.DRAFT
       });
 
-      const savedPO = await this.poRepository.save(purchaseOrder);
+const savedPO = await this.poRepository.save(purchaseOrder);
 
-      // Save items
-      if (poData.items && poData.items.length > 0) {
-        const items = poData.items.map((item: any) => ({
-          ...item,
-          purchaseOrderId: savedPO.id
-        }));
+// Ensure single PO object
+const po = Array.isArray(savedPO) ? savedPO[0] : savedPO;
 
-        await this.poItemRepository.save(items);
-      }
+// Save items
+if (poData.items && poData.items.length > 0) {
+  const items = poData.items.map((item: any) => ({
+    ...item,
+    purchaseOrderId: po.id
+  }));
 
-      return await this.getPurchaseOrder(tenantId, savedPO.id);
+  await this.poItemRepository.save(items);
+}
+
+return await this.getPurchaseOrder(tenantId, po.id);
+
     } catch (error) {
       logger.error('Error creating purchase order:', error);
       throw error;
     }
   }
+
+  // async createPurchaseOrder(tenantId: string, poData: any): Promise<PurchaseOrder> {
+  //   try {
+  //     // Verify vendor exists
+  //     await this.vendorService.getVendor(tenantId, poData.vendorId);
+
+  //     // Calculate totals
+  //     const { subtotal, taxAmount, totalAmount } = await this.calculatePOTotals(poData.items);
+
+  //     // Generate PO number
+  //     const poNumber = this.generatePONumber();
+
+  //     const purchaseOrder = this.poRepository.create({
+  //       ...poData,
+  //       poNumber,
+  //       subtotal,
+  //       taxAmount,
+  //       totalAmount,
+  //       tenantId,
+  //       status: PurchaseOrderStatus.DRAFT
+  //     });
+
+  //     const savedPO = await this.poRepository.save(purchaseOrder);
+
+  //     // Save items
+  //     if (poData.items && poData.items.length > 0) {
+  //       const items = poData.items.map((item: any) => ({
+  //         ...item,
+  //         purchaseOrderId: savedPO.id
+  //       }));
+
+  //       await this.poItemRepository.save(items);
+  //     }
+
+  //     return await this.getPurchaseOrder(tenantId, savedPO.id);
+  //   } catch (error) {
+  //     logger.error('Error creating purchase order:', error);
+  //     throw error;
+  //   }
+  // }
 
   async getPurchaseOrder(tenantId: string, poId: string): Promise<PurchaseOrder> {
     try {

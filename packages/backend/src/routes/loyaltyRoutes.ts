@@ -19,23 +19,10 @@ const loyaltyController = new LoyaltyController(loyaltyService);
 // All routes require authentication and tenant context
 router.use(authMiddleware, tenantMiddleware, checkSubscription);
 
-router.post(
-  '/process-invoice/:invoiceId',
-  loyaltyController.processInvoice.bind(loyaltyController)
-);
 
-router.post(
-  '/redeem-cashback',
-  validationMiddleware(redeemCashbackSchema),
-  loyaltyController.redeemCashback.bind(loyaltyController)
-);
 
-// ✅ Cached (customer summary doesn’t change every second, 3 minutes cache is safe)
-router.get(
-  '/customer/:customerId/summary',
-  cacheMiddleware('3m'),
-  loyaltyController.getCustomerSummary.bind(loyaltyController)
-);
+
+
 
 router.put(
   '/program/:programId',
@@ -61,6 +48,23 @@ router.get(
   '/program',
   cacheMiddleware('10m'),
   loyaltyController.getActiveProgram.bind(loyaltyController)
+);
+
+// ✅ Cached (customer summary doesn’t change every second, 3 minutes cache is safe)
+router.get(
+  '/customer/:customerId/summary',
+  cacheMiddleware('3m'),
+  loyaltyController.getCustomerSummary.bind(loyaltyController)
+);
+
+router.post(
+  '/redeem-cashback',
+  validationMiddleware(redeemCashbackSchema),
+  loyaltyController.redeemCashback.bind(loyaltyController)
+);
+router.post(
+  '/process-invoice/:invoiceId',
+  loyaltyController.processInvoice.bind(loyaltyController)
 );
 
 export default router;
