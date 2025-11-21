@@ -191,6 +191,7 @@ setCashbackInvoiceId(invoiceIds);
     if (invoice) {
       setSelectedCustomerId(invoice.customer?.id || '');
       console.log('Resetting form with invoice:', invoice);
+      console.log(invoice);
       reset({
         customerName: invoice.customer?.name || '',
         customerEmail: invoice.customer?.email || '',
@@ -218,9 +219,9 @@ setCashbackInvoiceId(invoiceIds);
   unitPrice: Number(item.unitPrice) || 0,
   discount: Number(item.discount) || 0,
   taxRate: Number(item.taxRate) || 0,
-  // tax_type: item.taxName || "cgst_sgst",
-  // has_cess: item.has_cess || false,
-  // cess_value: Number(item.cess_value) || 0,
+  tax_type: item.tax_type || "cgst_sgst",
+  has_cess: item.has_cess || false,
+  cess_value: Number(item.cess_value) || 0,
 })),
       });
     }

@@ -270,17 +270,20 @@ private calculateDueDate(issueDate: Date, paymentTerms: PaymentTerms): Date {
     const unitPrice = this.safeNumber(item.unitPrice, 0);
     const discount = this.safeNumber(item.discount, 0);
     const taxRate = this.safeNumber(item.taxRate, 0);
+    const cessRate = this.safeNumber(item.cess_value, 0);
  
     // Ensure these are numbers, not strings
     const itemTotal = quantity * unitPrice;
     const discountAmount = this.roundToTwoDecimals(itemTotal * (discount / 100));
     const taxableAmount = this.roundToTwoDecimals(itemTotal - discountAmount);
     const taxAmount = this.roundToTwoDecimals(taxableAmount * (taxRate / 100));
-    const lineTotal = this.roundToTwoDecimals(taxableAmount + taxAmount);
+      const cessAmount = this.roundToTwoDecimals(taxableAmount * (cessRate / 100));
+    const lineTotal = this.roundToTwoDecimals(taxableAmount + taxAmount + cessAmount);
  
     return {
         discountAmount,
         taxAmount,
+        cessAmount,
         lineTotal,
         taxableAmount
     };
@@ -358,25 +361,35 @@ private calculateDueDate(issueDate: Date, paymentTerms: PaymentTerms): Date {
           itemData.unitPrice = this.safeNumber(itemData.unitPrice, 0);
           itemData.discount = this.safeNumber(itemData.discount, 0);
           itemData.taxRate = this.safeNumber(itemData.taxRate, 0);
+          if (itemData.has_cess) {
+            itemData.cess_value = this.safeNumber(itemData.cess_value, 0);
+          }else{
+            itemData.cess_value = 0;
+          }
+      
 
           const itemTotals = this.calculateItemTotals(itemData);
 
           // Totals accumulation
           subTotal += itemData.unitPrice * itemData.quantity;
           discountTotal += itemTotals.discountAmount;
-          taxTotal += itemTotals.taxAmount;
+          taxTotal += itemTotals.taxAmount+itemTotals.cessAmount;
 
           // Track tax details
           const existingTax = taxDetails.find(t => t.taxRate === itemData.taxRate);
           if (existingTax) {
             existingTax.taxAmount += itemTotals.taxAmount;
+             existingTax.cessAmount += itemTotals.cessAmount;
             existingTax.taxableValue += itemTotals.taxableAmount;
           } else {
             taxDetails.push({
-              taxName: `Tax ${itemData.taxRate || 0}%`,
+              taxName: itemData.tax_type,
               taxRate: itemData.taxRate || 0,
               taxAmount: itemTotals.taxAmount,
-              taxableValue: itemTotals.taxableAmount
+              hasCess: itemData.has_cess,
+              cessRate: itemData.cess_value || 0,
+              cessAmount: itemTotals.cessAmount,
+               taxableValue: itemTotals.taxableAmount
             });
           }
 
@@ -545,30 +558,40 @@ this.cacheService.invalidatePattern(`cache:${tenantId}:/api/invoices*`),
           itemData.unitPrice = this.safeNumber(itemData.unitPrice, 0);
           itemData.discount = this.safeNumber(itemData.discount, 0);
           itemData.taxRate = this.safeNumber(itemData.taxRate, 0);
+                    if (itemData.has_cess) {
+            itemData.cess_value = this.safeNumber(itemData.cess_value, 0);
+          }else{
+            itemData.cess_value = 0;
+          }
 
           const itemTotals = this.calculateItemTotals(itemData);
 
           // Ensure safe totals
           const discountAmount = this.safeNumber(itemTotals.discountAmount);
           const taxAmount = this.safeNumber(itemTotals.taxAmount);
+           const cessAmount = this.safeNumber(itemTotals.cessAmount);
           const taxableAmount = this.safeNumber(itemTotals.taxableAmount);
 
           // Accumulate totals
           subTotal += itemData.unitPrice * itemData.quantity;
           discountTotal += discountAmount;
-          taxTotal += taxAmount;
+          taxTotal += taxAmount+cessAmount;
 
           // Track tax details safely
           const existingTax = taxDetailsData.find(t => t.taxRate === itemData.taxRate);
           if (existingTax) {
             existingTax.taxAmount += taxAmount;
+                  existingTax.cessAmount += itemTotals.cessAmount;
             existingTax.taxableValue += taxableAmount;
           } else {
             taxDetailsData.push({
               taxName: `Tax ${itemData.taxRate}%`,
               taxRate: itemData.taxRate,
               taxAmount,
-              taxableValue: taxableAmount
+               hasCess: itemData.has_cess,
+              cessRate: itemData.cess_value || 0,
+              cessAmount: itemTotals.cessAmount,
+               taxableValue: taxableAmount
             });
           }
 
@@ -586,6 +609,7 @@ this.cacheService.invalidatePattern(`cache:${tenantId}:/api/invoices*`),
             ...itemTotals,
             discountAmount,
             taxAmount,
+            cessAmount,
             taxableAmount,
             tenantId
           });

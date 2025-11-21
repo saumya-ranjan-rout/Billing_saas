@@ -110,7 +110,7 @@ const filteredNavigation = navigation.filter((item) => {
       {/* Sidebar */}
       <div
         className={cn(
-          "fixed inset-y-0 left-0 z-30 w-64 bg-gray-900 transform transition duration-200 ease-in-out lg:static lg:inset-0 lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-30 w-64 bg-gray-900 h-screen overflow-y-auto transform transition duration-200 ease-in-out lg:static lg:inset-0 lg:translate-x-0",
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >

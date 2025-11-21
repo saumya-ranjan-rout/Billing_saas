@@ -161,8 +161,12 @@ export interface InvoiceItem {
   unitPrice: number;
   discount: number;
   discountAmount: number;
+  tax_type: string;
   taxRate: number;
   taxAmount: number;
+  has_cess: boolean;     // true/false
+  cess_value: number;
+    cessAmount: number;
   lineTotal: number;
   product?: Product;
 }

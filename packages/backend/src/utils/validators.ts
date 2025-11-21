@@ -166,6 +166,10 @@ export const invoiceItemSchema = Joi.object({
   unitPrice: Joi.number().min(0).required(),
   discount: Joi.number().min(0).max(100).default(0),
   taxRate: Joi.number().min(0).max(100).default(0),
+    tax_type: Joi.string().valid("cgst_sgst", "igst").default("cgst_sgst"),
+  has_cess: Joi.boolean().default(false),
+  cess_value: Joi.number().min(0).default(0),
+
 });
 
 export const invoiceSchema = Joi.object({

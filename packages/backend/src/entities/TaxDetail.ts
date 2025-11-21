@@ -18,6 +18,15 @@ export class TaxDetail {
   @Column('decimal', { precision: 15, scale: 2 })
   taxableValue: number;
 
+    @Column({ type: 'boolean', default: false })
+  hasCess: boolean;
+
+  @Column('decimal', { precision: 6, scale: 2, default: 0 })
+  cessRate: number;
+
+  @Column('decimal', { precision: 15, scale: 2, default: 0 })
+  cessAmount: number;
+
 //   @ManyToOne(() => Invoice, invoice => invoice.taxDetails)
 //   invoice: Invoice;
   @ManyToOne(() => Invoice, invoice => invoice.taxDetails, { onDelete: 'CASCADE' })

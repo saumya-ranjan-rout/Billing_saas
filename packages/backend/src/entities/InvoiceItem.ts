@@ -49,6 +49,18 @@ export class InvoiceItem extends TenantAwareEntity {
   @Column({ type: 'decimal', precision: 15, scale: 2 })
   lineTotal: number;
 
+  @Column({ type: 'varchar', default: 'cgst_sgst' })
+  tax_type: string;
+
+  @Column({ type: 'boolean', default: false })
+  has_cess: boolean;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+  cess_value: number;
+
+   @Column({ type: 'decimal', precision: 15, scale: 2,default: 0 })
+  cessAmount: number;
+
   @Column({ type: 'jsonb', nullable: true })
   metadata: Record<string, any>;
 
