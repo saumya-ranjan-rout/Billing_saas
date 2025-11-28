@@ -1,0 +1,4 @@
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-28 13:28:11:2811"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-28 13:28:12:2812"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-28 13:28:12:2812"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-28 13:28:12:2812"}

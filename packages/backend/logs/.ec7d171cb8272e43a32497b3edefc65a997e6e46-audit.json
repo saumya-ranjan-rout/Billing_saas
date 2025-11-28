@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "E:\\BillingSoftware\\packages\\backend\\logs\\.ec7d171cb8272e43a32497b3edefc65a997e6e46-audit.json",
+    "files": [
+        {
+            "date": 1764316648457,
+            "name": "E:\\BillingSoftware\\packages\\backend\\logs\\error-2025-11-28.log",
+            "hash": "66d786a997e6ed656c98e8b3f1a5880e54a8f2fe5e3129fdc9fbb4f756b279ed"
+        }
+    ],
+    "hashType": "sha256"
+}
