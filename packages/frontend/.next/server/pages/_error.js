@@ -150,7 +150,7 @@ module.exports = require("path");
 var __webpack_require__ = require("../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, ["vendors-node_modules_l","vendors-node_modules_next_dist_l","vendors-node_modules_next_di","vendors-node_modules_n","vendors-node_modules_recharts_es6_chart_A","vendors-node_modules_recharts_es6_com","vendors-node_modules_r","common"], () => (__webpack_exec__("../../node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js?kind=PAGES&page=%2F_error&preferredRegion=&absolutePagePath=private-next-pages%2F_error&absoluteAppPath=private-next-pages%2F_app&absoluteDocumentPath=private-next-pages%2F_document&middlewareConfigBase64=e30%3D!")));
+var __webpack_exports__ = __webpack_require__.X(0, ["vendors-node_modules_l","vendors-node_modules_next_dist_l","vendors-node_modules_next_d","vendors-node_modules_recharts_es6_cartesian_B","vendors-node_modules_recharts_es6_chart_A","vendors-node_modules_recharts_es6_com","vendors-node_modules_r","common"], () => (__webpack_exec__("../../node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js?kind=PAGES&page=%2F_error&preferredRegion=&absolutePagePath=private-next-pages%2F_error&absoluteAppPath=private-next-pages%2F_app&absoluteDocumentPath=private-next-pages%2F_document&middlewareConfigBase64=e30%3D!")));
 module.exports = __webpack_exports__;
 
 })();

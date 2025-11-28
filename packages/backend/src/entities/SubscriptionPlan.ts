@@ -57,6 +57,9 @@ export class SubscriptionPlan extends TenantAwareEntity {
   @Column({ type: 'integer', default: 365 }) // 1 year in days
   validityDays: number;
 
+  @Column({ type: 'integer', default: 0 }) // 1 year in days
+  access: number;
+
   @OneToMany(() => Subscription, subscription => subscription.plan)
   subscriptions: Subscription[];
 

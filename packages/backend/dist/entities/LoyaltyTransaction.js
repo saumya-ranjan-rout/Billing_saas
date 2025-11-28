@@ -47,7 +47,7 @@ __decorate([
 __decorate([
     (0, typeorm_1.ManyToOne)(() => Invoice_1.Invoice, { nullable: true }),
     (0, typeorm_1.JoinColumn)({ name: 'invoiceId' }),
-    __metadata("design:type", Invoice_1.Invoice)
+    __metadata("design:type", Object)
 ], LoyaltyTransaction.prototype, "invoice", void 0);
 __decorate([
     (0, typeorm_1.Column)({ nullable: true }),

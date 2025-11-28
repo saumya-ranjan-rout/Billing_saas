@@ -55,6 +55,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({ onEditInvoice, onViewInvoice,
       });
 
       const response = await get(`/api/invoices?${queryParams}`);
+      console.log("srr",response);
       setInvoices(response.data);
       setPagination(response.pagination);
     } catch (error: any) {
@@ -69,7 +70,7 @@ useEffect(() => {
   const fetchCustomers = async () => {
     try {
       const response: { data: any[] } = await get('/api/customers?limit=100');
-      console.log(response);
+    //  console.log(response);
       setCustomers(response.data);
     } catch (error) {
       console.error('Failed to fetch customers:', error);

@@ -78,13 +78,16 @@ class CustomerController {
                 return res.status(401).json({ error: 'Unauthorized' });
             }
             const tenantId = req.user.tenantId;
-            const { page = 1, limit = 10, search } = req.query;
-            const pageNum = Math.max(1, parseInt(page));
-            const limitNum = Math.min(100, Math.max(1, parseInt(limit)));
+            const { page = 1, limit = 10, name, email, phone, status, joinedFrom, joinedTo } = req.query;
             const options = {
-                page: pageNum,
-                limit: limitNum,
-                search: search
+                page: Number(page),
+                limit: Number(limit),
+                name: name,
+                email: email,
+                phone: phone,
+                status: status,
+                joinedFrom: joinedFrom,
+                joinedTo: joinedTo,
             };
             const cacheKey = `customers:${tenantId}:${JSON.stringify(options)}`;
             const customers = await this.cacheService.getOrSet(cacheKey, async () => {
@@ -245,6 +248,39 @@ class CustomerController {
         catch (error) {
             console.error("Login error:", error.message);
             return res.status(500).json({ error: error.message });
+        }
+    }
+    async getCustomerBalance(req, res) {
+        try {
+            if (!req.user) {
+                return res.status(401).json({ error: "Unauthorized" });
+            }
+            const { id } = req.params;
+            const tenantId = req.user.tenantId;
+            const balance = await this.customerService.getCustomerBalance(tenantId, id);
+            return res.json(balance);
+        }
+        catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+    async createPayment(req, res) {
+        try {
+            if (!req.user)
+                return res.status(401).json({ error: "Unauthorized" });
+            const tenantId = req.user.tenantId;
+            const { amount, customerId } = req.body;
+            const balance = await this.customerService.getCustomerBalance(tenantId, customerId);
+            if (amount > balance.balance) {
+                return res.status(400).json({
+                    error: `Payment exceeds outstanding balance. Remaining balance: ${balance.balance}`
+                });
+            }
+            const payment = await this.customerService.recordPayment(req.body);
+            res.json(payment);
+        }
+        catch (error) {
+            res.status(500).json({ error: error.message });
         }
     }
 }

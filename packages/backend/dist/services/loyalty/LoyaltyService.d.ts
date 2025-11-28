@@ -16,8 +16,10 @@ export declare class LoyaltyService {
         cashbackAmount: number;
         percentage: number;
     }>;
+    processCustomerForLoyalty(amount: number, customerId: string, tenantId: string): Promise<void>;
     processInvoiceForLoyalty(invoiceId: string): Promise<void>;
     updateCustomerTier(customerLoyalty: CustomerLoyalty): Promise<void>;
+    redeemCashbackk(tenantId: string, customerId: string, redeemAmount: number, invoiceId: string, queryRunner: any): Promise<LoyaltyTransaction>;
     redeemCashback(tenantId: string, customerId: string, redeemAmount: number, invoiceId?: string): Promise<LoyaltyTransaction>;
     getCustomerLoyaltySummary(tenantId: string, customerId: string): Promise<any>;
     updateLoyaltyProgram(tenantId: string, programId: string, updates: Partial<LoyaltyProgram>): Promise<LoyaltyProgram>;

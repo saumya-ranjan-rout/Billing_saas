@@ -34,13 +34,46 @@ const User_1 = require("../../entities/User");
 const Subscription_1 = require("../../entities/Subscription");
 const validators_1 = require("../../utils/validators");
 const logger_1 = __importDefault(require("../../utils/logger"));
+const Invoice_1 = require("../../entities/Invoice");
+const PaymentInvoice_1 = require("../../entities/PaymentInvoice");
+const CustomerLoyalty_1 = require("../../entities/CustomerLoyalty");
+const LoyaltyTransaction_1 = require("../../entities/LoyaltyTransaction");
+const LoyaltyService_1 = require("../loyalty/LoyaltyService");
 const jwt = __importStar(require("jsonwebtoken"));
 class CustomerService {
     constructor() {
         this.customerRepository = database_1.AppDataSource.getRepository(Customer_1.Customer);
         this.subscriptionRepository = database_1.AppDataSource.getRepository(Subscription_1.Subscription);
         this.userRepository = database_1.AppDataSource.getRepository(User_1.User);
+        this.invoiceRepository = database_1.AppDataSource.getRepository(Invoice_1.Invoice);
+        this.paymentRepository = database_1.AppDataSource.getRepository(PaymentInvoice_1.PaymentInvoice);
+        this.customerLoyaltyRepository = database_1.AppDataSource.getRepository(CustomerLoyalty_1.CustomerLoyalty);
+        this.transactionRepository = database_1.AppDataSource.getRepository(LoyaltyTransaction_1.LoyaltyTransaction);
         this.refreshTokens = new Set();
+        this.loyaltyService = new LoyaltyService_1.LoyaltyService();
+    }
+    async getCustomerBalance(tenantId, customerId) {
+        const totalDueResult = await this.invoiceRepository
+            .createQueryBuilder("invoices")
+            .select("SUM(invoices.balanceDue)", "totalDue")
+            .where("invoices.tenantId = :tenantId", { tenantId })
+            .andWhere("invoices.customerId = :customerId", { customerId })
+            .getRawOne();
+        const totalPaidResult = await this.paymentRepository
+            .createQueryBuilder("payment_invoice")
+            .select("SUM(payment_invoice.amount)", "totalPaid")
+            .where("payment_invoice.tenantId = :tenantId", { tenantId })
+            .andWhere("payment_invoice.customerId = :customerId", { customerId })
+            .getRawOne();
+        const totalDue = Number(totalDueResult?.totalDue ?? 0);
+        const totalPaid = Number(totalPaidResult?.totalPaid ?? 0);
+        const balance = totalDue - totalPaid;
+        return {
+            customerId,
+            totalDue,
+            totalPaid,
+            balance: totalDue - totalPaid
+        };
     }
     async createCustomer(tenantId, customerData) {
         try {
@@ -102,19 +135,32 @@ class CustomerService {
     async getCustomers(tenantId, options) {
         const today = new Date();
         try {
-            const { page, limit, search } = options;
+            const { page, limit, name, email, phone, status, joinedFrom, joinedTo } = options;
             const skip = (page - 1) * limit;
             const whereConditions = {
                 tenantId,
                 status: "Approved",
                 deletedAt: (0, typeorm_1.IsNull)(),
             };
-            if (search) {
-                whereConditions["name"] = (0, typeorm_1.ILike)(`%${search}%`);
-                whereConditions["email"] = (0, typeorm_1.ILike)(`%${search}%`);
-                whereConditions["phone"] = (0, typeorm_1.ILike)(`%${search}%`);
+            if (options.name) {
+                whereConditions.name = (0, typeorm_1.ILike)(`%${options.name}%`);
             }
-            const [customers, total] = await this.customerRepository.findAndCount({
+            if (options.email) {
+                whereConditions.email = (0, typeorm_1.ILike)(`%${options.email}%`);
+            }
+            if (options.phone) {
+                whereConditions.phone = (0, typeorm_1.ILike)(`%${options.phone}%`);
+            }
+            if (options.joinedFrom || options.joinedTo) {
+                whereConditions.createdAt = {};
+                if (options.joinedFrom) {
+                    whereConditions.createdAt = (0, typeorm_1.MoreThanOrEqual)(new Date(options.joinedFrom));
+                }
+                if (options.joinedTo) {
+                    whereConditions.createdAt = (0, typeorm_1.LessThanOrEqual)(new Date(options.joinedTo));
+                }
+            }
+            let [customers, total] = await this.customerRepository.findAndCount({
                 where: whereConditions,
                 relations: ["requestedBy", "requestedTo"],
                 skip,
@@ -122,6 +168,23 @@ class CustomerService {
                 order: { createdAt: "DESC" },
             });
             for (const customer of customers) {
+                const balance = await this.getCustomerBalance(tenantId, customer.id);
+                const totalDueNum = Number(balance.totalDue ?? 0);
+                const totalPaidNum = Number(balance.totalPaid ?? 0);
+                const balanceNum = Number(balance.balance ?? 0);
+                customer.totalDue = Number(totalDueNum.toFixed(2));
+                customer.totalPaid = Number(totalPaidNum.toFixed(2));
+                customer.balance = Number(balanceNum.toFixed(2));
+                if (balanceNum === 0 && totalDueNum > 0) {
+                    customer.paymentStatus = PaymentInvoice_1.PaymentStatus.COMPLETED;
+                }
+                else if (totalPaidNum > 0 && balanceNum > 0) {
+                    customer.paymentStatus = PaymentInvoice_1.PaymentStatus.PARTIAL;
+                    ;
+                }
+                else {
+                    customer.paymentStatus = PaymentInvoice_1.PaymentStatus.PENDING;
+                }
                 let tenantIdToCheck = null;
                 let userstatus = null;
                 if (customer.requestedBy && customer.requestedBy.role !== "professional") {
@@ -146,6 +209,10 @@ class CustomerService {
                     subs > 0 && userstatus === User_1.UserStatus.ACTIVE
                         ? "active"
                         : "inactive";
+            }
+            if (options.status) {
+                customers = customers.filter(c => c.paymentStatus === options.status);
+                total = customers.length;
             }
             return {
                 data: customers,
@@ -334,6 +401,44 @@ class CustomerService {
         return jwt.sign(payload, process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET, {
             expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || "7d",
         });
+    }
+    async recordPayment(data) {
+        const { invoiceId, amount, method, customerId, paymentDate, notes, status, paymentType, tenantId, cashBack } = data;
+        if (cashBack > 0) {
+            const customerLoyalty = await this.customerLoyaltyRepository.findOne({
+                where: { customerId, tenantId }
+            });
+            if (!customerLoyalty || customerLoyalty.availableCashback < cashBack) {
+                throw new Error('Insufficient cashback balance');
+            }
+            const transaction = this.transactionRepository.create({
+                customerId,
+                invoiceId,
+                type: LoyaltyTransaction_1.TransactionType.REDEEM,
+                status: LoyaltyTransaction_1.TransactionStatus.COMPLETED,
+                cashbackAmount: -cashBack,
+                description: `Cashback redemption for invoice ${invoiceId}`,
+                tenantId
+            });
+            await this.transactionRepository.save(transaction);
+            customerLoyalty.availableCashback -= cashBack;
+            customerLoyalty.lastActivityDate = new Date();
+            await this.customerLoyaltyRepository.save(customerLoyalty);
+        }
+        await this.loyaltyService.processCustomerForLoyalty(amount, customerId, tenantId);
+        const payment = this.paymentRepository.create({
+            invoiceId,
+            amount,
+            method,
+            customerId,
+            paymentDate,
+            notes,
+            status,
+            paymentType,
+            tenantId,
+            createdAt: new Date(),
+        });
+        return await this.paymentRepository.save(payment);
     }
 }
 exports.CustomerService = CustomerService;

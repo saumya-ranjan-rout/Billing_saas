@@ -180,6 +180,8 @@ export const invoiceSchema = Joi.object({
   issueDate: Joi.date().required(),
   dueDate: Joi.date().min(Joi.ref('issueDate')).required(),
   paymentTerms: Joi.string().valid('due_on_receipt', 'net_7', 'net_15', 'net_30', 'net_60').default('net_15'),
+  paymentMethod: Joi.string().valid('cash', 'bank_transfer', 'cheque', 'credit_card', 'debit_card', 'upi', 'wallet', 'other').default('cash'),
+  paymentAmount: Joi.number().min(0).default(0),
   shippingAddress: Joi.string().allow('', null).optional(),
   billingAddress: Joi.string().allow('', null).optional(),
   termsAndConditions: Joi.string().allow('', null).optional(),

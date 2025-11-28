@@ -118,12 +118,12 @@ const Register: React.FC = () => {
       {/* MAIN WRAPPER */}
       <div className="w-full max-w-6xl bg-white rounded-3xl shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2">
 
-        {/* LEFT PANEL */}
-       <div className="p-12 bg-gradient-to-b from-[#6b4efc] to-[#386bfd] text-white flex flex-col justify-center">
+       {/* LEFT PANEL — Hidden on mobile */}
+        <div className="hidden md:flex p-12 bg-gradient-to-b from-[#6b4efc] to-[#386bfd] text-white flex-col justify-center">
 
           <h1 className="text-4xl font-bold mb-4">Create Your Account</h1>
 
-           <p className="text-lg opacity-90 mb-6">
+          <p className="text-lg opacity-90 mb-6">
             Register and start using your billing & compliance dashboard.
           </p>
 
@@ -135,8 +135,6 @@ const Register: React.FC = () => {
             <li>• 24/7 support and guidance</li>
           </ul>
 
-
-          {/* Illustration */}
           <div className="mt-10 w-56 h-56 relative mx-auto">
             <Image
               src="/register-illustration.png"
@@ -145,7 +143,9 @@ const Register: React.FC = () => {
               style={{ objectFit: "contain" }}
             />
           </div>
+
         </div>
+
 
         {/* RIGHT PANEL */}
         <div className="p-10 md:p-14 flex items-center">

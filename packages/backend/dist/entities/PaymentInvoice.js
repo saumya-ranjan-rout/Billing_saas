@@ -33,6 +33,7 @@ var PaymentStatus;
     PaymentStatus["COMPLETED"] = "completed";
     PaymentStatus["FAILED"] = "failed";
     PaymentStatus["REFUNDED"] = "refunded";
+    PaymentStatus["PARTIAL"] = "partial";
 })(PaymentStatus = exports.PaymentStatus || (exports.PaymentStatus = {}));
 var PaymentType;
 (function (PaymentType) {
@@ -42,13 +43,13 @@ var PaymentType;
 let PaymentInvoice = class PaymentInvoice extends BaseEntity_1.TenantAwareEntity {
 };
 __decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", Object)
 ], PaymentInvoice.prototype, "invoiceId", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => Invoice_1.Invoice, invoice => invoice.payments),
+    (0, typeorm_1.ManyToOne)(() => Invoice_1.Invoice, invoice => invoice.payments, { nullable: true }),
     (0, typeorm_1.JoinColumn)({ name: 'invoiceId' }),
-    __metadata("design:type", Invoice_1.Invoice)
+    __metadata("design:type", Object)
 ], PaymentInvoice.prototype, "invoice", void 0);
 __decorate([
     (0, typeorm_1.Column)(),

@@ -20,7 +20,8 @@ export enum PaymentStatus {
   PENDING = 'pending',
   COMPLETED = 'completed',
   FAILED = 'failed',
-  REFUNDED = 'refunded'
+  REFUNDED = 'refunded',
+    PARTIAL = 'partial'
 }
 export enum PaymentType {
   INCOME = 'income',
@@ -29,12 +30,18 @@ export enum PaymentType {
 
 @Entity('payments_invoice')
 export class PaymentInvoice extends TenantAwareEntity {
-  @Column()
-  invoiceId: string;
+  // @Column()
+  // invoiceId: string;
 
-  @ManyToOne(() => Invoice, invoice => invoice.payments)
-  @JoinColumn({ name: 'invoiceId' })
-  invoice: Invoice;
+  // @ManyToOne(() => Invoice, invoice => invoice.payments)
+  // @JoinColumn({ name: 'invoiceId' })
+  // invoice: Invoice;
+  @Column({ nullable: true })
+invoiceId: string | null;
+
+@ManyToOne(() => Invoice, invoice => invoice.payments, { nullable: true })
+@JoinColumn({ name: 'invoiceId' })
+invoice: Invoice | null;
 
   @Column()
   customerId: string;

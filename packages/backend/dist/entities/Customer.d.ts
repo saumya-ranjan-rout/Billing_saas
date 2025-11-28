@@ -2,7 +2,7 @@ import { TenantAwareEntity } from './BaseEntity';
 import { Tenant } from './Tenant';
 import { Invoice } from './Invoice';
 import { User } from './User';
-import { PaymentInvoice } from './PaymentInvoice';
+import { PaymentInvoice, PaymentStatus } from './PaymentInvoice';
 import { LoyaltyTransaction } from "./LoyaltyTransaction";
 import { CustomerLoyalty } from "./CustomerLoyalty";
 export declare enum CustomerType {
@@ -45,5 +45,9 @@ export declare class Customer extends TenantAwareEntity {
     loyaltyTransactions: LoyaltyTransaction[];
     loyaltyData: CustomerLoyalty[];
     checkSubscription?: "active" | "inactive";
+    totalDue?: number;
+    totalPaid?: number;
+    balance?: number;
+    paymentStatus?: PaymentStatus;
 }
 //# sourceMappingURL=Customer.d.ts.map

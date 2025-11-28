@@ -43,6 +43,17 @@ const invoiceSchema = z.object({
     required_error: 'Payment terms are required',
     invalid_type_error: 'Payment terms are required',
   }),
+ paymentMethod: z.enum([
+  "cash",
+  "bank_transfer",
+  "cheque",
+  "credit_card",
+  "debit_card",
+  "upi",
+  "wallet",
+  "other"
+]),
+paymentAmount: z.number().min(0, "Payment amount must be positive"),
   shippingAddress: z.string().optional(),
   billingAddress: z.string().optional(),
   termsAndConditions: z.string().optional(),
@@ -97,6 +108,8 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoice, onSuccess, onCancel 
       type: 'standard',
       issueDate: new Date().toISOString().split('T')[0],
       paymentTerms: 'net_15',
+   paymentMethod: "cash",
+paymentAmount: 0,
       items: [
         {
           productId: '',
@@ -189,15 +202,23 @@ setCashbackInvoiceId(invoiceIds);
    useEffect(() => {
    // alert(cashBack);
     if (invoice) {
+      //  console.log("hello:",invoice?.loyaltyTransactions?.[0]?.type);
+    
+
+if (invoice?.loyaltyTransactions?.[0]?.type === "redeem") {
+  const cashback = Number(invoice?.loyaltyTransactions?.[0]?.cashbackAmount) || 0;
+  setCashbackAmount(Math.abs(cashback));
+}
       setSelectedCustomerId(invoice.customer?.id || '');
       console.log('Resetting form with invoice:', invoice);
-      console.log(invoice);
       reset({
         customerName: invoice.customer?.name || '',
         customerEmail: invoice.customer?.email || '',
         type: invoice.type,
         issueDate: invoice.issueDate.split('T')[0],
         paymentTerms: invoice.paymentTerms,
+        paymentMethod: invoice.paymentMethod,
+        paymentAmount: invoice.amountPaid,
         shippingAddress: invoice.shippingAddress,
         billingAddress: invoice.billingAddress,
         termsAndConditions: invoice.termsAndConditions,
@@ -283,7 +304,8 @@ setCashbackInvoiceId(invoiceIds);
       discountTotal += totals.discountAmount;
       taxTotal += totals.taxAmount+totals.cessAmount;
     });
-    return { subTotal, taxTotal, discountTotal, totalAmount: subTotal - discountTotal + taxTotal,dueTotal:(subTotal - discountTotal + taxTotal)-cashBack};
+      const paymentAmount = Number(watch("paymentAmount") || 0);
+    return { subTotal, taxTotal, discountTotal, totalAmount: subTotal - discountTotal + taxTotal,dueTotal:(subTotal - discountTotal + taxTotal)-cashBack-paymentAmount };
   };
 
   const handleProductChange = (index: number, productId: string) => {
@@ -331,6 +353,16 @@ setCashbackInvoiceId(invoiceIds);
 
   const dueDate = calculateDueDate(issueDate, paymentTerms);
   const totals = calculateOrderTotals(items);
+  const totalAmount = totals.totalAmount;
+  const isEditable = Boolean(invoice);
+
+// const isEditable = Boolean(
+//   invoice &&
+//   Number(loyaltyData?.summary?.availableCashback) <= 0 &&
+//   Number(invoice?.amountPaid) >= Number(loyaltyData?.program?.minimumPurchaseAmount)
+// );
+
+
 
   return (
  <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -658,39 +690,118 @@ setCashbackInvoiceId(invoiceIds);
           <div className="text-right border-t pt-2 font-semibold">
             ₹{totals.totalAmount.toFixed(2)}
           </div>
-{loyaltyData?.summary?.availableCashback > 0 &&
- totals.totalAmount >= loyaltyData?.summary?.availableCashback &&
- !cashbackInvoiceId.includes(invoice?.id ?? "") && (
-              <>
-           <div className=""></div>
-<div className="text-right pt-2 font-semibold">
-  <button
-    type="button"
-    onClick={() => {
-      const newState = redeemStatus === "redeemed" ? "redeem" : "redeemed";
-      setRedeemStatus(newState);
+         <>
 
-      if (newState === "redeemed") {
-        setCashbackAmount(loyaltyData?.summary?.availableCashback || 0);
-        calculateOrderTotals(items);
-      }else{
-        setCashbackAmount(0);
-        calculateOrderTotals(items);
-      }
-    }}
-    className={`px-2 py-1 text-xs rounded-md text-white font-semibold
-      ${redeemStatus === "redeemed" ? "bg-green-600" : "bg-blue-600"}
-    `}
-  >
-    {redeemStatus === "redeemed" ? "Redeemed" : "Redeem"}
-  </button> <span className="ml-2 text-sm">
-  (₹{loyaltyData?.summary?.availableCashback})
-</span>
+  {invoice?.loyaltyTransactions?.[0]?.type === "redeem" ? (
+    <>
+        <div className="text-right pt-2 font-semibold"></div>
+      <div className="text-right pt-2 font-semibold">
+      <button
+        type="button"
+        className="px-2 py-1 text-xs rounded-md text-white font-semibold bg-green-600"
+      >
+        Redeemed
+      </button>
 
-  
-</div>
+      <span className="ml-2 text-sm">
+        (₹{invoice?.loyaltyTransactions?.[0]?.cashbackAmount})
+      </span>
+      </div>
+    </>
+  ) : (
+    loyaltyData?.summary?.availableCashback > 0 &&
+    totals.totalAmount >= loyaltyData?.summary?.availableCashback &&
+    !cashbackInvoiceId.includes(invoice?.id ?? "") && (
+      <>
+          <div className="text-right pt-2 font-semibold"></div>
+      <div className="text-right pt-2 font-semibold">
+        <button
+          type="button"
+          onClick={() => {
+            const newState =
+              redeemStatus === "redeemed" ? "redeem" : "redeemed";
+            setRedeemStatus(newState);
+
+            setCashbackAmount(
+              newState === "redeemed"
+                ? loyaltyData?.summary?.availableCashback || 0
+                : 0
+            );
+
+            calculateOrderTotals(items);
+          }}
+          className={`px-2 py-1 text-xs rounded-md text-white font-semibold ${
+            redeemStatus === "redeemed" ? "bg-green-600" : "bg-blue-600"
+          }`}
+        >
+          {redeemStatus === "redeemed" ? "Redeemed" : "Redeem"}
+        </button>
+
+        <span className="ml-2 text-sm">
+          (₹{loyaltyData?.summary?.availableCashback})
+        </span>
+      </div>
+      </>
+    )
+  )}
 </>
-    )}
+
+
+    <div className="text-right border-t">Payment Method:</div>
+     <div className="text-right  border-t">
+            <Select
+    value={watch("paymentMethod")}
+   onValueChange={(v) =>
+  setValue("paymentMethod", v as any) // simplest fix
+}
+  >
+    <SelectTrigger>
+      <SelectValue placeholder="Select method" />
+    </SelectTrigger>
+    <SelectContent>
+      <SelectItem value="cash">Cash</SelectItem>
+      <SelectItem value="bank_transfer">Bank Transfer</SelectItem>
+      <SelectItem value="cheque">Cheque</SelectItem>
+      <SelectItem value="credit_card">Credit Card</SelectItem>
+      <SelectItem value="debit_card">Debit Card</SelectItem>
+      <SelectItem value="upi">UPI</SelectItem>
+      <SelectItem value="wallet">Wallet</SelectItem>
+      <SelectItem value="other">Other</SelectItem>
+    </SelectContent>
+  </Select>
+  {errors.paymentMethod && (
+    <p className="text-red-500 text-sm">
+      {errors.paymentMethod.message}
+    </p>
+  )}
+          </div>
+         <div className="text-right border-t">Payment Amount:</div>
+     <div className="text-right border-t">
+      
+<Input
+  // label="Payment Amount"
+  readOnly={isEditable}
+  type="number"
+  {...register("paymentAmount", {
+    valueAsNumber: true,
+    onChange: (e) => {
+      const value = Number(e.target.value);
+      const total = totals.totalAmount - cashBack;
+
+      if (value > total) {
+        toast.error("Payment amount cannot exceed total amount");
+        setValue("paymentAmount", 0);   // ⬅️ RESET TO ZERO
+      }
+    },
+  })}
+  error={errors.paymentAmount?.message}
+/>
+
+
+  {errors.paymentAmount && (
+    <p className="text-red-500 text-sm">{errors.paymentAmount.message}</p>
+  )}
+          </div>
    <div className="text-right border-t pt-2 font-semibold">Due:</div>
           <div className="text-right border-t pt-2 font-semibold">
             ₹{totals.dueTotal.toFixed(2)}

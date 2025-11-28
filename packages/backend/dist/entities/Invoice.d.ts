@@ -2,7 +2,8 @@ import { TenantAwareEntity } from './BaseEntity';
 import { Tenant } from './Tenant';
 import { Customer } from './Customer';
 import { InvoiceItem } from './InvoiceItem';
-import { PaymentInvoice } from './PaymentInvoice';
+import { PaymentInvoice, PaymentMethod } from './PaymentInvoice';
+import { LoyaltyTransaction } from './LoyaltyTransaction';
 import { Subscription } from './Subscription';
 import { GSTIN } from './GSTIN';
 import { TaxDetail } from './TaxDetail';
@@ -41,6 +42,7 @@ export declare class Invoice extends TenantAwareEntity {
     dueDate: Date;
     paidDate: Date | null;
     paymentTerms: PaymentTerms;
+    paymentMethod: PaymentMethod;
     shippingAddress: string;
     billingAddress: string;
     termsAndConditions: string;
@@ -71,6 +73,7 @@ export declare class Invoice extends TenantAwareEntity {
     tenant: Tenant;
     items: InvoiceItem[];
     payments: PaymentInvoice[];
+    loyaltyTransactions: LoyaltyTransaction[];
     gstin: GSTIN;
     subscription: Subscription;
     metadata?: Record<string, any>;

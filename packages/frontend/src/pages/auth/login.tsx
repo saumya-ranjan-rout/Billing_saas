@@ -101,19 +101,20 @@ const Login: React.FC = () => {
     <div className="relative min-h-screen flex items-center justify-center bg-[#f2f4ff] px-4">
 
       {/* Top Right — Super User Button */}
-      <div className="absolute top-6 right-6">
+      {/*<div className="absolute top-6 right-6">
         <Link href="/auth/super-user-login">
           <button className="px-5 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition font-medium text-sm">
             Super User Login
           </button>
         </Link>
-      </div>
+      </div>*/}
 
       {/* Main Container */}
       <div className="w-full max-w-6xl bg-white rounded-3xl shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2">
 
-        {/* LEFT PANEL - Gradient welcome section */}
-        <div className="p-12 bg-gradient-to-b from-[#6b4efc] to-[#386bfd] text-white flex flex-col justify-center">
+
+       {/* LEFT PANEL - Gradient welcome section (Hidden on Mobile) */}
+        <div className="hidden md:flex p-12 bg-gradient-to-b from-[#6b4efc] to-[#386bfd] text-white flex-col justify-center">
 
           <h1 className="text-4xl font-bold mb-4">Welcome back</h1>
 
@@ -129,17 +130,29 @@ const Login: React.FC = () => {
 
           <div className="mt-10 w-56 h-56 relative mx-auto">
             <Image
-              src="/login-illustrations.png" // Illustration
+              src="/login-illustrations.png"
               alt="Illustration"
               fill
               style={{ objectFit: "contain" }}
             />
           </div>
+
         </div>
+
 
         {/* RIGHT PANEL – Login Form */}
         <div className="p-10 md:p-14 flex items-center">
           <div className="w-full">
+
+             {/* INSERT BUTTON HERE */}
+ 
+           <div className="flex justify-end mb-6">
+              <Link href="/auth/super-user-login">
+                <button className="px-5 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition font-medium text-sm">
+                  Super User Login
+                </button>
+              </Link>
+            </div>
 
             {/* ⭐ LOGO HERE */}
             <div className="flex justify-center mb-6">

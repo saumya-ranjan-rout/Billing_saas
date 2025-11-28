@@ -27,12 +27,12 @@ export class LoyaltyTransaction extends TenantAwareEntity {
   @JoinColumn({ name: 'customerId' })
   customer: Customer;
 
-  @Column({ nullable: true })
-  invoiceId: string;
+ @Column({ nullable: true })
+invoiceId: string;
 
-  @ManyToOne(() => Invoice, { nullable: true })
-  @JoinColumn({ name: 'invoiceId' })
-  invoice: Invoice;
+@ManyToOne(() => Invoice, { nullable: true })
+@JoinColumn({ name: 'invoiceId' })
+invoice: Invoice | null;
 
   @Column({ nullable: true })
   programId: string;

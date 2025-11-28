@@ -40,12 +40,19 @@ async initializeDefaultPlans() {
   return true;
 }
 
-  async getActivePlans(): Promise<SubscriptionPlan[]> {
-    return this.planRepository.find({
-      where: { isActive: true },
-      order: { price: 'ASC' },
-    });
-  }
+async getActivePlans(role: string): Promise<SubscriptionPlan[]> {
+  const accessList = role === 'professional' ? [0, 2] : [0, 1];
+
+ // console.log('accessList:', accessList, 'role:', role);
+
+  return this.planRepository.find({
+    where: {
+      isActive: true,
+      access: In(accessList),
+    },
+    order: { price: 'ASC' },
+  });
+}
 
 
   // Create subscription + payment record (status: pending) and return both

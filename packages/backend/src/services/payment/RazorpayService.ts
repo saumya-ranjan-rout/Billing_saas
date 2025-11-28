@@ -26,6 +26,7 @@ async createOrder(payment: Payment): Promise<{
 
     const options = {
       amount: Math.round(payment.amount * 100), // amount in paise
+     // amount: Math.round(1 * 100),
       currency: payment.currency || 'INR',
       receipt: shortReceipt,
       payment_capture: 1,

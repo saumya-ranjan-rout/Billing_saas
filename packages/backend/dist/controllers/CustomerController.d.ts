@@ -19,5 +19,7 @@ export declare class CustomerController {
     getCustomersWithInvoices(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
     updateUser(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
     switchTenant(req: Request, res: Response): Promise<Response<any, Record<string, any>>>;
+    getCustomerBalance(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
+    createPayment(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
 }
 //# sourceMappingURL=CustomerController.d.ts.map

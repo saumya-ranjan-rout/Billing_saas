@@ -1,4 +1,4 @@
-import { Repository, ILike, IsNull,MoreThanOrEqual } from 'typeorm';
+import { Repository, ILike, IsNull,MoreThanOrEqual,LessThanOrEqual } from 'typeorm';
 import { AppDataSource } from '../../config/database';
 import { Customer } from '../../entities/Customer';
 import { User ,UserRole ,UserStatus} from '../../entities/User';
@@ -8,6 +8,12 @@ import logger from '../../utils/logger';
 import { PaginatedResponse } from '../../types/customTypes';
 import { Tenant } from '../../entities/Tenant';
 import { AuthService } from '../auth/AuthService';
+import { Invoice }  from '../../entities/Invoice';
+import { PaymentInvoice, PaymentStatus } from '../../entities/PaymentInvoice';
+import { CustomerLoyalty, LoyaltyTier } from '../../entities/CustomerLoyalty'; 
+import { LoyaltyTransaction, TransactionType, TransactionStatus } from '../../entities/LoyaltyTransaction';
+import { LoyaltyService } from '../loyalty/LoyaltyService';
+
 
 import * as jwt from "jsonwebtoken";
   export interface AuthPayload {
@@ -32,14 +38,58 @@ export class CustomerService {
   private subscriptionRepository: Repository<Subscription>;
   private userRepository: Repository<User>;
    private refreshTokens: Set<string>;
+   private invoiceRepository: Repository<Invoice>;
+   private paymentRepository: Repository<PaymentInvoice>;
+       private customerLoyaltyRepository: Repository<CustomerLoyalty>; 
+    private transactionRepository: Repository<LoyaltyTransaction>; 
+    private loyaltyService: LoyaltyService;
  
   constructor() {
     this.customerRepository = AppDataSource.getRepository(Customer);
     this.subscriptionRepository = AppDataSource.getRepository(Subscription);
     this.userRepository = AppDataSource.getRepository(User);
+    this.invoiceRepository = AppDataSource.getRepository(Invoice);
+    this.paymentRepository = AppDataSource.getRepository(PaymentInvoice);
+            this.customerLoyaltyRepository = AppDataSource.getRepository(CustomerLoyalty); 
+        this.transactionRepository = AppDataSource.getRepository(LoyaltyTransaction);
         this.refreshTokens = new Set();
+      this.loyaltyService = new LoyaltyService();  
   }
  
+
+  async getCustomerBalance(tenantId: string, customerId: string) {
+
+  // Sum of outstanding dues from invoice table
+  const totalDueResult = await  this.invoiceRepository
+    .createQueryBuilder("invoices")
+    .select("SUM(invoices.balanceDue)", "totalDue")
+    .where("invoices.tenantId = :tenantId", { tenantId })
+    .andWhere("invoices.customerId = :customerId", { customerId })
+    .getRawOne();
+
+  // Sum of total paid entries from payment table
+  const totalPaidResult = await this.paymentRepository
+    .createQueryBuilder("payment_invoice")
+    .select("SUM(payment_invoice.amount)", "totalPaid")
+    .where("payment_invoice.tenantId = :tenantId", { tenantId })
+    .andWhere("payment_invoice.customerId = :customerId", { customerId })
+    .getRawOne();
+
+   // console.log(" totalDueResult, totalPaidResult",totalDueResult, totalPaidResult);
+
+  const totalDue = Number(totalDueResult?.totalDue ?? 0);
+  const totalPaid = Number(totalPaidResult?.totalPaid ?? 0);
+
+  const balance= totalDue - totalPaid
+  //console.log(" totalDue, totalPaid",totalDue, totalPaid ,balance);
+  return {
+    customerId,
+    totalDue,
+    totalPaid,
+    balance: totalDue - totalPaid
+  };
+}
+
   //async createCustomer(tenantId: string, customerData: any): Promise<Customer> {
   async createCustomer(tenantId: string, customerData: Partial<Customer>): Promise<Customer>{
     try {
@@ -117,12 +167,18 @@ if (!completeCustomer) {
   options: {
     page: number;
     limit: number;
-    search?: string;
+   name?: string;
+    email?: string;
+    phone?: string;
+    status?: string;
+    joinedFrom?: string;
+    joinedTo?: string;
   }
 ): Promise<PaginatedResponse<Customer>> {
 const today = new Date();
   try {
-    const { page, limit, search } = options;
+    const { page, limit, name, email, phone, status, joinedFrom, joinedTo } = options;
+    //console.log("options",options);
     const skip = (page - 1) * limit;
 
     const whereConditions: any = {
@@ -131,22 +187,73 @@ const today = new Date();
       deletedAt: IsNull(),
     };
 
-    if (search) {
-      whereConditions["name"] = ILike(`%${search}%`);
-      whereConditions["email"] = ILike(`%${search}%`);
-      whereConditions["phone"] = ILike(`%${search}%`);
-    }
+    // if (search) {
+    //   whereConditions["name"] = ILike(`%${search}%`);
+    //   whereConditions["email"] = ILike(`%${search}%`);
+    //   whereConditions["phone"] = ILike(`%${search}%`);
+    // }
 
-    const [customers, total] = await this.customerRepository.findAndCount({
-      where: whereConditions,
-      relations: ["requestedBy", "requestedTo"],  // Load both user relations
-      skip,
-      take: limit,
-      order: { createdAt: "DESC" },
-    });
+    if (options.name) {
+  whereConditions.name = ILike(`%${options.name}%`);
+}
+
+if (options.email) {
+  whereConditions.email = ILike(`%${options.email}%`);
+}
+
+if (options.phone) {
+  whereConditions.phone = ILike(`%${options.phone}%`);
+}
+
+// if (options.status) {
+//   whereConditions.paymentStatus = options.status;
+// }
+
+// Date filter: joinedFrom - joinedTo
+if (options.joinedFrom || options.joinedTo) {
+  whereConditions.createdAt = {};
+
+  if (options.joinedFrom) {
+    whereConditions.createdAt = MoreThanOrEqual(new Date(options.joinedFrom));
+  }
+
+  if (options.joinedTo) {
+    whereConditions.createdAt = LessThanOrEqual(new Date(options.joinedTo));
+  }
+ }
+
+let [customers, total] = await this.customerRepository.findAndCount({
+  where: whereConditions,
+  relations: ["requestedBy", "requestedTo"],
+  skip,
+  take: limit,
+  order: { createdAt: "DESC" },
+});
+
+//console.log("customers1", customers);
 
 
 for (const customer of customers) {
+
+      const balance = await this.getCustomerBalance(tenantId, customer.id);
+
+const totalDueNum = Number(balance.totalDue ?? 0);
+const totalPaidNum = Number(balance.totalPaid ?? 0);
+const balanceNum = Number(balance.balance ?? 0);
+
+customer.totalDue = Number(totalDueNum.toFixed(2));
+customer.totalPaid = Number(totalPaidNum.toFixed(2));
+customer.balance = Number(balanceNum.toFixed(2));
+
+
+if (balanceNum === 0 && totalDueNum > 0) {
+  customer.paymentStatus = PaymentStatus.COMPLETED;
+} else if (totalPaidNum > 0 && balanceNum > 0) {
+  customer.paymentStatus = PaymentStatus.PARTIAL;;
+} else {
+  customer.paymentStatus = PaymentStatus.PENDING;
+}
+
   let tenantIdToCheck = null;
   let userstatus = null;
 
@@ -183,8 +290,12 @@ for (const customer of customers) {
       : "inactive";
 }
 
+if (options.status) {
+  customers = customers.filter(c => c.paymentStatus === options.status);
+  total = customers.length;
+}
 
-
+//console.log("customers2", customers);
 
 // console.log("customers", customers);
     return {
@@ -465,6 +576,57 @@ const updated = await this.userRepository.findOne({
     });
 
   }
+async recordPayment(data: any) {
+  const { invoiceId, amount, method, customerId, paymentDate, notes, status, paymentType, tenantId, cashBack } = data;
+
+  // -------- Cashback Redemption Logic -------- //
+  if (cashBack > 0) {
+    const customerLoyalty = await this.customerLoyaltyRepository.findOne({
+      where: { customerId, tenantId }
+    });
+
+    if (!customerLoyalty || customerLoyalty.availableCashback < cashBack) {
+      throw new Error('Insufficient cashback balance'); 
+    }
+
+    // Create redeem transaction
+    const transaction = this.transactionRepository.create({ 
+      customerId, 
+      invoiceId, 
+      type: TransactionType.REDEEM, 
+      status: TransactionStatus.COMPLETED, 
+      cashbackAmount: -cashBack,
+      description: `Cashback redemption for invoice ${invoiceId}`, 
+      tenantId 
+    });
+
+    await this.transactionRepository.save(transaction);
+
+    // Deduct cashback from loyalty balance
+    customerLoyalty.availableCashback -= cashBack;
+    customerLoyalty.lastActivityDate = new Date();
+
+    await this.customerLoyaltyRepository.save(customerLoyalty);
+  }
+
+await this.loyaltyService.processCustomerForLoyalty(amount, customerId, tenantId);
+  // -------- Payment Processing Logic -------- //
+  const payment = this.paymentRepository.create({
+    invoiceId,
+    amount,
+    method,
+    customerId,
+    paymentDate,
+    notes,
+    status,
+    paymentType,
+    tenantId,
+    createdAt: new Date(),
+  });
+
+  return await this.paymentRepository.save(payment);
+}
+
 
 }
 

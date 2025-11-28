@@ -3,7 +3,7 @@ import { TenantAwareEntity } from './BaseEntity';
 import { Tenant } from './Tenant';
 import { Invoice } from './Invoice';
 import { User } from './User';
-import { PaymentInvoice } from './PaymentInvoice';
+import { PaymentInvoice, PaymentStatus } from './PaymentInvoice';
 import { LoyaltyTransaction } from "./LoyaltyTransaction";
 import { CustomerLoyalty } from "./CustomerLoyalty";
 
@@ -104,6 +104,10 @@ payments: PaymentInvoice[];
     // ✅ Add these virtual fields (NO decorator)
 
   checkSubscription?: "active" | "inactive";
+    totalDue?: number;
+  totalPaid?: number;
+  balance?: number;
+  paymentStatus?: PaymentStatus;
 }
 
 

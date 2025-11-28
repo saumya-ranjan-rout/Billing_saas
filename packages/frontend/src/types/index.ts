@@ -186,6 +186,27 @@ export interface Payment {
   updatedAt: string;
 }
 
+export interface LoyaltyTransaction {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  tenantId: string;
+  customerId: string;
+  invoiceId: string | null;
+  programId: string | null;
+  type: "earn" | "redeem" | string;
+  status: "completed" | "pending" | "failed" | string;
+  points: number;
+  cashbackAmount: number | string;
+  orderAmount: number | string;
+  description: string;
+  expiryDate: string | null;
+  metadata?: Record<string, any> | null;
+  effectivePercentage?: number | string;
+}
+
+
+
 export interface Invoice {
   id: string;
   invoiceNumber: string;
@@ -197,6 +218,7 @@ export interface Invoice {
   dueDate: string;
   paidDate?: string;
   paymentTerms: 'due_on_receipt' | 'net_7' | 'net_15' | 'net_30' | 'net_60';
+  paymentMethod: 'cash' | 'bank_transfer' | 'cheque' | 'credit_card' | 'debit_card' | 'upi' | 'wallet' | 'other';
   shippingAddress?: string;
   billingAddress?: string;
   termsAndConditions?: string;
@@ -229,6 +251,7 @@ export interface Invoice {
   viewedAt?: string;
   items: InvoiceItem[];
   payments: Payment[];
+  loyaltyTransactions: LoyaltyTransaction[];
   createdAt: string;
   updatedAt: string;
 }

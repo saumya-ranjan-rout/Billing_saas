@@ -17,15 +17,16 @@ export declare enum PaymentStatus {
     PENDING = "pending",
     COMPLETED = "completed",
     FAILED = "failed",
-    REFUNDED = "refunded"
+    REFUNDED = "refunded",
+    PARTIAL = "partial"
 }
 export declare enum PaymentType {
     INCOME = "income",
     EXPENSE = "expense"
 }
 export declare class PaymentInvoice extends TenantAwareEntity {
-    invoiceId: string;
-    invoice: Invoice;
+    invoiceId: string | null;
+    invoice: Invoice | null;
     customerId: string;
     customer: Customer;
     amount: number;

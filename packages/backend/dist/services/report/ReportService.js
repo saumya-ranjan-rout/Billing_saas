@@ -338,7 +338,8 @@ class ReportService {
             where: {
                 tenantId,
                 paymentDate: (0, typeorm_1.Between)(new Date(filters.fromDate), new Date(filters.toDate)),
-                deletedAt: (0, typeorm_1.IsNull)()
+                deletedAt: (0, typeorm_1.IsNull)(),
+                paymentType: PaymentInvoice_1.PaymentType.EXPENSE
             },
             relations: ['vendor']
         });
@@ -408,7 +409,8 @@ class ReportService {
             where: {
                 tenantId,
                 paymentDate: (0, typeorm_1.Between)(new Date(filters.fromDate), new Date(filters.toDate)),
-                deletedAt: (0, typeorm_1.IsNull)()
+                deletedAt: (0, typeorm_1.IsNull)(),
+                paymentType: PaymentInvoice_1.PaymentType.EXPENSE
             }
         });
         let outwardSupply = 0;
@@ -507,7 +509,8 @@ class ReportService {
             where: {
                 tenantId,
                 paymentDate: (0, typeorm_1.Between)(new Date(filters.fromDate), new Date(filters.toDate)),
-                deletedAt: (0, typeorm_1.IsNull)()
+                deletedAt: (0, typeorm_1.IsNull)(),
+                paymentType: PaymentInvoice_1.PaymentType.EXPENSE
             },
             relations: ['vendor']
         });
@@ -641,7 +644,8 @@ class ReportService {
             where: {
                 tenantId,
                 paymentDate: (0, typeorm_1.Between)(new Date(filters.fromDate), new Date(filters.toDate)),
-                deletedAt: (0, typeorm_1.IsNull)()
+                deletedAt: (0, typeorm_1.IsNull)(),
+                paymentType: PaymentInvoice_1.PaymentType.EXPENSE
             },
             relations: ['vendor', 'customer']
         });
@@ -773,7 +777,8 @@ class ReportService {
             where: {
                 tenantId,
                 paymentDate: (0, typeorm_1.Between)(new Date(filters.fromDate), new Date(filters.toDate)),
-                deletedAt: (0, typeorm_1.IsNull)()
+                deletedAt: (0, typeorm_1.IsNull)(),
+                paymentType: PaymentInvoice_1.PaymentType.EXPENSE
             },
             relations: ['vendor']
         });

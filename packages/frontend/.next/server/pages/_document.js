@@ -70,7 +70,7 @@ module.exports = require("path");
 var __webpack_require__ = require("../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, ["vendors-node_modules_l","vendors-node_modules_next_dist_l","vendors-node_modules_next_di","vendors-node_modules_n","vendors-node_modules_recharts_es6_chart_A","vendors-node_modules_recharts_es6_com","vendors-node_modules_r","common"], () => (__webpack_exec__("./src/pages/_document.tsx")));
+var __webpack_exports__ = __webpack_require__.X(0, ["vendors-node_modules_l","vendors-node_modules_next_dist_l","vendors-node_modules_next_d","vendors-node_modules_recharts_es6_cartesian_B","vendors-node_modules_recharts_es6_chart_A","vendors-node_modules_recharts_es6_com","vendors-node_modules_r","common"], () => (__webpack_exec__("./src/pages/_document.tsx")));
 module.exports = __webpack_exports__;
 
 })();

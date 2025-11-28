@@ -157,6 +157,9 @@ exports.invoiceItemSchema = joi_1.default.object({
     unitPrice: joi_1.default.number().min(0).required(),
     discount: joi_1.default.number().min(0).max(100).default(0),
     taxRate: joi_1.default.number().min(0).max(100).default(0),
+    tax_type: joi_1.default.string().valid("cgst_sgst", "igst").default("cgst_sgst"),
+    has_cess: joi_1.default.boolean().default(false),
+    cess_value: joi_1.default.number().min(0).default(0),
 });
 exports.invoiceSchema = joi_1.default.object({
     customerName: joi_1.default.string().required(),
@@ -165,6 +168,8 @@ exports.invoiceSchema = joi_1.default.object({
     issueDate: joi_1.default.date().required(),
     dueDate: joi_1.default.date().min(joi_1.default.ref('issueDate')).required(),
     paymentTerms: joi_1.default.string().valid('due_on_receipt', 'net_7', 'net_15', 'net_30', 'net_60').default('net_15'),
+    paymentMethod: joi_1.default.string().valid('cash', 'bank_transfer', 'cheque', 'credit_card', 'debit_card', 'upi', 'wallet', 'other').default('cash'),
+    paymentAmount: joi_1.default.number().min(0).default(0),
     shippingAddress: joi_1.default.string().allow('', null).optional(),
     billingAddress: joi_1.default.string().allow('', null).optional(),
     termsAndConditions: joi_1.default.string().allow('', null).optional(),

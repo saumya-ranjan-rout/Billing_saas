@@ -2,7 +2,8 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
+  "/": "pages/index.js",
   "/auth/login": "pages/auth/login.js",
   "/app/dashboard": "pages/app/dashboard.js",
-  "/app/invoices": "pages/app/invoices.js"
+  "/app/subscription": "pages/app/subscription.js"
 }

@@ -351,7 +351,8 @@ export class ReportService {
       where: {
         tenantId,
         paymentDate: Between(new Date(filters.fromDate), new Date(filters.toDate)),
-        deletedAt: IsNull()
+        deletedAt: IsNull(),
+           paymentType: PaymentType.EXPENSE
       },
       relations: ['vendor']
     });
@@ -433,7 +434,8 @@ export class ReportService {
       where: {
         tenantId,
         paymentDate: Between(new Date(filters.fromDate), new Date(filters.toDate)),
-        deletedAt: IsNull()
+        deletedAt: IsNull(),
+        paymentType: PaymentType.EXPENSE
       }
     });
 
@@ -544,7 +546,8 @@ export class ReportService {
       where: {
         tenantId,
         paymentDate: Between(new Date(filters.fromDate), new Date(filters.toDate)),
-        deletedAt: IsNull()
+        deletedAt: IsNull(),
+           paymentType: PaymentType.EXPENSE
       },
       relations: ['vendor']
     });
@@ -700,7 +703,8 @@ user: (() => {
       where: {
         tenantId,
         paymentDate: Between(new Date(filters.fromDate), new Date(filters.toDate)),
-        deletedAt: IsNull()
+        deletedAt: IsNull(),
+           paymentType: PaymentType.EXPENSE
       },
       relations: ['vendor', 'customer']
     });
@@ -851,7 +855,8 @@ user: (() => {
       where: {
         tenantId,
         paymentDate: Between(new Date(filters.fromDate), new Date(filters.toDate)),
-        deletedAt: IsNull()
+        deletedAt: IsNull(),
+           paymentType: PaymentType.EXPENSE
       },
       relations: ['vendor']
     });

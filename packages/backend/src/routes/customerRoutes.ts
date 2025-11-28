@@ -82,6 +82,16 @@ router.get(
   customerController.switchTenant.bind(customerController)
 
 );
+router.get(
+  '/:id/balance',
+  rbacMiddleware(['read:customers']),
+  customerController.getCustomerBalance.bind(customerController)
+);
+router.post(
+  "/payments",
+  rbacMiddleware(["create:customers"]),
+  customerController.createPayment.bind(customerController)
+);
 
 export default router;
 

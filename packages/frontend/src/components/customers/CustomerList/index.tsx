@@ -10,6 +10,7 @@ import { Pagination } from '@/components/ui/Pagination';
 // import { authService } from '@/lib/auth';
 import { setCredentials, setError, selectAuthError } from "../../../features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
+import PaymentModal from "../PaymentModal";
 interface CustomerListProps {
   onEditCustomer: (customer: Customer) => void;
   refreshTrigger?: number; // new
@@ -23,6 +24,10 @@ interface User {
 }
 const CustomerList: React.FC<CustomerListProps> = ({ onEditCustomer, refreshTrigger }) => {
   const [customers, setCustomers] = useState<Customer[]>([]);
+  const [paymentModal, setPaymentModal] = useState<{ open: boolean; customer: any | null }>({
+  open: false,
+  customer: null
+});
   const [loading, setLoading] = useState(true);
    const [user, setUser] = useState<User | null>(null);
      const dispatch = useAppDispatch();
@@ -33,6 +38,14 @@ const CustomerList: React.FC<CustomerListProps> = ({ onEditCustomer, refreshTrig
     total: 0,
     pages: 0,
   });
+const [filters, setFilters] = useState({
+  name: "",
+  email: "",
+  phone: "",
+  status: "",
+  joinedFrom: "",
+  joinedTo: ""
+});
 
   // ✅ include del here
   const { get, del } = useApi<PaginatedResponse<Customer>>();
@@ -41,11 +54,23 @@ const CustomerList: React.FC<CustomerListProps> = ({ onEditCustomer, refreshTrig
 
   const fetchCustomers = async () => {
     try {
-      const response = await get(
-        `/api/customers?page=${pagination.page}&limit=${pagination.limit}`
-      );
 
-     // console.log(response.data);
+          const query = new URLSearchParams({
+      page: String(pagination.page),
+      limit: String(pagination.limit),
+      name: filters.name || "",
+      email: filters.email || "",
+      phone: filters.phone || "",
+      status: filters.status || "",
+      joinedFrom: filters.joinedFrom || "",
+      joinedTo: filters.joinedTo || "",
+    }).toString();
+ const response = await get(`/api/customers?${query}`);
+      // const response = await get(
+      //   `/api/customers?page=${pagination.page}&limit=${pagination.limit}`
+      // );
+
+      //console.log("customers",response.data);
       setCustomers(response.data);
       setPagination(response.pagination);
     } catch (error: any) {
@@ -70,9 +95,13 @@ const CustomerList: React.FC<CustomerListProps> = ({ onEditCustomer, refreshTrig
     fetchUser();
   }, []);
 
+  // useEffect(() => {
+  //   fetchCustomers();
+  // }, [pagination.page, pagination.limit, refreshTrigger]);
+
   useEffect(() => {
-    fetchCustomers();
-  }, [pagination.page, pagination.limit, refreshTrigger]);
+  fetchCustomers();
+}, [filters, pagination.page, pagination.limit, refreshTrigger]);
 
   // ✅ delete handler
   const handleDelete = async (id: string) => {
@@ -212,6 +241,32 @@ const CustomerList: React.FC<CustomerListProps> = ({ onEditCustomer, refreshTrig
       header: 'Joined',
       render: (value: string) => new Date(value).toLocaleDateString()
     },
+     { key: 'totalDue', header: 'Total Due' },
+      { key: 'totalPaid', header: 'Total Paid' },
+       { key: 'balance', header: 'Balance' },
+       { 
+  key: 'paymentStatus',
+  header: 'Status',
+  render: (value: string) => {
+    let color =
+      value === "completed" ? "bg-green-100 text-green-800" :
+      value === "partial" ? "bg-yellow-100 text-yellow-800" :
+      "bg-red-100 text-red-800";
+
+        let label =
+      value === "completed" ? "Paid" :
+      value === "partial" ? "Partial" :
+      "Unpaid";
+
+    return (
+      <span className={`px-2 py-1 rounded text-xs font-semibold ${color}`}>
+        {label}
+      </span>
+    );
+  }
+},
+
+
   {
   key: 'actions',
   header: 'Actions',
@@ -245,6 +300,12 @@ const CustomerList: React.FC<CustomerListProps> = ({ onEditCustomer, refreshTrig
           Delete 
           {/* {user?.role} */}
         </button>
+        <button
+  onClick={() => setPaymentModal({ open: true, customer: row })}
+  className="bg-purple-500 text-white px-3 py-1 rounded text-sm hover:bg-purple-600"
+>
+  Pay
+</button>
 
         {/* ONLY SHOW FOR PROFESSIONAL */}
         {user?.role === "professional" &&
@@ -271,7 +332,59 @@ const CustomerList: React.FC<CustomerListProps> = ({ onEditCustomer, refreshTrig
   }
 
   return (
-    <div>
+     <div>
+      <div className="grid grid-cols-1 md:grid-cols-6 gap-3 mb-6 p-2 bg-gray-50 rounded-lg">
+     
+  <input
+    type="text"
+    placeholder="Name"
+    className="border p-2 rounded"
+    value={filters.name}
+    onChange={(e) => setFilters({ ...filters, name: e.target.value })}
+  />
+
+  <input
+    type="text"
+    placeholder="Email"
+    className="border p-2 rounded"
+    value={filters.email}
+    onChange={(e) => setFilters({ ...filters, email: e.target.value })}
+  />
+
+  <input
+    type="text"
+    placeholder="Phone"
+    className="border p-2 rounded"
+    value={filters.phone}
+    onChange={(e) => setFilters({ ...filters, phone: e.target.value })}
+  />
+
+  <select
+    className="border p-2 rounded"
+    value={filters.status}
+    onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+  >
+    <option value="">All Status</option>
+    <option value="completed">Paid</option>
+    <option value="partial">Partial</option>
+    <option value="pending">Unpaid</option>
+  </select>
+
+  <input
+    type="date"
+    className="border p-2 rounded"
+    value={filters.joinedFrom}
+    onChange={(e) => setFilters({ ...filters, joinedFrom: e.target.value })}
+  />
+
+  <input
+    type="date"
+    className="border p-2 rounded"
+    value={filters.joinedTo}
+    onChange={(e) => setFilters({ ...filters, joinedTo: e.target.value })}
+  />
+
+</div>
       <Table
         columns={columns}
         data={customers}
@@ -285,6 +398,16 @@ const CustomerList: React.FC<CustomerListProps> = ({ onEditCustomer, refreshTrig
           onPageChange={handlePageChange}
         />
       )}
+      {paymentModal.open && (
+  <PaymentModal
+    customer={paymentModal.customer}
+    onClose={() => setPaymentModal({ open: false, customer: null })}
+    onSuccess={() => { 
+      fetchCustomers(); 
+      setPaymentModal({ open: false, customer: null });
+    }}
+  />
+)}
     </div>
   );
 };

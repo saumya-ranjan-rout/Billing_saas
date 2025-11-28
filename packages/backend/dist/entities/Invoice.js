@@ -16,6 +16,7 @@ const Tenant_1 = require("./Tenant");
 const Customer_1 = require("./Customer");
 const InvoiceItem_1 = require("./InvoiceItem");
 const PaymentInvoice_1 = require("./PaymentInvoice");
+const LoyaltyTransaction_1 = require("./LoyaltyTransaction");
 const Subscription_1 = require("./Subscription");
 const GSTIN_1 = require("./GSTIN");
 const TaxDetail_1 = require("./TaxDetail");
@@ -91,6 +92,10 @@ __decorate([
     (0, typeorm_1.Column)({ type: 'enum', enum: PaymentTerms, default: PaymentTerms.NET_15 }),
     __metadata("design:type", String)
 ], Invoice.prototype, "paymentTerms", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'enum', enum: PaymentInvoice_1.PaymentMethod, default: PaymentInvoice_1.PaymentMethod.CASH }),
+    __metadata("design:type", String)
+], Invoice.prototype, "paymentMethod", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", String)
@@ -177,6 +182,10 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => PaymentInvoice_1.PaymentInvoice, payment => payment.invoice),
     __metadata("design:type", Array)
 ], Invoice.prototype, "payments", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => LoyaltyTransaction_1.LoyaltyTransaction, lt => lt.invoice),
+    __metadata("design:type", Array)
+], Invoice.prototype, "loyaltyTransactions", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => GSTIN_1.GSTIN, (gstin) => gstin.invoices),
     (0, typeorm_1.JoinColumn)({ name: "gstinId" }),

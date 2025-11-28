@@ -3,7 +3,8 @@ import { TenantAwareEntity } from './BaseEntity';
 import { Tenant } from './Tenant';
 import { Customer } from './Customer';
 import { InvoiceItem } from './InvoiceItem';
-import { PaymentInvoice } from './PaymentInvoice';
+import { PaymentInvoice, PaymentMethod } from './PaymentInvoice';
+import { LoyaltyTransaction } from './LoyaltyTransaction';
 import { Subscription } from './Subscription';
 import { GSTIN } from './GSTIN';
 import { TaxDetail } from './TaxDetail';
@@ -76,6 +77,9 @@ export class Invoice extends TenantAwareEntity {
 
   @Column({ type: 'enum', enum: PaymentTerms, default: PaymentTerms.NET_15 })
   paymentTerms: PaymentTerms;
+
+   @Column({ type: 'enum', enum: PaymentMethod, default: PaymentMethod.CASH })
+  paymentMethod: PaymentMethod;
 
   @Column({ type: 'text', nullable: true })
   shippingAddress: string;
@@ -155,6 +159,9 @@ export class Invoice extends TenantAwareEntity {
 
   @OneToMany(() => PaymentInvoice, payment => payment.invoice)
   payments: PaymentInvoice[];
+
+  @OneToMany(() => LoyaltyTransaction, lt => lt.invoice)
+loyaltyTransactions: LoyaltyTransaction[];
 
   @ManyToOne(() => GSTIN, (gstin) => gstin.invoices)
   @JoinColumn({ name: "gstinId" })

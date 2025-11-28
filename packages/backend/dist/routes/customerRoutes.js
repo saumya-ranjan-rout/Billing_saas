@@ -25,5 +25,7 @@ router.get('/:id', (0, rbac_1.rbacMiddleware)(['read:customers']), (0, cache_1.c
 router.put('/:id', (0, rbac_1.rbacMiddleware)(['update:customers']), (0, validation_1.validationMiddleware)(validators_1.customerSchema), customerController.updateCustomer.bind(customerController));
 router.delete('/:id', (0, rbac_1.rbacMiddleware)(['delete:customers']), customerController.deleteCustomer.bind(customerController));
 router.get('/switchTenant/:id/:role', customerController.switchTenant.bind(customerController));
+router.get('/:id/balance', (0, rbac_1.rbacMiddleware)(['read:customers']), customerController.getCustomerBalance.bind(customerController));
+router.post("/payments", (0, rbac_1.rbacMiddleware)(["create:customers"]), customerController.createPayment.bind(customerController));
 exports.default = router;
 //# sourceMappingURL=customerRoutes.js.map

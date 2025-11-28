@@ -142,46 +142,58 @@ const SuperUserLogin: React.FC = () => {
     <div className="relative min-h-screen flex items-center justify-center bg-[#f2f4ff] px-4">
 
       {/* TOP RIGHT — Regular Login */}
-      <div className="absolute top-6 right-6">
+      {/*<div className="absolute top-6 right-6 mb-10 md:mb-0">
         <Link href="/auth/login">
           <button className="px-5 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition font-medium text-sm">
             Regular Login
           </button>
         </Link>
-      </div>
+      </div>*/}
 
       {/* MAIN CONTAINER */}
       <div className="w-full max-w-6xl bg-white rounded-3xl shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2">
 
-        {/* LEFT PANEL */}
-         <div className="p-12 bg-gradient-to-b from-[#6b4efc] to-[#386bfd] text-white flex flex-col justify-center">
+        {/* LEFT PANEL - Gradient section (Hidden on mobile) */}
+          <div className="hidden md:flex p-12 bg-gradient-to-b from-[#6b4efc] to-[#386bfd] text-white flex-col justify-center">
 
-          <h1 className="text-4xl font-bold mb-4">Super User Access</h1>
+            <h1 className="text-4xl font-bold mb-4">Super User Access</h1>
 
-          <p className="text-lg opacity-90 mb-6">
-            Manage tenants, settings, billing and elevated controls.
-          </p>
+            <p className="text-lg opacity-90 mb-6">
+              Manage tenants, settings, billing and elevated controls.
+            </p>
 
-          <ul className="space-y-3 text-white text-sm opacity-95">
-            <li>• Multi-tenant access</li>
-            <li>• Elevated permissions</li>
-            <li>• Secure & encrypted login</li>
-          </ul>
+            <ul className="space-y-3 text-white text-sm opacity-95">
+              <li>• Multi-tenant access</li>
+              <li>• Elevated permissions</li>
+              <li>• Secure & encrypted login</li>
+            </ul>
 
-          {/* Illustration */}
-          <div className="mt-10 w-56 h-56 relative mx-auto">
-            <Image
-              src="/superuser-illustration.png"
-              alt="Super user illustration"
-              fill
-              style={{ objectFit: "contain" }}
-            />
+            {/* Illustration */}
+            <div className="mt-10 w-56 h-56 relative mx-auto">
+              <Image
+                src="/superuser-illustration.png"
+                alt="Super user illustration"
+                fill
+                style={{ objectFit: "contain" }}
+              />
+            </div>
+
           </div>
-        </div>
+
 
         {/* RIGHT PANEL */}
         <div className="p-10 md:p-14 flex items-center">
           <div className="w-full">
+
+            {/* INSERT BUTTON HERE */}
+ 
+          <div className="flex justify-end mb-6">
+            <Link href="/auth/login">
+              <button className="px-5 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition font-medium text-sm">
+                Regular Login
+              </button>
+            </Link>
+          </div>
 
             {/* ⭐ LOGO ADDED HERE (same as previous login page) */}
             <div className="flex justify-center mb-6">
@@ -199,7 +211,7 @@ const SuperUserLogin: React.FC = () => {
             </h2>
 
             <p className="mt-2 mb-8 text-center text-sm text-slate-600">
-              Choose a tenant and enter your credentials.
+              Choose a tenant.
             </p>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

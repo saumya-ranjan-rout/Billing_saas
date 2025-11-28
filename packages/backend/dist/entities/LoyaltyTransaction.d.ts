@@ -18,7 +18,7 @@ export declare class LoyaltyTransaction extends TenantAwareEntity {
     customerId: string;
     customer: Customer;
     invoiceId: string;
-    invoice: Invoice;
+    invoice: Invoice | null;
     programId: string;
     program: LoyaltyProgram;
     type: TransactionType;

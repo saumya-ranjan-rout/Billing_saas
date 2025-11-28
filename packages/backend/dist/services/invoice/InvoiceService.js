@@ -185,14 +185,17 @@ class InvoiceService {
         const unitPrice = this.safeNumber(item.unitPrice, 0);
         const discount = this.safeNumber(item.discount, 0);
         const taxRate = this.safeNumber(item.taxRate, 0);
+        const cessRate = this.safeNumber(item.cess_value, 0);
         const itemTotal = quantity * unitPrice;
         const discountAmount = this.roundToTwoDecimals(itemTotal * (discount / 100));
         const taxableAmount = this.roundToTwoDecimals(itemTotal - discountAmount);
         const taxAmount = this.roundToTwoDecimals(taxableAmount * (taxRate / 100));
-        const lineTotal = this.roundToTwoDecimals(taxableAmount + taxAmount);
+        const cessAmount = this.roundToTwoDecimals(taxableAmount * (cessRate / 100));
+        const lineTotal = this.roundToTwoDecimals(taxableAmount + taxAmount + cessAmount);
         return {
             discountAmount,
             taxAmount,
+            cessAmount,
             lineTotal,
             taxableAmount
         };
@@ -249,20 +252,30 @@ class InvoiceService {
                 itemData.unitPrice = this.safeNumber(itemData.unitPrice, 0);
                 itemData.discount = this.safeNumber(itemData.discount, 0);
                 itemData.taxRate = this.safeNumber(itemData.taxRate, 0);
+                if (itemData.has_cess) {
+                    itemData.cess_value = this.safeNumber(itemData.cess_value, 0);
+                }
+                else {
+                    itemData.cess_value = 0;
+                }
                 const itemTotals = this.calculateItemTotals(itemData);
                 subTotal += itemData.unitPrice * itemData.quantity;
                 discountTotal += itemTotals.discountAmount;
-                taxTotal += itemTotals.taxAmount;
+                taxTotal += itemTotals.taxAmount + itemTotals.cessAmount;
                 const existingTax = taxDetails.find(t => t.taxRate === itemData.taxRate);
                 if (existingTax) {
                     existingTax.taxAmount += itemTotals.taxAmount;
+                    existingTax.cessAmount += itemTotals.cessAmount;
                     existingTax.taxableValue += itemTotals.taxableAmount;
                 }
                 else {
                     taxDetails.push({
-                        taxName: `Tax ${itemData.taxRate || 0}%`,
+                        taxName: itemData.tax_type,
                         taxRate: itemData.taxRate || 0,
                         taxAmount: itemTotals.taxAmount,
+                        hasCess: itemData.has_cess,
+                        cessRate: itemData.cess_value || 0,
+                        cessAmount: itemTotals.cessAmount,
                         taxableValue: itemTotals.taxableAmount
                     });
                 }
@@ -294,7 +307,7 @@ class InvoiceService {
             discountTotal = this.roundToTwoDecimals(discountTotal);
             taxTotal = this.roundToTwoDecimals(taxTotal);
             const totalAmount = this.roundToTwoDecimals(subTotal - discountTotal + taxTotal);
-            const DueTotal = this.roundToTwoDecimals(totalAmount - invoiceData.cashBack);
+            const DueTotal = this.roundToTwoDecimals(totalAmount - invoiceData.cashBack - invoiceData.paymentAmount);
             const invoice = this.invoiceRepository.create({
                 invoiceNumber,
                 customerId: invoiceData.customerId,
@@ -302,6 +315,8 @@ class InvoiceService {
                 issueDate: invoiceData.issueDate,
                 dueDate,
                 paymentTerms: invoiceData.paymentTerms,
+                paymentMethod: invoiceData.paymentMethod,
+                amountPaid: invoiceData.paymentAmount,
                 shippingAddress: invoiceData.shippingAddress,
                 billingAddress: invoiceData.billingAddress,
                 termsAndConditions: invoiceData.termsAndConditions,
@@ -320,8 +335,25 @@ class InvoiceService {
             });
             const savedInvoice = await queryRunner.manager.save(invoice);
             if (invoiceData.cashBack > 0) {
-                await this.loyaltyService.redeemCashback(tenantId, invoiceData.customerId, invoiceData.cashBack);
+                await this.loyaltyService.redeemCashbackk(tenantId, invoiceData.customerId, invoiceData.cashBack, savedInvoice.id, queryRunner);
             }
+            const status = invoiceData.paymentAmount === totalAmount
+                ? PaymentInvoice_1.PaymentStatus.COMPLETED
+                : invoiceData.paymentAmount > 0 && invoiceData.paymentAmount < totalAmount
+                    ? PaymentInvoice_1.PaymentStatus.PARTIAL
+                    : PaymentInvoice_1.PaymentStatus.PENDING;
+            const payment = this.paymentRepository.create({
+                invoiceId: savedInvoice.id,
+                amount: invoiceData.paymentAmount,
+                method: invoiceData.paymentMethod,
+                customerId: invoice.customerId,
+                paymentDate: new Date(),
+                notes: invoiceData.notes,
+                status: status,
+                paymentType: PaymentInvoice_1.PaymentType.INCOME,
+                tenantId
+            });
+            const savedPayment = await queryRunner.manager.save(payment);
             customer.creditBalance = this.roundToTwoDecimals(Number(customer.creditBalance) + totalAmount);
             await queryRunner.manager.save(customer);
             await Promise.all([
@@ -390,16 +422,24 @@ class InvoiceService {
                 itemData.unitPrice = this.safeNumber(itemData.unitPrice, 0);
                 itemData.discount = this.safeNumber(itemData.discount, 0);
                 itemData.taxRate = this.safeNumber(itemData.taxRate, 0);
+                if (itemData.has_cess) {
+                    itemData.cess_value = this.safeNumber(itemData.cess_value, 0);
+                }
+                else {
+                    itemData.cess_value = 0;
+                }
                 const itemTotals = this.calculateItemTotals(itemData);
                 const discountAmount = this.safeNumber(itemTotals.discountAmount);
                 const taxAmount = this.safeNumber(itemTotals.taxAmount);
+                const cessAmount = this.safeNumber(itemTotals.cessAmount);
                 const taxableAmount = this.safeNumber(itemTotals.taxableAmount);
                 subTotal += itemData.unitPrice * itemData.quantity;
                 discountTotal += discountAmount;
-                taxTotal += taxAmount;
+                taxTotal += taxAmount + cessAmount;
                 const existingTax = taxDetailsData.find(t => t.taxRate === itemData.taxRate);
                 if (existingTax) {
                     existingTax.taxAmount += taxAmount;
+                    existingTax.cessAmount += itemTotals.cessAmount;
                     existingTax.taxableValue += taxableAmount;
                 }
                 else {
@@ -407,6 +447,9 @@ class InvoiceService {
                         taxName: `Tax ${itemData.taxRate}%`,
                         taxRate: itemData.taxRate,
                         taxAmount,
+                        hasCess: itemData.has_cess,
+                        cessRate: itemData.cess_value || 0,
+                        cessAmount: itemTotals.cessAmount,
                         taxableValue: taxableAmount
                     });
                 }
@@ -422,6 +465,7 @@ class InvoiceService {
                     ...itemTotals,
                     discountAmount,
                     taxAmount,
+                    cessAmount,
                     taxableAmount,
                     tenantId
                 });
@@ -458,12 +502,29 @@ class InvoiceService {
             invoice.taxTotal = taxTotal;
             invoice.discountTotal = discountTotal;
             invoice.totalAmount = totalAmount;
-            invoice.balanceDue = this.roundToTwoDecimals(totalAmount - amountPaid - invoiceData.cashBack);
+            invoice.paymentMethod = invoiceData.paymentMethod,
+                invoice.amountPaid = invoiceData.paymentAmount,
+                invoice.balanceDue = this.roundToTwoDecimals(totalAmount - invoiceData.paymentAmount - invoiceData.cashBack);
             invoice.discountDetails = discountDetails;
             invoice.items = newItems;
             const savedInvoice = await queryRunner.manager.save(invoice);
             if (invoiceData.cashBack > 0) {
-                await this.loyaltyService.redeemCashback(tenantId, invoiceData.customerId, invoiceData.cashBack);
+                await this.loyaltyService.redeemCashbackk(tenantId, invoiceData.customerId, invoiceData.cashBack, savedInvoice.id, queryRunner);
+            }
+            const payment = await this.paymentRepository.findOne({
+                where: {
+                    invoiceId: savedInvoice.id,
+                    tenantId,
+                    customerId: invoiceData.customerId
+                },
+                order: {
+                    createdAt: 'ASC'
+                }
+            });
+            if (payment) {
+                payment.method = invoiceData.paymentMethod;
+                payment.amount = invoiceData.paymentAmount;
+                await queryRunner.manager.save(payment);
             }
             const taxDetailEntities = this.taxDetailRepository.create(taxDetailsData.map(td => ({
                 ...td,
@@ -538,7 +599,7 @@ class InvoiceService {
             }
             const [invoices, total] = await this.invoiceRepository.findAndCount({
                 where: whereConditions,
-                relations: ['customer', 'items', 'items.product'],
+                relations: ['customer', 'items', 'items.product', 'loyaltyTransactions'],
                 skip,
                 take: limit,
                 order: { createdAt: 'DESC' },

@@ -6,11 +6,6 @@
     "auditLog": "E:\\BillingSoftware\\packages\\backend\\logs\\.ec7d171cb8272e43a32497b3edefc65a997e6e46-audit.json",
     "files": [
         {
-            "date": 1762938649972,
-            "name": "E:\\BillingSoftware\\packages\\backend\\logs\\error-2025-11-12.log",
-            "hash": "61ee665e7b9bf0c531898c958afb6013c16705c233db66da919b0cf7265c9d06"
-        },
-        {
             "date": 1763095026284,
             "name": "E:\\BillingSoftware\\packages\\backend\\logs\\error-2025-11-14.log",
             "hash": "67ad2531ddb61b984c16fc26fc2480e0c910989c7b3252c16d7be8b5eb491deb"
@@ -44,6 +39,26 @@
             "date": 1763699421020,
             "name": "E:\\BillingSoftware\\packages\\backend\\logs\\error-2025-11-21.log",
             "hash": "c3a12cbdc7dcdd052fac965bec3c6e328960cf57723116e1b60219311bb9aa75"
+        },
+        {
+            "date": 1764044594334,
+            "name": "E:\\BillingSoftware\\packages\\backend\\logs\\error-2025-11-25.log",
+            "hash": "aeb415c76da291e393f76dad670b9aa4fc38f069c4024703438630f604306743"
+        },
+        {
+            "date": 1764128858967,
+            "name": "E:\\BillingSoftware\\packages\\backend\\logs\\error-2025-11-26.log",
+            "hash": "2cf05f3578d4b8735687ea624ff0ddad142163fdd550b9f7d2e5b801218cae32"
+        },
+        {
+            "date": 1764218034994,
+            "name": "E:\\BillingSoftware\\packages\\backend\\logs\\error-2025-11-27.log",
+            "hash": "f3fe5e18af6edef598a129670dce8a1b97eb01833927fce481afe4c3eedb2ccd"
+        },
+        {
+            "date": 1764304053631,
+            "name": "E:\\BillingSoftware\\packages\\backend\\logs\\error-2025-11-28.log",
+            "hash": "c1e23d71352f32ee96265bdec0d19d57066f79fe7cb68fe6a13dfb5d25f19a0f"
         }
     ],
     "hashType": "sha256"

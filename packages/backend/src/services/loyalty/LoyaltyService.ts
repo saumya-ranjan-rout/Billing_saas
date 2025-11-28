@@ -118,113 +118,324 @@ export class LoyaltyService {
             return { cashbackAmount: 0, percentage: 0 }; 
         } 
     } 
+ async processCustomerForLoyalty(amount: number,customerId: string, tenantId: string): Promise<void> {
+        const queryRunner = AppDataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+ 
+        try {
+ 
+            const { cashbackAmount, percentage } = await this.calculateCashback(
+                tenantId,
+                customerId,
+                amount
+            );
+ 
+            if (cashbackAmount > 0) {
+                // Create loyalty transaction
+ const transaction = this.transactionRepository.create({
+  customerId,
+  type: TransactionType.EARN,
+  status: TransactionStatus.COMPLETED,
+  cashbackAmount,
+  orderAmount: amount,
+  effectivePercentage: percentage,
+  description: `Cashback earned on payment ${amount}`,
+  tenantId
+});
 
-
-  async processInvoiceForLoyalty(invoiceId: string): Promise<void> { 
-        const queryRunner = AppDataSource.createQueryRunner(); 
-        await queryRunner.connect(); 
-        await queryRunner.startTransaction(); 
-
-        try { 
-
-            //srr
-          const check = await this.transactionRepository.findOne({
-            where: { invoiceId },
-        });
-
-   
-    if (check) {
-      await queryRunner.release();
-        return;
-               }
-//srr
-
-            const invoice = await this.invoiceRepository.findOne({ 
-                where: { id: invoiceId }, 
-                relations: ['customer'] 
-            }); 
-
-            if (!invoice || !invoice.customer) { 
-                throw new Error('Invoice or customer not found'); 
-            }
-
-            // Validate invoice amount with detailed logging
-            logger.info(`Processing loyalty for invoice: ${invoiceId}, totalAmount: ${invoice.totalAmount}, type: ${typeof invoice.totalAmount}`);
-
-            const { cashbackAmount, percentage } = await this.calculateCashback( 
-                invoice.tenantId, 
-                invoice.customer.id, 
-                invoice.totalAmount 
-            ); 
-
-            if (cashbackAmount > 0) { 
-                // Create loyalty transaction 
-                const transaction = this.transactionRepository.create({ 
-                    customerId: invoice.customer.id, 
-                    invoiceId: invoice.id, 
-                    type: TransactionType.EARN, 
-                    status: TransactionStatus.COMPLETED, 
-                    cashbackAmount: cashbackAmount,
-                    orderAmount: this.safeNumber(invoice.totalAmount),
-                    effectivePercentage: percentage, 
-                    description: `Cashback earned on invoice ${invoice.invoiceNumber}`, 
-                    tenantId: invoice.tenantId 
-                }); 
-
-                await queryRunner.manager.save(transaction); 
-
-                // Update customer loyalty record 
-                let customerLoyalty = await this.customerLoyaltyRepository.findOne({ 
-                    where: { customerId: invoice.customer.id, tenantId: invoice.tenantId } 
-                }); 
-
-                if (!customerLoyalty) { 
-                    customerLoyalty = this.customerLoyaltyRepository.create({ 
-                        customerId: invoice.customer.id, 
-                        tenantId: invoice.tenantId, 
-                        totalAmountSpent: 0, 
+ 
+                await queryRunner.manager.save(transaction);
+ 
+                // Update customer loyalty record
+                let customerLoyalty = await this.customerLoyaltyRepository.findOne({
+                    where: { customerId: customerId, tenantId: tenantId }
+                });
+ 
+                if (!customerLoyalty) {
+                    customerLoyalty = this.customerLoyaltyRepository.create({
+                        customerId: customerId,
+                        tenantId: tenantId,
+                        totalAmountSpent: 0,
                         totalOrders: 0,
                         availableCashback: 0,
                         totalCashbackEarned: 0,
                         currentTier: LoyaltyTier.BRONZE,
                         tierBenefits: {},
                         lastActivityDate: new Date()
-                    }); 
-                } 
-
+                    });
+                }
+ 
                 // Use safe addition for all numeric operations
                 const currentTotalSpent = this.safeNumber(customerLoyalty.totalAmountSpent);
                 const currentTotalOrders = this.safeNumber(customerLoyalty.totalOrders);
                 const currentAvailableCashback = this.safeNumber(customerLoyalty.availableCashback);
                 const currentTotalCashbackEarned = this.safeNumber(customerLoyalty.totalCashbackEarned);
+ 
 
+                customerLoyalty.availableCashback = this.safeAdd(currentAvailableCashback, cashbackAmount);
+                customerLoyalty.totalCashbackEarned = this.safeAdd(currentTotalCashbackEarned, cashbackAmount);
+                customerLoyalty.lastActivityDate = new Date();
+ 
+                // Log the values before saving
+                logger.info(`Customer loyalty update - totalSpent: ${customerLoyalty.totalAmountSpent}, availableCashback: ${customerLoyalty.availableCashback}, totalCashbackEarned: ${customerLoyalty.totalCashbackEarned}`);
+ 
+                // Update tier based on spending
+                await this.updateCustomerTier(customerLoyalty);
+                await queryRunner.manager.save(customerLoyalty);
+ 
+                logger.info(`Processed cashback of ₹${cashbackAmount} for customer ${customerId}`);
+            } else {
+                logger.info(`No cashback earned for payment ${amount} - amount below threshold`);
+            }
+ 
+            await queryRunner.commitTransaction();
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            logger.error('Invoice loyalty processing error:', error);
+            throw error;
+        } finally {
+            await queryRunner.release();
+        }
+    }
+ async processInvoiceForLoyalty(invoiceId: string): Promise<void> {
+        const queryRunner = AppDataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+ 
+        try {
+ 
+            //srr
+          const check = await this.transactionRepository.findOne({
+            where: { invoiceId },
+        });
+ 
+   
+    if (check) {
+      await queryRunner.release();
+        return;
+               }
+//srr
+ 
+            const invoice = await this.invoiceRepository.findOne({
+                where: { id: invoiceId },
+                relations: ['customer']
+            });
+ 
+            if (!invoice || !invoice.customer) {
+                throw new Error('Invoice or customer not found');
+            }
+ 
+            // Validate invoice amount with detailed logging
+            logger.info(`Processing loyalty for invoice: ${invoiceId}, totalAmount: ${invoice.totalAmount}, type: ${typeof invoice.totalAmount}`);
+ 
+            const { cashbackAmount, percentage } = await this.calculateCashback(
+                invoice.tenantId,
+                invoice.customer.id,
+                invoice.amountPaid
+            );
+ 
+            if (cashbackAmount > 0) {
+                // Create loyalty transaction
+                const transaction = this.transactionRepository.create({
+                    customerId: invoice.customer.id,
+                    invoiceId: invoice.id,
+                    type: TransactionType.EARN,
+                    status: TransactionStatus.COMPLETED,
+                    cashbackAmount: cashbackAmount,
+                    orderAmount: this.safeNumber(invoice.totalAmount),
+                    effectivePercentage: percentage,
+                    description: `Cashback earned on invoice ${invoice.invoiceNumber}`,
+                    tenantId: invoice.tenantId
+                });
+ 
+                await queryRunner.manager.save(transaction);
+ 
+                // Update customer loyalty record
+                let customerLoyalty = await this.customerLoyaltyRepository.findOne({
+                    where: { customerId: invoice.customer.id, tenantId: invoice.tenantId }
+                });
+ 
+                if (!customerLoyalty) {
+                    customerLoyalty = this.customerLoyaltyRepository.create({
+                        customerId: invoice.customer.id,
+                        tenantId: invoice.tenantId,
+                        totalAmountSpent: 0,
+                        totalOrders: 0,
+                        availableCashback: 0,
+                        totalCashbackEarned: 0,
+                        currentTier: LoyaltyTier.BRONZE,
+                        tierBenefits: {},
+                        lastActivityDate: new Date()
+                    });
+                }
+ 
+                // Use safe addition for all numeric operations
+                const currentTotalSpent = this.safeNumber(customerLoyalty.totalAmountSpent);
+                const currentTotalOrders = this.safeNumber(customerLoyalty.totalOrders);
+                const currentAvailableCashback = this.safeNumber(customerLoyalty.availableCashback);
+                const currentTotalCashbackEarned = this.safeNumber(customerLoyalty.totalCashbackEarned);
+ 
                 customerLoyalty.totalAmountSpent = this.safeAdd(currentTotalSpent, invoice.totalAmount);
                 customerLoyalty.totalOrders = currentTotalOrders + 1;
                 customerLoyalty.availableCashback = this.safeAdd(currentAvailableCashback, cashbackAmount);
                 customerLoyalty.totalCashbackEarned = this.safeAdd(currentTotalCashbackEarned, cashbackAmount);
-                customerLoyalty.lastActivityDate = new Date(); 
-
+                customerLoyalty.lastActivityDate = new Date();
+ 
                 // Log the values before saving
                 logger.info(`Customer loyalty update - totalSpent: ${customerLoyalty.totalAmountSpent}, availableCashback: ${customerLoyalty.availableCashback}, totalCashbackEarned: ${customerLoyalty.totalCashbackEarned}`);
-
-                // Update tier based on spending 
-                await this.updateCustomerTier(customerLoyalty); 
-                await queryRunner.manager.save(customerLoyalty); 
-
-                logger.info(`Processed cashback of ₹${cashbackAmount} for customer ${invoice.customer.id}`); 
+ 
+                // Update tier based on spending
+                await this.updateCustomerTier(customerLoyalty);
+                await queryRunner.manager.save(customerLoyalty);
+ 
+                logger.info(`Processed cashback of ₹${cashbackAmount} for customer ${invoice.customer.id}`);
             } else {
                 logger.info(`No cashback earned for invoice ${invoiceId} - amount below threshold`);
             }
+ 
+            await queryRunner.commitTransaction();
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            logger.error('Invoice loyalty processing error:', error);
+            throw error;
+        } finally {
+            await queryRunner.release();
+        }
+    }
+ 
+ 
 
-            await queryRunner.commitTransaction(); 
-        } catch (error) { 
-            await queryRunner.rollbackTransaction(); 
-            logger.error('Invoice loyalty processing error:', error); 
-            throw error; 
-        } finally { 
-            await queryRunner.release(); 
-        } 
-    } 
+
+//   async processInvoiceForLoyalty(invoiceId: string): Promise<void> { 
+//     console.log(`Processing invoice for loyalty: ${invoiceId}`);
+//         const queryRunner = AppDataSource.createQueryRunner(); 
+//         await queryRunner.connect(); 
+//         await queryRunner.startTransaction(); 
+
+//         try { 
+
+//             //srr
+//           const check = await this.transactionRepository.findOne({
+//             where: { invoiceId,type: TransactionType.EARN },
+//         }); 
+// //srr
+// console.log("check",check);
+//             const invoice = await this.invoiceRepository.findOne({ 
+//                 where: { id: invoiceId }, 
+//                 relations: ['customer'] 
+//             }); 
+
+//             if (!invoice || !invoice.customer) { 
+//                 throw new Error('Invoice or customer not found'); 
+//             }
+
+
+
+// if (check) {
+  
+//   // Remove old transaction
+//   await queryRunner.manager.remove(check);
+
+//   // Adjust customer cashback balance back
+//   const customerLoyaltyy = await this.customerLoyaltyRepository.findOne({
+//     where: { customerId: invoice.customer.id, tenantId: invoice.tenantId }
+//   });
+//   console.log("customerLoyaltyy",customerLoyaltyy);
+
+//   if (customerLoyaltyy) {
+//      const currentTotalOrders = this.safeNumber(customerLoyaltyy.totalOrders);
+
+//     customerLoyaltyy.availableCashback = this.safeAdd(customerLoyaltyy.availableCashback, -check.cashbackAmount);
+//     customerLoyaltyy.totalCashbackEarned = this.safeAdd(customerLoyaltyy.totalCashbackEarned, -check.cashbackAmount);
+//     customerLoyaltyy.totalOrders = currentTotalOrders - 1;
+//     customerLoyaltyy.lastActivityDate = new Date();
+
+//     await queryRunner.manager.save(customerLoyaltyy);
+//   }
+// }
+//  // Validate invoice amount with detailed logging
+//              logger.info(`Processing loyalty for invoice: ${invoiceId}, totalAmount: ${invoice.totalAmount}, type: ${typeof invoice.totalAmount}`);
+
+//             const { cashbackAmount, percentage } = await this.calculateCashback( 
+//                 invoice.tenantId, 
+//                 invoice.customer.id, 
+//                 invoice.amountPaid 
+//             ); 
+
+
+
+// console.log("cashbackAmount",cashbackAmount);
+// console.log("percentage",percentage);
+
+//              if (cashbackAmount > 0) { 
+//             //     // Create loyalty transaction 
+//                 const transaction = this.transactionRepository.create({ 
+//                     customerId: invoice.customer.id, 
+//                     invoiceId: invoice.id, 
+//                     type: TransactionType.EARN, 
+//                     status: TransactionStatus.COMPLETED, 
+//                     cashbackAmount: cashbackAmount,
+//                     orderAmount: this.safeNumber(invoice.totalAmount),
+//                     effectivePercentage: percentage, 
+//                     description: `Cashback earned on invoice ${invoice.invoiceNumber}`, 
+//                     tenantId: invoice.tenantId 
+//                 }); 
+
+//                 await queryRunner.manager.save(transaction); 
+
+//             //     // Update customer loyalty record 
+//                 let customerLoyalty = await this.customerLoyaltyRepository.findOne({ 
+//                     where: { customerId: invoice.customer.id, tenantId: invoice.tenantId } 
+//                 }); 
+
+//                  if (!customerLoyalty) { 
+//                     customerLoyalty = this.customerLoyaltyRepository.create({ 
+//                         customerId: invoice.customer.id, 
+//                         tenantId: invoice.tenantId, 
+//                         totalAmountSpent: 0, 
+//                         totalOrders: 0,
+//                         availableCashback: 0,
+//                         totalCashbackEarned: 0,
+//                         currentTier: LoyaltyTier.BRONZE,
+//                         tierBenefits: {},
+//                         lastActivityDate: new Date()
+//                     }); 
+//                  } 
+
+//             //     // Use safe addition for all numeric operations
+//             //     const currentTotalSpent = this.safeNumber(customerLoyalty.totalAmountSpent);
+//             //     const currentTotalOrders = this.safeNumber(customerLoyalty.totalOrders);
+//             //     const currentAvailableCashback = this.safeNumber(customerLoyalty.availableCashback);
+//             //     const currentTotalCashbackEarned = this.safeNumber(customerLoyalty.totalCashbackEarned);
+
+//             //     customerLoyalty.totalAmountSpent = this.safeAdd(currentTotalSpent, invoice.totalAmount);
+//             //     customerLoyalty.totalOrders = currentTotalOrders + 1;
+//             //     customerLoyalty.availableCashback = this.safeAdd(currentAvailableCashback, cashbackAmount);
+//             //     customerLoyalty.totalCashbackEarned = this.safeAdd(currentTotalCashbackEarned, cashbackAmount);
+//             //     customerLoyalty.lastActivityDate = new Date(); 
+
+//             //     // Log the values before saving
+//               //   logger.info(`Customer loyalty update - totalSpent: ${customerLoyalty.totalAmountSpent}, availableCashback: ${customerLoyalty.availableCashback}, totalCashbackEarned: ${customerLoyalty.totalCashbackEarned}`);
+
+//             //     // Update tier based on spending 
+//             //     await this.updateCustomerTier(customerLoyalty); 
+//             //     await queryRunner.manager.save(customerLoyalty); 
+
+//                 logger.info(`Processed cashback of ₹${cashbackAmount} for customer ${invoice.customer.id}`); 
+//             } else {
+//                 logger.info(`No cashback earned for invoice ${invoiceId} - amount below threshold`);
+//             }
+
+//             await queryRunner.commitTransaction(); 
+//         } catch (error) { 
+//             await queryRunner.rollbackTransaction(); 
+//             logger.error('Invoice loyalty processing error:', error); 
+//             throw error; 
+//         } finally { 
+//             await queryRunner.release(); 
+//         } 
+//     } 
 
        async updateCustomerTier(customerLoyalty: CustomerLoyalty): Promise<void> { 
         const tiers = [ 
@@ -255,6 +466,60 @@ export class LoyaltyService {
             customerLoyalty.tierExpiryDate.setFullYear(customerLoyalty.tierExpiryDate.getFullYear() + 1);
         } 
     } 
+async redeemCashbackk( 
+  tenantId: string, 
+  customerId: string, 
+  redeemAmount: number, 
+  invoiceId: string,
+  queryRunner: any
+): Promise<LoyaltyTransaction> {
+
+  console.log(`Redeeming cashback of ${redeemAmount} for customer ${customerId} for invoice ${invoiceId}`);
+
+    const existingTransaction = await queryRunner.manager.findOne(
+    this.transactionRepository.target,
+    {
+      where: {
+        tenantId,
+        customerId,
+        invoiceId,
+        type: TransactionType.REDEEM
+      }
+    }
+  );
+
+  if (existingTransaction) {
+    console.log("Redeem already exists for this invoice → skipping...");
+    return existingTransaction; // or return null if you don't want to return the transaction
+  }
+
+  
+  const customerLoyalty = await queryRunner.manager.findOne(this.customerLoyaltyRepository.target, {
+    where: { customerId, tenantId }
+  });
+
+  if (!customerLoyalty || customerLoyalty.availableCashback < redeemAmount) { 
+    throw new Error('Insufficient cashback balance'); 
+  }
+
+  const transaction = this.transactionRepository.create({ 
+    customerId, 
+    invoiceId, 
+    type: TransactionType.REDEEM, 
+    status: TransactionStatus.COMPLETED, 
+    cashbackAmount: -redeemAmount,
+    description: `Cashback redemption for invoice ${invoiceId}`, 
+    tenantId 
+  }); 
+
+  await queryRunner.manager.save(transaction);
+
+  customerLoyalty.availableCashback -= redeemAmount;
+  customerLoyalty.lastActivityDate = new Date();
+  await queryRunner.manager.save(customerLoyalty);
+
+  return transaction;
+}
 
        async redeemCashback( 
         tenantId: string, 
@@ -262,6 +527,8 @@ export class LoyaltyService {
         redeemAmount: number, 
         invoiceId?: string 
     ): Promise<LoyaltyTransaction> { 
+
+        console.log(`Redeeming cashback of ${redeemAmount} for customer ${customerId}  for invoice ${invoiceId}, tenantId: ${tenantId}`);
         const queryRunner = AppDataSource.createQueryRunner(); 
         await queryRunner.connect(); 
         await queryRunner.startTransaction(); 
@@ -313,7 +580,7 @@ export class LoyaltyService {
         }); 
 
         const transactions = await this.transactionRepository.find({ 
-            where: { customerId, tenantId }, 
+            where: { customerId, tenantId, type: TransactionType.EARN }, 
             order: { createdAt: 'DESC' }, 
             take: 10 
         }); 

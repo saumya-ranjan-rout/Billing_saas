@@ -3,7 +3,7 @@ import { AppDataSource } from '../../config/database';
 import { Invoice, InvoiceStatus, InvoiceType, PaymentTerms } from '../../entities/Invoice';
 import { Setting } from '../../entities/Setting';
 import { InvoiceItem } from '../../entities/InvoiceItem';
-import { PaymentInvoice, PaymentMethod, PaymentStatus } from '../../entities/PaymentInvoice';
+import { PaymentInvoice, PaymentMethod, PaymentStatus,PaymentType } from '../../entities/PaymentInvoice';
 import { Customer } from '../../entities/Customer';
 import { Product, ProductType } from '../../entities/Product';
 import logger from '../../utils/logger';
@@ -429,7 +429,7 @@ private calculateDueDate(issueDate: Date, paymentTerms: PaymentTerms): Date {
       discountTotal = this.roundToTwoDecimals(discountTotal);
       taxTotal = this.roundToTwoDecimals(taxTotal);
       const totalAmount = this.roundToTwoDecimals(subTotal - discountTotal + taxTotal);
-      const DueTotal = this.roundToTwoDecimals(totalAmount - invoiceData.cashBack);
+      const DueTotal = this.roundToTwoDecimals(totalAmount - invoiceData.cashBack-invoiceData.paymentAmount);
 
       const invoice = this.invoiceRepository.create({
         invoiceNumber,
@@ -438,6 +438,8 @@ private calculateDueDate(issueDate: Date, paymentTerms: PaymentTerms): Date {
         issueDate: invoiceData.issueDate,
         dueDate,
         paymentTerms: invoiceData.paymentTerms,
+        paymentMethod: invoiceData.paymentMethod,
+        amountPaid: invoiceData.paymentAmount,
         shippingAddress: invoiceData.shippingAddress,
         billingAddress: invoiceData.billingAddress,
         termsAndConditions: invoiceData.termsAndConditions,
@@ -456,9 +458,37 @@ private calculateDueDate(issueDate: Date, paymentTerms: PaymentTerms): Date {
       });
 
       const savedInvoice = await queryRunner.manager.save(invoice);
-      if(invoiceData.cashBack > 0){
-          await this.loyaltyService.redeemCashback(tenantId,invoiceData.customerId,invoiceData.cashBack);
-      }
+if (invoiceData.cashBack > 0) {
+  await this.loyaltyService.redeemCashbackk(
+    tenantId,
+    invoiceData.customerId,
+    invoiceData.cashBack,
+    savedInvoice.id,
+    queryRunner   // ▼ USE SAME DB TRANSACTION
+  );
+}
+
+
+const status =
+  invoiceData.paymentAmount === totalAmount
+    ? PaymentStatus.COMPLETED
+    : invoiceData.paymentAmount > 0 && invoiceData.paymentAmount < totalAmount
+      ? PaymentStatus.PARTIAL
+      : PaymentStatus.PENDING;
+
+        const payment = this.paymentRepository.create({
+      invoiceId: savedInvoice.id,
+        amount: invoiceData.paymentAmount,
+        method: invoiceData.paymentMethod,
+        customerId: invoice.customerId,
+        paymentDate: new Date(),
+        notes: invoiceData.notes,
+        status: status,
+        paymentType: PaymentType.INCOME,
+        tenantId
+      });
+
+      const savedPayment = await queryRunner.manager.save(payment);
 
       // Update customer credit balance
       customer.creditBalance = this.roundToTwoDecimals(Number(customer.creditBalance) + totalAmount);
@@ -656,15 +686,41 @@ this.cacheService.invalidatePattern(`cache:${tenantId}:/api/invoices*`),
       invoice.taxTotal = taxTotal;
       invoice.discountTotal = discountTotal;
       invoice.totalAmount = totalAmount;
-      invoice.balanceDue = this.roundToTwoDecimals(totalAmount - amountPaid-invoiceData.cashBack);
+          invoice.paymentMethod= invoiceData.paymentMethod,
+        invoice.amountPaid= invoiceData.paymentAmount,
+      invoice.balanceDue = this.roundToTwoDecimals(totalAmount - invoiceData.paymentAmount-invoiceData.cashBack);
       invoice.discountDetails = discountDetails;
       invoice.items = newItems;
 
       const savedInvoice = await queryRunner.manager.save(invoice);
-    if(invoiceData.cashBack > 0){
-          await this.loyaltyService.redeemCashback(tenantId,invoiceData.customerId,invoiceData.cashBack);
-      }
+if (invoiceData.cashBack > 0) {
+  await this.loyaltyService.redeemCashbackk(
+    tenantId,
+    invoiceData.customerId,
+    invoiceData.cashBack,
+    savedInvoice.id,
+    queryRunner   // ▼ USE SAME DB TRANSACTION
+  );
+}
+
       
+//find one form paymentrepository
+  const payment = await this.paymentRepository.findOne({
+  where: {
+    invoiceId: savedInvoice.id,
+    tenantId,
+    customerId: invoiceData.customerId
+  },
+  order: {
+    createdAt: 'ASC'  // earliest row first
+  }
+});
+      if (payment) {
+        payment.method = invoiceData.paymentMethod;
+        payment.amount = invoiceData.paymentAmount;
+        await queryRunner.manager.save(payment);
+      }
+
 
       // Create new tax details with valid invoiceId
       const taxDetailEntities: TaxDetail[] = this.taxDetailRepository.create(
@@ -772,7 +828,7 @@ this.cacheService.invalidatePattern(`cache:${tenantId}:/api/invoices*`),
 
       const [invoices, total] = await this.invoiceRepository.findAndCount({
         where: whereConditions,
-        relations: ['customer', 'items', 'items.product'],
+        relations: ['customer', 'items', 'items.product','loyaltyTransactions'],
         skip,
         take: limit,
         order: { createdAt: 'DESC' },
