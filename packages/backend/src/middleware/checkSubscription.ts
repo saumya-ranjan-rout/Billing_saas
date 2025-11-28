@@ -21,6 +21,7 @@ export const checkSubscription = async (req: Request, res: Response, next: NextF
       },
       order: { endDate: 'DESC' },
     });
+    //console.log('sub', sub);
 
     if (!sub) {
       return res.status(403).json({ message: 'Your subscription has expired or not found.' });

@@ -92,6 +92,11 @@ router.post(
   rbacMiddleware(["create:customers"]),
   customerController.createPayment.bind(customerController)
 );
+router.get(
+  "/:id/paymentHistory",
+  rbacMiddleware(["read:customers"]),
+  customerController.getPaymentHistory.bind(customerController)
+);
 
 export default router;
 

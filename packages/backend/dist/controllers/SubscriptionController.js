@@ -19,8 +19,9 @@ class SubscriptionController {
                 return res.status(401).json({ error: 'Unauthorized' });
             }
             const userId = req.user.id;
+            const user_role = req.user.role;
             const tenantId = req.user.tenantId;
-            const plans = await this.subscriptionService.getActivePlans();
+            const plans = await this.subscriptionService.getActivePlans(user_role);
             const history = await this.subscriptionService.getUserSubscriptionHistory(userId, tenantId);
             const today = new Date();
             const currentPlan = history.find((s) => {

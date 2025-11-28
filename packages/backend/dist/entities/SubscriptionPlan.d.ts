@@ -25,6 +25,7 @@ export declare class SubscriptionPlan extends TenantAwareEntity {
     isActive: boolean;
     trialDays: number;
     validityDays: number;
+    access: number;
     subscriptions: Subscription[];
 }
 //# sourceMappingURL=SubscriptionPlan.d.ts.map

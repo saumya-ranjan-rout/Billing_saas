@@ -392,7 +392,22 @@ async createPayment(req: Request, res: Response) {
 }
 
 
+async getPaymentHistory(req: Request, res: Response) {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
 
+    const { id } = req.params;
+    const tenantId = req.user.tenantId;
+
+    const history = await this.customerService.getCustomerPaymentHistory(tenantId, id);
+//console.log(balance);
+   return res.json(history);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+}
 
 // async switchTenant(req: Request, res: Response) {
 //   try {

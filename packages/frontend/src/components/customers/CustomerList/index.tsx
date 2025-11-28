@@ -11,6 +11,7 @@ import { Pagination } from '@/components/ui/Pagination';
 import { setCredentials, setError, selectAuthError } from "../../../features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import PaymentModal from "../PaymentModal";
+import PaymentHistoryModal from '../PaymentHistoryModal';
 interface CustomerListProps {
   onEditCustomer: (customer: Customer) => void;
   refreshTrigger?: number; // new
@@ -25,6 +26,10 @@ interface User {
 const CustomerList: React.FC<CustomerListProps> = ({ onEditCustomer, refreshTrigger }) => {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [paymentModal, setPaymentModal] = useState<{ open: boolean; customer: any | null }>({
+  open: false,
+  customer: null
+});
+const [historyModal, setHistoryModal] = useState<{ open: boolean; customer: any | null }>({
   open: false,
   customer: null
 });
@@ -70,7 +75,7 @@ const [filters, setFilters] = useState({
       //   `/api/customers?page=${pagination.page}&limit=${pagination.limit}`
       // );
 
-      //console.log("customers",response.data);
+    //  console.log("customers",response.data);
       setCustomers(response.data);
       setPagination(response.pagination);
     } catch (error: any) {
@@ -223,17 +228,31 @@ const [filters, setFilters] = useState({
     {
       key: 'name',
       header: 'Name',
+      // render: (value: string, row: Customer) => (
+      //   <div className="flex items-center">
+      //     <div className="flex-shrink-0 h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+      //       {value.charAt(0)}
+      //     </div>
+      //     <div className="ml-4">
+      //       <div className="font-medium text-gray-900">{value}</div>
+      //       <div className="text-sm text-gray-500">{row.email}</div>
+      //     </div>
+      //   </div>
+      // )
       render: (value: string, row: Customer) => (
-        <div className="flex items-center">
-          <div className="flex-shrink-0 h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
-            {value.charAt(0)}
-          </div>
-          <div className="ml-4">
-            <div className="font-medium text-gray-900">{value}</div>
-            <div className="text-sm text-gray-500">{row.email}</div>
-          </div>
-        </div>
-      )
+  <div className="flex items-center cursor-pointer"
+       onClick={() => setHistoryModal({ open: true, customer: row })}>
+    <div className="flex-shrink-0 h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+      {value.charAt(0)}
+    </div>
+    <div className="ml-4">
+      <div className="font-bold text-gray-900 hover:text-blue-600 cursor-pointer">
+  {value}
+</div>
+      <div className="text-sm text-gray-500">{row.email}</div>
+    </div>
+  </div>
+)
     },
     { key: 'phone', header: 'Phone' },
     {
@@ -406,6 +425,13 @@ const [filters, setFilters] = useState({
       fetchCustomers(); 
       setPaymentModal({ open: false, customer: null });
     }}
+  />
+)}
+
+{historyModal.open && (
+  <PaymentHistoryModal
+    customer={historyModal.customer}
+    onClose={() => setHistoryModal({ open: false, customer: null })}
   />
 )}
     </div>

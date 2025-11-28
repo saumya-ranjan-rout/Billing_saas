@@ -81,6 +81,10 @@ __decorate([
     __metadata("design:type", Number)
 ], SubscriptionPlan.prototype, "validityDays", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ type: 'integer', default: 0 }),
+    __metadata("design:type", Number)
+], SubscriptionPlan.prototype, "access", void 0);
+__decorate([
     (0, typeorm_1.OneToMany)(() => Subscription_1.Subscription, subscription => subscription.plan),
     __metadata("design:type", Array)
 ], SubscriptionPlan.prototype, "subscriptions", void 0);

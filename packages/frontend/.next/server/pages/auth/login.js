@@ -13,16 +13,6 @@ exports.id = "pages/auth/login";
 exports.ids = ["pages/auth/login"];
 exports.modules = {
 
-/***/ "__barrel_optimize__?names=X!=!./node_modules/lucide-react/dist/esm/lucide-react.mjs":
-/*!*******************************************************************************************!*\
-  !*** __barrel_optimize__?names=X!=!./node_modules/lucide-react/dist/esm/lucide-react.mjs ***!
-  \*******************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   X: () => (/* reexport safe */ _icons_x_mjs__WEBPACK_IMPORTED_MODULE_0__[\"default\"])\n/* harmony export */ });\n/* harmony import */ var _icons_x_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./icons/x.mjs */ \"./node_modules/lucide-react/dist/esm/icons/x.mjs\");\n/**\n * lucide-react v0.0.1 - ISC\n */ \n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiX19iYXJyZWxfb3B0aW1pemVfXz9uYW1lcz1YIT0hLi9ub2RlX21vZHVsZXMvbHVjaWRlLXJlYWN0L2Rpc3QvZXNtL2x1Y2lkZS1yZWFjdC5tanMiLCJtYXBwaW5ncyI6Ijs7Ozs7QUFBQTtBQUNBO0FBQ0EiLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly9AYmlsbGluZy1zYWFzL2Zyb250ZW5kLy4vbm9kZV9tb2R1bGVzL2x1Y2lkZS1yZWFjdC9kaXN0L2VzbS9sdWNpZGUtcmVhY3QubWpzPzQ4NGMiXSwic291cmNlc0NvbnRlbnQiOlsiLyoqXG4gKiBsdWNpZGUtcmVhY3QgdjAuMC4xIC0gSVNDXG4gKi8gXG5leHBvcnQgeyBkZWZhdWx0IGFzIFggfSBmcm9tIFwiLi9pY29ucy94Lm1qc1wiIl0sIm5hbWVzIjpbXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///__barrel_optimize__?names=X!=!./node_modules/lucide-react/dist/esm/lucide-react.mjs\n");
-
-/***/ }),
-
 /***/ "../../node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js?kind=PAGES&page=%2Fauth%2Flogin&preferredRegion=&absolutePagePath=.%2Fsrc%5Cpages%5Cauth%5Clogin.tsx&absoluteAppPath=private-next-pages%2F_app&absoluteDocumentPath=private-next-pages%2F_document&middlewareConfigBase64=e30%3D!":
 /*!***********************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ../../node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js?kind=PAGES&page=%2Fauth%2Flogin&preferredRegion=&absolutePagePath=.%2Fsrc%5Cpages%5Cauth%5Clogin.tsx&absoluteAppPath=private-next-pages%2F_app&absoluteDocumentPath=private-next-pages%2F_document&middlewareConfigBase64=e30%3D! ***!

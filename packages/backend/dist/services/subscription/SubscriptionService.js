@@ -34,9 +34,13 @@ class SubscriptionService {
         }
         return true;
     }
-    async getActivePlans() {
+    async getActivePlans(role) {
+        const accessList = role === 'professional' ? [0, 2] : [0, 1];
         return this.planRepository.find({
-            where: { isActive: true },
+            where: {
+                isActive: true,
+                access: (0, typeorm_1.In)(accessList),
+            },
             order: { price: 'ASC' },
         });
     }

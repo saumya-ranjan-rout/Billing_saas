@@ -9,7 +9,7 @@ export declare class SubscriptionService {
     private userRepository;
     constructor();
     initializeDefaultPlans(): Promise<boolean>;
-    getActivePlans(): Promise<SubscriptionPlan[]>;
+    getActivePlans(role: string): Promise<SubscriptionPlan[]>;
     createSubscription(userId: string, planId: string, paymentGateway?: PaymentGateway): Promise<{
         subscription: Subscription;
         payment: Payment;

@@ -1,4 +1,4 @@
-import { Repository, ILike, IsNull,MoreThanOrEqual,LessThanOrEqual } from 'typeorm';
+import { Repository, ILike, IsNull,MoreThanOrEqual,LessThanOrEqual,In } from 'typeorm';
 import { AppDataSource } from '../../config/database';
 import { Customer } from '../../entities/Customer';
 import { User ,UserRole ,UserStatus} from '../../entities/User';
@@ -88,6 +88,17 @@ export class CustomerService {
     totalPaid,
     balance: totalDue - totalPaid
   };
+}
+
+ async getCustomerPaymentHistory(tenantId: string, customerId: string) {
+  // console.log("customerId",customerId);
+  // console.log("tenantId",tenantId);
+ const PaymentHistory = await this.paymentRepository.find({
+    where: { tenantId, customerId, deletedAt: IsNull() },
+    order: { createdAt: 'DESC' },
+  });
+//console.log("PaymentHistory",PaymentHistory);
+  return {PaymentHistory};
 }
 
   //async createCustomer(tenantId: string, customerData: any): Promise<Customer> {
@@ -276,6 +287,7 @@ if (balanceNum === 0 && totalDueNum > 0) {
     const [, count] = await this.subscriptionRepository.findAndCount({
       where: {
         tenantId: tenantIdToCheck,
+        status: In(['active', 'trial']),
         endDate: MoreThanOrEqual(today),
       },
     });

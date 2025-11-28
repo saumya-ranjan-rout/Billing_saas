@@ -200,6 +200,7 @@ class CustomerService {
                     const [, count] = await this.subscriptionRepository.findAndCount({
                         where: {
                             tenantId: tenantIdToCheck,
+                            status: (0, typeorm_1.In)(['active', 'trial']),
                             endDate: (0, typeorm_1.MoreThanOrEqual)(today),
                         },
                     });
