@@ -28,6 +28,9 @@ export declare class CustomerService {
         totalPaid: number;
         balance: number;
     }>;
+    getCustomerPaymentHistory(tenantId: string, customerId: string): Promise<{
+        PaymentHistory: PaymentInvoice[];
+    }>;
     createCustomer(tenantId: string, customerData: Partial<Customer>): Promise<Customer>;
     getCustomer(tenantId: string, customerId: string): Promise<Customer>;
     getCustomers(tenantId: string, options: {

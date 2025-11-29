@@ -66,3 +66,120 @@
 {"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-28 16:05:38:538"}
 {"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-28 16:05:38:538"}
 {"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-28 16:05:38:538"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-28 16:07:22:722"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-28 16:07:23:723"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-28 16:07:23:723"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-28 16:07:23:723"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-28 17:19:08:198"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-28 17:19:09:199"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-28 17:19:09:199"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-28 17:19:09:199"}
+{"ip":"::ffff:192.168.29.17","level":"warn","message":"Route not found","method":"PUT","path":"/api/invoices/80727f3e-9dfa-436a-b984-37779c51975d/status","service":"billing-saas-api","timestamp":"2025-11-28 18:12:57:1257"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-28 18:20:41:2041"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-28 18:20:43:2043"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-28 18:20:43:2043"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-28 18:20:43:2043"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-28 18:20:56:2056"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching cache:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:/api/invoices*","service":"billing-saas-api","timestamp":"2025-11-28 18:20:56:2056"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-28 18:21:06:216"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching cache:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:/api/invoices*","service":"billing-saas-api","timestamp":"2025-11-28 18:21:06:216"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-28 18:23:07:237"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-28 18:23:08:238"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-28 18:23:08:238"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-28 18:23:08:238"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-28 18:25:28:2528"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-28 18:25:28:2528"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-28 18:25:28:2528"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-28 18:25:28:2528"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-28 18:30:20:3020"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-28 18:30:21:3021"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-28 18:30:21:3021"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-28 18:30:21:3021"}
+{"level":"info","message":"🧹 Cleared 2 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-28 18:32:11:3211"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-28 18:35:33:3533"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-28 18:42:31:4231"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-28 18:42:31:4231"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-28 18:42:31:4231"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-28 18:42:31:4231"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-28 18:43:24:4324"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-28 18:43:24:4324"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-28 18:43:24:4324"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-28 18:43:24:4324"}
+{"level":"info","message":"🔍 Found 8 keys for tenant 221ccd12-e9b2-4f39-9cfe-81bdbed59edc","service":"billing-saas-api","timestamp":"2025-11-28 18:47:14:4714"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-28 18:50:23:5023"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching cache:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:/api/invoices*","service":"billing-saas-api","timestamp":"2025-11-28 18:50:23:5023"}
+{"id":"80727f3e-9dfa-436a-b984-37779c51975d","level":"info","message":"Invoice updated in 161ms","service":"billing-saas-api","tenantId":"221ccd12-e9b2-4f39-9cfe-81bdbed59edc","timestamp":"2025-11-28 18:50:23:5023"}
+{"level":"info","message":"Loyalty processing completed for invoice: 80727f3e-9dfa-436a-b984-37779c51975d","service":"billing-saas-api","timestamp":"2025-11-28 18:50:25:5025"}
+{"level":"info","message":"🔍 Found 10 keys for tenant 221ccd12-e9b2-4f39-9cfe-81bdbed59edc","service":"billing-saas-api","timestamp":"2025-11-28 18:50:39:5039"}
+{"level":"info","message":"🔍 Found 5 keys for tenant 221ccd12-e9b2-4f39-9cfe-81bdbed59edc","service":"billing-saas-api","timestamp":"2025-11-28 18:51:26:5126"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-28 18:54:55:5455"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-28 18:54:55:5455"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-28 18:54:55:5455"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-28 18:54:55:5455"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-28 18:55:05:555"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching cache:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:/api/invoices*","service":"billing-saas-api","timestamp":"2025-11-28 18:55:05:555"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-28 18:56:32:5632"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-28 18:56:33:5633"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-28 18:56:33:5633"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-28 18:56:33:5633"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-28 18:59:21:5921"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-28 18:59:22:5922"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-28 18:59:22:5922"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-28 18:59:22:5922"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-28 18:59:27:5927"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching cache:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:/api/invoices*","service":"billing-saas-api","timestamp":"2025-11-28 18:59:27:5927"}
+{"level":"info","message":"🔍 Found 4 keys for tenant 221ccd12-e9b2-4f39-9cfe-81bdbed59edc","service":"billing-saas-api","timestamp":"2025-11-28 18:59:27:5927"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-28 19:00:35:035"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-28 19:00:36:036"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-28 19:00:36:036"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-28 19:00:36:036"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-28 19:00:52:052"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching cache:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:/api/invoices*","service":"billing-saas-api","timestamp":"2025-11-28 19:00:52:052"}
+{"level":"info","message":"🔍 Found 5 keys for tenant 221ccd12-e9b2-4f39-9cfe-81bdbed59edc","service":"billing-saas-api","timestamp":"2025-11-28 19:00:52:052"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-28 19:00:57:057"}
+{"level":"info","message":"🔍 Found 5 keys for tenant 221ccd12-e9b2-4f39-9cfe-81bdbed59edc","service":"billing-saas-api","timestamp":"2025-11-28 19:00:57:057"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-28 19:08:20:820"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-28 19:08:21:821"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-28 19:08:21:821"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-28 19:08:21:821"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-28 19:08:39:839"}
+{"level":"info","message":"🔍 Found 7 keys for tenant 221ccd12-e9b2-4f39-9cfe-81bdbed59edc","service":"billing-saas-api","timestamp":"2025-11-28 19:08:39:839"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-28 19:08:52:852"}
+{"level":"info","message":"🔍 Found 7 keys for tenant 221ccd12-e9b2-4f39-9cfe-81bdbed59edc","service":"billing-saas-api","timestamp":"2025-11-28 19:08:52:852"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-28 19:11:51:1151"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-28 19:11:52:1152"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-28 19:11:52:1152"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-28 19:11:52:1152"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-28 19:15:50:1550"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-28 19:15:51:1551"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-28 19:15:51:1551"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-28 19:15:51:1551"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-28 19:18:27:1827"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-28 19:18:28:1828"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-28 19:18:28:1828"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-28 19:18:28:1828"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-28 19:26:28:2628"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-28 19:26:28:2628"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-28 19:26:28:2628"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-28 19:26:28:2628"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-28 19:26:43:2643"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-28 19:26:47:2647"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-28 19:26:49:2649"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-28 19:29:29:2929"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-28 19:37:27:3727"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-28 19:37:28:3728"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-28 19:37:28:3728"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-28 19:37:28:3728"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-28 19:37:36:3736"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-28 19:38:14:3814"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-28 19:38:17:3817"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-28 19:38:19:3819"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-28 19:38:23:3823"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-28 19:39:27:3927"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-28 19:39:28:3928"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-28 19:39:28:3928"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-28 19:39:28:3928"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-28 19:39:36:3936"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-28 19:39:52:3952"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-28 19:41:11:4111"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching invoices:221ccd12-e9b2-4f39-9cfe-81bdbed59edc:*","service":"billing-saas-api","timestamp":"2025-11-28 19:43:22:4322"}

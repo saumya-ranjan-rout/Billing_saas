@@ -82,6 +82,25 @@ class CacheService {
             logger_1.default.error(`Cache invalidate pattern error [${pattern}]:`, error);
         }
     }
+    async getTenantKeys(tenantId) {
+        try {
+            const pattern = `*${tenantId}*`;
+            const keys = [];
+            const stream = this.redis.scanStream({
+                match: pattern,
+                count: 200,
+            });
+            for await (const chunk of stream) {
+                keys.push(...chunk);
+            }
+            logger_1.default.info(`🔍 Found ${keys.length} keys for tenant ${tenantId}`);
+            return keys;
+        }
+        catch (error) {
+            logger_1.default.error(`Error fetching tenant keys for ${tenantId}:`, error);
+            return [];
+        }
+    }
     async mset(values, ttl = this.DEFAULT_TTL) {
         try {
             const pipeline = this.redis.pipeline();

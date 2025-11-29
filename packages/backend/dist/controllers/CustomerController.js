@@ -283,6 +283,20 @@ class CustomerController {
             res.status(500).json({ error: error.message });
         }
     }
+    async getPaymentHistory(req, res) {
+        try {
+            if (!req.user) {
+                return res.status(401).json({ error: "Unauthorized" });
+            }
+            const { id } = req.params;
+            const tenantId = req.user.tenantId;
+            const history = await this.customerService.getCustomerPaymentHistory(tenantId, id);
+            return res.json(history);
+        }
+        catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
 }
 exports.CustomerController = CustomerController;
 //# sourceMappingURL=CustomerController.js.map

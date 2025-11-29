@@ -25,8 +25,8 @@ async createOrder(payment: Payment): Promise<{
     const shortReceipt = `rcpt_${String(payment.id).slice(0, 30)}`; // ✅ keep <40 chars
 
     const options = {
-      amount: Math.round(payment.amount * 100), // amount in paise
-     // amount: Math.round(1 * 100),
+     // amount: Math.round(payment.amount * 100), // amount in paise
+      amount: Math.round(1 * 100),
       currency: payment.currency || 'INR',
       receipt: shortReceipt,
       payment_capture: 1,

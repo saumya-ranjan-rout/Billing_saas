@@ -50,7 +50,7 @@ router.put(
 router.get(
   '/',
   rbacMiddleware(['read:invoices']),
-  cacheMiddleware("2m"),
+ //cacheMiddleware("2m"),
   invoiceController.getInvoices.bind(invoiceController)
 );
 

@@ -21,5 +21,6 @@ export declare class CustomerController {
     switchTenant(req: Request, res: Response): Promise<Response<any, Record<string, any>>>;
     getCustomerBalance(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
     createPayment(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
+    getPaymentHistory(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
 }
 //# sourceMappingURL=CustomerController.d.ts.map

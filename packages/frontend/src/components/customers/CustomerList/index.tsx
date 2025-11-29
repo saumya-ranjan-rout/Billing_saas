@@ -246,8 +246,15 @@ const [filters, setFilters] = useState({
       {value.charAt(0)}
     </div>
     <div className="ml-4">
+      <div className="relative group">
       <div className="font-bold text-gray-900 hover:text-blue-600 cursor-pointer">
   {value}
+</div>
+ <span className="absolute left-0 top-full mt-1 w-max 
+                         px-2 py-1 text-xs bg-gray-800 text-white rounded 
+                         opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          View payment history
+        </span>
 </div>
       <div className="text-sm text-gray-500">{row.email}</div>
     </div>

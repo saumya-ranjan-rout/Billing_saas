@@ -847,25 +847,97 @@ if (invoiceData.cashBack > 0) {
     }, 60);
   }
 
-  async updateInvoiceStatus(tenantId: string, invoiceId: string, status: InvoiceStatus): Promise<Invoice> {
-    try {
-      const invoice = await this.getInvoice(tenantId, invoiceId);
 
-      if (status === InvoiceStatus.SENT) {
-        invoice.sentAt = new Date();
-      } else if (status === InvoiceStatus.VIEWED) {
-        invoice.viewedAt = new Date();
-      } else if (status === InvoiceStatus.PAID && invoice.balanceDue === 0) {
-        invoice.paidDate = new Date();
-      }
-
-      invoice.status = status;
-      return await this.invoiceRepository.save(invoice);
-    } catch (error) {
-      logger.error('Error updating invoice status:', error);
-      throw error;
+  async updateInvoiceStatus(
+  tenantId: string,
+  invoiceId: string,
+  status: InvoiceStatus
+): Promise<Invoice> {
+  const queryRunner = AppDataSource.createQueryRunner();
+  await queryRunner.connect();
+  await queryRunner.startTransaction();
+ 
+  try {
+    // Get invoice inside transaction
+    const invoice = await queryRunner.manager.findOne(this.invoiceRepository.target, {
+      where: { id: invoiceId, tenantId },
+      relations: ["customer"]
+    });
+ 
+    if (!invoice) {
+      throw new Error("Invoice not found");
     }
+ 
+    // Business logic
+    if (status === InvoiceStatus.SENT) {
+      invoice.sentAt = new Date();
+    } else if (status === InvoiceStatus.VIEWED) {
+      invoice.viewedAt = new Date();
+    } else if (status === InvoiceStatus.PAID && invoice.balanceDue === 0) {
+      invoice.paidDate = new Date();
+    }
+ 
+    invoice.status = status;
+ 
+    // Save updated invoice inside transaction
+    const updatedInvoice = await queryRunner.manager.save(invoice);
+ 
+    // Optional future: If invoice paid, update customer credit balance, ledger etc.
+ 
+    // Cache invalidation AFTER DB commit
+    await queryRunner.commitTransaction();
+ 
+await this.cacheService.invalidatePattern(`*${tenantId}*`);
+await this.cacheService.del(`*${tenantId}*`);
+ 
+   
+ 
+    return updatedInvoice;
+ 
+  } catch (error) {
+    await queryRunner.rollbackTransaction();
+    logger.error("Error updating invoice status:", error);
+    throw error;
+  } finally {
+    await queryRunner.release();
   }
+}
+//   async updateInvoiceStatus(tenantId: string, invoiceId: string, status: InvoiceStatus): Promise<Invoice> {
+//     try {
+//       const invoice = await this.getInvoice(tenantId, invoiceId);
+
+//       if (status === InvoiceStatus.SENT) {
+//         invoice.sentAt = new Date();
+//       } else if (status === InvoiceStatus.VIEWED) {
+//         invoice.viewedAt = new Date();
+//       } else if (status === InvoiceStatus.PAID && invoice.balanceDue === 0) {
+//         invoice.paidDate = new Date();
+//       }
+
+//       invoice.status = status;
+     
+// //       await this.cacheService.invalidatePattern(`invoices:${tenantId}:${invoiceId}`);
+
+// // //       await this.cacheService.del(`cache:${tenantId}:/api/invoices?page=1&limit=10`);
+
+// // //       const tenantKeys = await this.cacheService.getTenantKeys(tenantId);
+// // // console.log("Tenant Keys =>", tenantKeys);
+
+    
+//       const updatedInvoice = await this.invoiceRepository.save(invoice);
+//        await Promise.all([
+//         this.cacheService.invalidatePattern(`invoices:${tenantId}:*`),
+//         this.cacheService.invalidatePattern(`cache:${tenantId}:/api/invoices*`),
+//         this.cacheService.invalidatePattern(`dashboard:${tenantId}`),
+        
+//       ]);
+//       await this.cacheService.del(`cache:${tenantId}:/api/invoices?page=1&limit=10`);
+//         return updatedInvoice;
+//     } catch (error) {
+//       logger.error('Error updating invoice status:', error);
+//       throw error;
+//     }
+//   }
 
    async addPayment(tenantId: string, paymentData: Partial<PaymentInvoice>): Promise<PaymentInvoice> {
     if (!paymentData.invoiceId) throw new Error('invoiceId is required');

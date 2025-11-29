@@ -24,7 +24,7 @@ const invoiceController = new InvoiceController_1.InvoiceController(invoiceServi
 router.use(auth_1.authMiddleware, tenant_1.tenantMiddleware, checkSubscription_1.checkSubscription);
 router.post('/', (0, rbac_1.rbacMiddleware)(['create:invoices']), (0, validation_1.validationMiddleware)(validators_1.invoiceSchema), invoiceController.createInvoice.bind(invoiceController));
 router.put('/:id', (0, rbac_1.rbacMiddleware)(['update:invoices']), (0, validation_1.validationMiddleware)(validators_1.invoiceSchema), invoiceController.updateInvoice.bind(invoiceController));
-router.get('/', (0, rbac_1.rbacMiddleware)(['read:invoices']), (0, cache_1.cacheMiddleware)("2m"), invoiceController.getInvoices.bind(invoiceController));
+router.get('/', (0, rbac_1.rbacMiddleware)(['read:invoices']), invoiceController.getInvoices.bind(invoiceController));
 router.get('/summary', (0, rbac_1.rbacMiddleware)(['read:invoices']), (0, cache_1.cacheMiddleware)("5m"), invoiceController.getInvoiceSummary.bind(invoiceController));
 router.get('/overdue', (0, rbac_1.rbacMiddleware)(['read:invoices']), (0, cache_1.cacheMiddleware)("2m"), invoiceController.getOverdueInvoices.bind(invoiceController));
 router.get('/customer/:customerId', (0, rbac_1.rbacMiddleware)(['read:invoices']), (0, cache_1.cacheMiddleware)("2m"), invoiceController.getCustomerInvoices.bind(invoiceController));

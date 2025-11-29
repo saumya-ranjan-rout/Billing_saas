@@ -9,6 +9,7 @@ export declare class CacheService {
     del(key: string): Promise<void>;
     getOrSet<T>(key: string, factory: () => Promise<T>, ttl?: number): Promise<T>;
     invalidatePattern(pattern: string): Promise<void>;
+    getTenantKeys(tenantId: string): Promise<string[]>;
     mset(values: Map<string, any>, ttl?: number): Promise<void>;
     healthCheck(): Promise<boolean>;
     static Keys: {

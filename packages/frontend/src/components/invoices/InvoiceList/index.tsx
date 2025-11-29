@@ -39,7 +39,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({ onEditInvoice, onViewInvoice,
     pages: 0,
   });
 
-  const { get, del, getBlob } = useApi<PaginatedResponse<Invoice>>();
+  const { get, del, getBlob,patch } = useApi<PaginatedResponse<Invoice>>();
 
   const fetchInvoices = useCallback(async () => {
     try {
@@ -114,6 +114,16 @@ useEffect(() => {
       toast.error(error?.message || 'Failed to generate invoice PDF ❌');
     }
   };
+const handleStatusChange = async (invoiceId: string, newStatus: string) => {
+  try {
+    await patch(`/api/invoices/${invoiceId}/status`, { status: newStatus });
+    toast.success("Status updated!");
+
+    fetchInvoices(); // refresh table
+  } catch (error: any) {
+    toast.error(error?.message || "Failed to update status");
+  }
+};
 
 const handleFilterChange = (key: string, value: string) => {
   const finalValue = value === 'all' ? '' : value;
@@ -167,11 +177,56 @@ const handleFilterChange = (key: string, value: string) => {
       header: 'Due Date',
       render: (value: string) => new Date(value).toLocaleDateString(),
     },
-    {
-      key: 'status',
-      header: 'Status',
-      render: (value: string) => getStatusBadge(value),
-    },
+    // {
+    //   key: 'status',
+    //   header: 'Status',
+    //   render: (value: string) => getStatusBadge(value),
+    // },
+   {
+  key: "status",
+  header: "Status",
+  render: (_: string, row: Invoice) => {
+    const statusMap: Record<string, { label: string; variant: any }> = {
+      draft: { label: 'Draft', variant: 'outline' },
+      sent: { label: 'Sent', variant: 'default' },
+      viewed: { label: 'Viewed', variant: 'warning' },
+      partial: { label: 'Partial', variant: 'warning' },
+      paid: { label: 'Paid', variant: 'success' },
+      overdue: { label: 'Overdue', variant: 'danger' },
+      cancelled: { label: 'Cancelled', variant: 'outline' },
+    };
+
+    return (
+      <Select
+        value={row.status}
+        onValueChange={(val) => handleStatusChange(row.id, val)}
+      >
+        <SelectTrigger className="w-[140px]">
+          <SelectValue>
+            {statusMap[row.status] && (
+              <Badge variant={statusMap[row.status].variant}>
+                {statusMap[row.status].label}
+              </Badge>
+            )}
+          </SelectValue>
+        </SelectTrigger>
+
+        <SelectContent>
+          {Object.entries(statusMap).map(([value, { label, variant }]) => (
+            <SelectItem
+              key={value}
+              value={value}
+              className="flex items-center gap-2"
+            >
+              <Badge variant={variant}>{label}</Badge>
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    );
+  },
+},
+
     {
       key: 'type',
       header: 'Type',

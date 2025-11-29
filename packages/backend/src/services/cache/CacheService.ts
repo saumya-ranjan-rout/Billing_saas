@@ -105,6 +105,32 @@ get rediss() {
   }
 }
 
+/**
+ * Get ALL Redis keys belonging to a tenant
+ */
+async getTenantKeys(tenantId: string): Promise<string[]> {
+  try {
+    const pattern = `*${tenantId}*`;
+
+    const keys: string[] = [];
+    const stream = this.redis.scanStream({
+      match: pattern,
+      count: 200,
+    });
+
+    for await (const chunk of stream) {
+      keys.push(...chunk);
+    }
+
+    logger.info(`🔍 Found ${keys.length} keys for tenant ${tenantId}`);
+    return keys;
+  } catch (error) {
+    logger.error(`Error fetching tenant keys for ${tenantId}:`, error);
+    return [];
+  }
+}
+
+
   // async invalidatePattern(pattern: string): Promise<void> {
   //   try {
   //     const stream = this.redis.scanStream({ match: pattern, count: 100 });

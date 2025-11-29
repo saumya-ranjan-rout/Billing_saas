@@ -75,6 +75,13 @@ class CustomerService {
             balance: totalDue - totalPaid
         };
     }
+    async getCustomerPaymentHistory(tenantId, customerId) {
+        const PaymentHistory = await this.paymentRepository.find({
+            where: { tenantId, customerId, deletedAt: (0, typeorm_1.IsNull)() },
+            order: { createdAt: 'DESC' },
+        });
+        return { PaymentHistory };
+    }
     async createCustomer(tenantId, customerData) {
         try {
             if (customerData.gstin && !(0, validators_1.validateGSTIN)(customerData.gstin)) {

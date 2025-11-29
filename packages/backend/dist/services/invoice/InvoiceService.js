@@ -617,8 +617,17 @@ class InvoiceService {
         }, 60);
     }
     async updateInvoiceStatus(tenantId, invoiceId, status) {
+        const queryRunner = database_1.AppDataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
         try {
-            const invoice = await this.getInvoice(tenantId, invoiceId);
+            const invoice = await queryRunner.manager.findOne(this.invoiceRepository.target, {
+                where: { id: invoiceId, tenantId },
+                relations: ["customer"]
+            });
+            if (!invoice) {
+                throw new Error("Invoice not found");
+            }
             if (status === Invoice_1.InvoiceStatus.SENT) {
                 invoice.sentAt = new Date();
             }
@@ -629,11 +638,19 @@ class InvoiceService {
                 invoice.paidDate = new Date();
             }
             invoice.status = status;
-            return await this.invoiceRepository.save(invoice);
+            const updatedInvoice = await queryRunner.manager.save(invoice);
+            await queryRunner.commitTransaction();
+            await this.cacheService.invalidatePattern(`*${tenantId}*`);
+            await this.cacheService.del(`*${tenantId}*`);
+            return updatedInvoice;
         }
         catch (error) {
-            logger_1.default.error('Error updating invoice status:', error);
+            await queryRunner.rollbackTransaction();
+            logger_1.default.error("Error updating invoice status:", error);
             throw error;
+        }
+        finally {
+            await queryRunner.release();
         }
     }
     async addPayment(tenantId, paymentData) {
