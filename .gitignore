@@ -5,3 +5,4 @@ node_modules
 packages/frontend/.env.local
 packages/frontend/.next/
 packages/backend/logs/
+.next
