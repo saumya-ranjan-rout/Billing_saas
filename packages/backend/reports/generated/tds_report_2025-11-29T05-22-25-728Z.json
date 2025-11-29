@@ -1,0 +1,56 @@
+{
+  "summary": {
+    "totalPayments": 5,
+    "totalAmount": 14900,
+    "totalTDS": 298
+  },
+  "sections": {
+    "194C": {
+      "section": "194C",
+      "description": "Payment to Contractors",
+      "rate": 2,
+      "totalAmount": "02000.001000.0010000.00900.001000.00",
+      "tdsAmount": 298,
+      "transactions": [
+        {
+          "date": "2025-11-28",
+          "vendor": "Veda",
+          "pan": "ABCDE1234F",
+          "amount": "2000.00",
+          "tds": 40,
+          "paymentMode": "cash"
+        },
+        {
+          "date": "2025-11-28",
+          "vendor": "Veda",
+          "pan": "ABCDE1234F",
+          "amount": "1000.00",
+          "tds": 20,
+          "paymentMode": "cash"
+        },
+        {
+          "date": "2025-11-27",
+          "vendor": "Veda",
+          "pan": "ABCDE1234F",
+          "amount": "10000.00",
+          "tds": 200,
+          "paymentMode": "cash"
+        },
+        {
+          "date": "2025-11-27",
+          "vendor": "Veda",
+          "pan": "ABCDE1234F",
+          "amount": "900.00",
+          "tds": 18,
+          "paymentMode": "cash"
+        },
+        {
+          "date": "2025-11-27",
+          "amount": "1000.00",
+          "tds": 20,
+          "paymentMode": "cash"
+        }
+      ]
+    }
+  }
+}

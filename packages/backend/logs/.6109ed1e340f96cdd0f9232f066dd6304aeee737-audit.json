@@ -1,0 +1,395 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\.6109ed1e340f96cdd0f9232f066dd6304aeee737-audit.json",
+    "files": [
+        {
+            "date": 1764058268000,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-25.log",
+            "hash": "7afa4857d1babe35825cc948514e522bb40cdcda4c305179bf74e2f45d1a56d4"
+        },
+        {
+            "date": 1764217863627,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log",
+            "hash": "a23df25a37ee45d97b6e5ec90b037b8f989a0a671a16104f5aaadfd140428344"
+        },
+        {
+            "date": 1764242793151,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.1",
+            "hash": "e659f7a231b70cfc176053ce72d0c5b2f0b5200e8789b9d92d5342a50bbc39f4"
+        },
+        {
+            "date": 1764242809325,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.2",
+            "hash": "c630710f78f8b3f7784506f8ce4e2fb485a765ef2c9b0d87b063a04db12bbfff"
+        },
+        {
+            "date": 1764242828201,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.3",
+            "hash": "478e7a287641021e8f6fcc8640e59335f0308883cc2a8dcb6f7c1edf552585ce"
+        },
+        {
+            "date": 1764242850649,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.4",
+            "hash": "d665ad5c65fff0a303c61a584738dbcc14eb1d1b200bc6ab2b54cec3f1a87195"
+        },
+        {
+            "date": 1764242872079,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.5",
+            "hash": "c57be9f52b79ffb6003bce4975d30356f87959b20cee0699e1c6a3b17b87dce1"
+        },
+        {
+            "date": 1764242889878,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.6",
+            "hash": "b5c43d6dcf06dbf9ff5ee2c3bcb57637b12098495358bfd6b40aafce1b7e377a"
+        },
+        {
+            "date": 1764242907226,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.7",
+            "hash": "34dabb28b0b40fde97395a1cffc3b8086ce553dee6654e1ab1eb24fa4510f24e"
+        },
+        {
+            "date": 1764242925546,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.8",
+            "hash": "5a89d14c3d434aabd394d37f053e5b7efab68c3cda96b3ae65c37a28723885b3"
+        },
+        {
+            "date": 1764242940616,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.9",
+            "hash": "19a863398c03cb8da485d0170b3ced9ae97d724ee515d34e997f5dd228d40490"
+        },
+        {
+            "date": 1764242959958,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.10",
+            "hash": "3086e4a59aec36b25b039379ffe950178fdad17a003ec6f2877e551ed788f5ed"
+        },
+        {
+            "date": 1764242979528,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.11",
+            "hash": "3cbf87a1e000f6f94650354c134b613c3d8f3eb72b59338c0a1d490c597ed907"
+        },
+        {
+            "date": 1764242996475,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.12",
+            "hash": "d48aae92ab8382a9c39ea57e1e2341be15457793737e9d036030de132011092e"
+        },
+        {
+            "date": 1764243013826,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.13",
+            "hash": "3a766a7034b82b955975c1be26ffb6f95be6d87270d37ca8f43138052cdc8ad3"
+        },
+        {
+            "date": 1764243028289,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.14",
+            "hash": "03fe9a3736f5923d55afc6193ddcf8097de934460a4537fff9aac72ddc1402ac"
+        },
+        {
+            "date": 1764243040273,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.15",
+            "hash": "e8da840f0c857de68f33f6de4b7fa77f92f79aa326a4d9a34c6a66e860428bfe"
+        },
+        {
+            "date": 1764243052643,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.16",
+            "hash": "2b67d947758a037401b897e1c1f27fd7193831f2550f1e13d879507b03272b4d"
+        },
+        {
+            "date": 1764243064314,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.17",
+            "hash": "a78fa00c357aaafbfbeae3e69ba0e201b09a2374c701465ef08d0f0036f8235f"
+        },
+        {
+            "date": 1764243079520,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.18",
+            "hash": "53a7c51a9aee7db0134438bd8b9b1bb56af28b01adeb106f5a43b90087e75f28"
+        },
+        {
+            "date": 1764243093701,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.19",
+            "hash": "440230dd203aeabe184513163558ebe3cfe425bf39a725ffa184ca5b591b4787"
+        },
+        {
+            "date": 1764243107096,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.20",
+            "hash": "31cb82cf14c1bf7309f75162f76efe9d153462cc4a8211de8a6bcb114d336640"
+        },
+        {
+            "date": 1764243126750,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.21",
+            "hash": "c81463bdc8e9a53b159b9bdb90c32cf7d2224d540382d3ea800284026e0628bc"
+        },
+        {
+            "date": 1764243150473,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.22",
+            "hash": "424c502dcfa0e150b92d91cbfad128005a5185f3ebe7767acbdb1be05109d4c3"
+        },
+        {
+            "date": 1764243171097,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.23",
+            "hash": "a6e4a2e6b2a5896f96e9652e5171a4e69702a293e95c0b0c83377572bb776cf7"
+        },
+        {
+            "date": 1764243192902,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.24",
+            "hash": "ebfb81beb772ff2c3a7d56807974567773a9a515e164a405558a2247241a6936"
+        },
+        {
+            "date": 1764243211698,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.25",
+            "hash": "84a41074c3a02612e75ffff104cc03519fac29ff4ed766a7400f47a94f1eae51"
+        },
+        {
+            "date": 1764243224393,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.26",
+            "hash": "a27fc523dc41fd46fa5721651b444bfe1ef94203959217b996239f4b73a7914b"
+        },
+        {
+            "date": 1764243236834,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.27",
+            "hash": "5223a3187a67cbdbe394a06636ac7ed353bdc9dee59239e5e55635b262547d41"
+        },
+        {
+            "date": 1764243248960,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.28",
+            "hash": "40d2b063a44c1b035b5b4dc454ddf18c9a83ca2e5bc9d110f209faf23490fe93"
+        },
+        {
+            "date": 1764243262823,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.29",
+            "hash": "a703b334e2459686182770c0303b9e4f5d5b65580ff9ac2993c55845dc3e4b64"
+        },
+        {
+            "date": 1764243277903,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.30",
+            "hash": "ba0f90ea0d62bdb4a56ca23c46e4a347a0806449bbb3476622ddb69715351b65"
+        },
+        {
+            "date": 1764243290418,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.31",
+            "hash": "da4701f3463a34d4f30908f3473469cd1ff4e8688cb63144b1063583bb658840"
+        },
+        {
+            "date": 1764243302798,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.32",
+            "hash": "5f8b03fb4d159b48d2001335b4de93c69384e0f182faf46bff1c7c61b64b84de"
+        },
+        {
+            "date": 1764243317086,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.33",
+            "hash": "bc77d4fdb763c4ca497c1e71fb6d3d5b34b28b98db8f7e3d98e437a95731cef2"
+        },
+        {
+            "date": 1764243329690,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.34",
+            "hash": "eda64541b41d39a6de5f12621b4894f41c4a4e3cd6512de3d33d8d74fb91084d"
+        },
+        {
+            "date": 1764243346026,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.35",
+            "hash": "5fc7b33c4d638d0cfa6b8d4125a7dd66faf80d1f4632c1780cb6d77d3ff0057b"
+        },
+        {
+            "date": 1764243359834,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.36",
+            "hash": "e9b0427ba6be0d25075f605ee4207f149cc4c9a72cf33e5ef4f1bb304bf618e7"
+        },
+        {
+            "date": 1764243372786,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.37",
+            "hash": "a9be49503ea101234810850994d974808eb1652918568bccc26e1fd39afa7837"
+        },
+        {
+            "date": 1764243385783,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.38",
+            "hash": "bdd4ecd832378d4f1d740edb871ccf74125c401b3136c92418e73ce66b8016f7"
+        },
+        {
+            "date": 1764243398448,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.39",
+            "hash": "1c30a9d897ba6a12226a0e15009412ea89cf3a6b1123e4ace984d841cedae020"
+        },
+        {
+            "date": 1764243412549,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.40",
+            "hash": "6f532a523a70db5e7a13e0bfbf6877ed01ba84a7065f113be9e435a2bb8836ec"
+        },
+        {
+            "date": 1764243425597,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.41",
+            "hash": "d43390841fabf734c0a10f596bf5f3eb8ee5f0a27f659668303c5433559b8b92"
+        },
+        {
+            "date": 1764243442449,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.42",
+            "hash": "11f30b1a5c579ec89313ab16b8f9ccc1ab0fbc3c6eec15eb6aaa6403940d9f59"
+        },
+        {
+            "date": 1764243460805,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.43",
+            "hash": "64284c793eb828b6e581c7258231efb1e0fe8e84e9d5a23319bc5a2256863ddd"
+        },
+        {
+            "date": 1764243472808,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.44",
+            "hash": "847218541927de6da6f2e52ebe53a07a29d570f1ce192719255df33b153e58af"
+        },
+        {
+            "date": 1764243484798,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.45",
+            "hash": "e69c9bff1f5f24395e64f1429db276372ec25102c8643f52f93a9957e767d835"
+        },
+        {
+            "date": 1764243500647,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.46",
+            "hash": "fa7a43ebf3ceb49600878124beb8cdbe26bcd50ee0bc242e9c06246cdc9d7339"
+        },
+        {
+            "date": 1764243514051,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.47",
+            "hash": "338fa6400059c288ea607a787c8260a6fe90aadf2639c87d314e71e96eea567a"
+        },
+        {
+            "date": 1764243526165,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.48",
+            "hash": "658019bac2157bcf34402c5b58c822bdd5bcbb1acc47ac5b92e1cec3a62bc75c"
+        },
+        {
+            "date": 1764243538493,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.49",
+            "hash": "9e88f40550652d708f5c0523d49e4d97591c424c8d5bf34b2f7b4ac9f820457a"
+        },
+        {
+            "date": 1764243550738,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.50",
+            "hash": "c6a424d44fa21b92e8960746e4b6d2ad447d91ae98e487027810e2f4c53ab422"
+        },
+        {
+            "date": 1764243563753,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.51",
+            "hash": "db0794884adde2516a1446d5222bc64d3a28623df1d239560e359900c41df59e"
+        },
+        {
+            "date": 1764243575790,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.52",
+            "hash": "738790b7abebf85beeb54064b2d8d553231c44c67da67676a8004f5be4deb15f"
+        },
+        {
+            "date": 1764243593992,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.53",
+            "hash": "da29701ff042bc299375535120bbd18465d2ff26bcdb7180905f27931fe01389"
+        },
+        {
+            "date": 1764243626780,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.54",
+            "hash": "9734b1d334c8303479b1892c94818473dd2672be550d9b0efa0d7b2edc97b3f4"
+        },
+        {
+            "date": 1764243648401,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.55",
+            "hash": "7f6ecfc771da90e30e1b8a2a6eef5ff5e354d27e10fac524c3b31158f0a3bab6"
+        },
+        {
+            "date": 1764243662810,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.56",
+            "hash": "ae70d69d5102f296e5a5b9c418cd7fec3b3d4e866d0aa982b0500dfd84c503ba"
+        },
+        {
+            "date": 1764243676807,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.57",
+            "hash": "858b3f16693381feedb75b83299cc15ca3efd11a9a64d5f2b955b3e2524b4be5"
+        },
+        {
+            "date": 1764243690303,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.58",
+            "hash": "ad288e260ca258f44a2591c4740f11cfadb529ec6c60259065ade10a9396fb4c"
+        },
+        {
+            "date": 1764243705176,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.59",
+            "hash": "935de40de5a9d12b6751474ea7e4a1c29d70901282f52a8b3832076f03a65241"
+        },
+        {
+            "date": 1764243720666,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.60",
+            "hash": "170a6fe50fdef56c7a1796b1c6ebb9df5100d988515d91bfa502c73daf2cdc77"
+        },
+        {
+            "date": 1764243747424,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.61",
+            "hash": "e4865954c0e7423603c35a1ffba45cd4d1db5cb99c1ac0b0e8893b571d4e1cf0"
+        },
+        {
+            "date": 1764243780333,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.62",
+            "hash": "edad50e430652ff8f8e158c39e1801f6c4ef303101e57c62d5e7f86b345a697e"
+        },
+        {
+            "date": 1764243803728,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.63",
+            "hash": "4eb43e19d9ef254d89ffaa55f3f7f8392a624ac8069c1f886f157f0eb3774be9"
+        },
+        {
+            "date": 1764243820770,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.64",
+            "hash": "4ebf8b85aacfd1a5007f93ba6d8a0955c94a167406adaa6b5b8518ff540e9896"
+        },
+        {
+            "date": 1764243834843,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.65",
+            "hash": "9f3947aeb98d011497ce2b6c812ecc94d26a99a4d76cece02526e3f6d50a439b"
+        },
+        {
+            "date": 1764243856641,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.66",
+            "hash": "2bafb581343bdeb5951de069f449b4a870ca9bbc3d2b1beb3a2b01c6430165a7"
+        },
+        {
+            "date": 1764243871036,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.67",
+            "hash": "cb466d647fa6dfd056534f1fe5c62fcdec8546e73dc55d697bb4cae463a86401"
+        },
+        {
+            "date": 1764243884408,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.68",
+            "hash": "80b6c69beba4b345028d44647fb8b32f2a9cc805a133fd5b7e384164befb3454"
+        },
+        {
+            "date": 1764243902344,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.69",
+            "hash": "1b9be7d42e329a03f35d05a61e3a92b1cd8cd9610ce32ee051d6bdc24bd9aec1"
+        },
+        {
+            "date": 1764243922908,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.70",
+            "hash": "0a7680f7e0f5417562c8de36c6deaf64a9c2db74f4c2c4824f5268841332a096"
+        },
+        {
+            "date": 1764243947898,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.71",
+            "hash": "d4368d76febd9aa6e73df3a4536750d879d2b9d62fd8d6e1206073e333b36e15"
+        },
+        {
+            "date": 1764243971124,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.72",
+            "hash": "3e67d997733ccd922da601c3e106ebafec8ad9c295e3effb406dbcfd6dcecd7b"
+        },
+        {
+            "date": 1764243997536,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-27.log.73",
+            "hash": "54c8c850ec6dcbd4721627e2d2d6933272d07c5853ebbe5790714f656a1e3113"
+        },
+        {
+            "date": 1764304104614,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-28.log",
+            "hash": "cbe0304e0fae3bb0d8c66b2ef9111e72089133869881bcb693b4fd1125866b5c"
+        },
+        {
+            "date": 1764390721705,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\error-2025-11-29.log",
+            "hash": "798fb881076b05afd5c7f15034fbacbb68b0e6d83210a09ed34a717085db0a55"
+        }
+    ],
+    "hashType": "sha256"
+}

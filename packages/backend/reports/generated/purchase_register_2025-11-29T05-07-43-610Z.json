@@ -1,0 +1,56 @@
+{
+  "summary": {
+    "totalPurchases": 5,
+    "totalAmount": 14900
+  },
+  "records": [
+    {
+      "date": "2025-11-28",
+      "billNo": null,
+      "vendor": "Veda",
+      "vendorGSTIN": "27ABCDE1234F1Z2",
+      "taxableValue": "2000.00",
+      "taxAmount": 360,
+      "totalAmount": 2360,
+      "paymentMode": "cash"
+    },
+    {
+      "date": "2025-11-28",
+      "billNo": null,
+      "vendor": "Veda",
+      "vendorGSTIN": "27ABCDE1234F1Z2",
+      "taxableValue": "1000.00",
+      "taxAmount": 180,
+      "totalAmount": 1180,
+      "paymentMode": "cash"
+    },
+    {
+      "date": "2025-11-27",
+      "billNo": null,
+      "vendor": "Veda",
+      "vendorGSTIN": "27ABCDE1234F1Z2",
+      "taxableValue": "10000.00",
+      "taxAmount": 1800,
+      "totalAmount": 11800,
+      "paymentMode": "cash"
+    },
+    {
+      "date": "2025-11-27",
+      "billNo": null,
+      "vendor": "Veda",
+      "vendorGSTIN": "27ABCDE1234F1Z2",
+      "taxableValue": "900.00",
+      "taxAmount": 162,
+      "totalAmount": 1062,
+      "paymentMode": "cash"
+    },
+    {
+      "date": "2025-11-27",
+      "billNo": null,
+      "taxableValue": "1000.00",
+      "taxAmount": 180,
+      "totalAmount": 1180,
+      "paymentMode": "cash"
+    }
+  ]
+}

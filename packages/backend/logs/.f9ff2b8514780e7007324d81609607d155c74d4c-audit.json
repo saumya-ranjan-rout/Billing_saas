@@ -1,0 +1,395 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\.f9ff2b8514780e7007324d81609607d155c74d4c-audit.json",
+    "files": [
+        {
+            "date": 1764058268006,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-25.log",
+            "hash": "d645897bd02b8b1429b88fabfa2039fb33daaa9f9197bf92f81363d30f864b6e"
+        },
+        {
+            "date": 1764217863634,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log",
+            "hash": "04a7ec2437caafe43654bce017ce1ec30b139dade826f571f9d316487d7bd095"
+        },
+        {
+            "date": 1764242793142,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.1",
+            "hash": "7c1e63059f08a15e77949c54147241510c38e004cb4e38ca8b85001a7417c3fe"
+        },
+        {
+            "date": 1764242809314,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.2",
+            "hash": "9ec104fcc55b8617483d68b2ae84bb3989943b3a3f86654580943edea5c2a091"
+        },
+        {
+            "date": 1764242828191,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.3",
+            "hash": "01515e427c0881e61ba3f8fb04b8c868283c5ab361ba19fe7d62036db9f42750"
+        },
+        {
+            "date": 1764242850634,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.4",
+            "hash": "da446c9b3d57869bd23a4aa5aaa3868b9a0d5e051b00cdf03966153163e846a9"
+        },
+        {
+            "date": 1764242872055,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.5",
+            "hash": "eb968841116d318ce818b9438bb1d9fb78e5662a39bf949faa978ec6a23b6634"
+        },
+        {
+            "date": 1764242889868,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.6",
+            "hash": "3c0221d38dde6447badd9174754d4924eac4f8d901ff686e69d7bfa9ac69e9b9"
+        },
+        {
+            "date": 1764242907217,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.7",
+            "hash": "afe3d28b8e73aa15a8acdde9c7601a6aec64cea9781b113297c3fe48c675edb7"
+        },
+        {
+            "date": 1764242925538,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.8",
+            "hash": "84c5fecfae712c585866b72267dd5c9bc454fd61232196b0aba5d3d14365e143"
+        },
+        {
+            "date": 1764242940605,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.9",
+            "hash": "aef4eabcde18c3c84ed34e3312fb21b3b8f7d4548d57afa113c4104b5654aed4"
+        },
+        {
+            "date": 1764242959948,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.10",
+            "hash": "e43bc8aeaf7a38650656d9f1d6278e501b8d5396abedcf27acd5a9e3c2a9649f"
+        },
+        {
+            "date": 1764242979519,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.11",
+            "hash": "fc6042165e16bd48891544081738eecdce386af7ba7013e4d1827b3b0d009789"
+        },
+        {
+            "date": 1764242996465,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.12",
+            "hash": "ba655ce2ae00de8fbf45fcbb51a90dc4db4b102ea534abbbfa159627fd2087d1"
+        },
+        {
+            "date": 1764243013817,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.13",
+            "hash": "1c0e868a765cf7c9b02590f1fbb89fcb636b94a60438837c206c7188d9913460"
+        },
+        {
+            "date": 1764243028280,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.14",
+            "hash": "b1ea2e2a81ad5984898799681450f85f12997438f720bd403a8201d692b5863a"
+        },
+        {
+            "date": 1764243040264,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.15",
+            "hash": "f083e6365766c4ea158589860b450c0d753149abca0c0b6341b50d81f78f7521"
+        },
+        {
+            "date": 1764243052634,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.16",
+            "hash": "82f173b0378db5b396fb06fe7d63aafde179ccccd0c0b4b2193ae2a4d3ea5a06"
+        },
+        {
+            "date": 1764243064306,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.17",
+            "hash": "69f1df5d55f9e4be20d592f7830a49fc3cf1868bf197ffa3c88c972992ff776e"
+        },
+        {
+            "date": 1764243079505,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.18",
+            "hash": "2682bd37ada7318e8541a4fcb4ab90cadbf3ffacfe518d7e06429eac65213536"
+        },
+        {
+            "date": 1764243093685,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.19",
+            "hash": "8bb96d76a7b3a3c99d10409a597ede4ab0d1e1d7d1388a9ac2a118f014f68ab7"
+        },
+        {
+            "date": 1764243107087,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.20",
+            "hash": "e80835bc80f40f44e301ddca70257b1565eda5c9081420a67bf3dd429634fd99"
+        },
+        {
+            "date": 1764243126738,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.21",
+            "hash": "c166b725e69b9dccdbd35f28142118acdffe9fb4122722a060cf815d4e8be928"
+        },
+        {
+            "date": 1764243150458,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.22",
+            "hash": "2bf307f45b52dee8320e28b4785867a6528232fc85c5a8912a58566afdb2bff1"
+        },
+        {
+            "date": 1764243171089,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.23",
+            "hash": "e0d9cf3a5caa6d071b5497931ab0fbed5dc37004579138099b2f119429fd06bc"
+        },
+        {
+            "date": 1764243192893,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.24",
+            "hash": "67d7bad8acbd0f2a4c8fa783d18aa6ca1872ea5aee6943aeb7395cc7ea3ebe2c"
+        },
+        {
+            "date": 1764243211689,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.25",
+            "hash": "539aeedf9e67973ef969a6af0c7ff9934d70ea8280ac62df45e3bcbedd5fcf59"
+        },
+        {
+            "date": 1764243224381,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.26",
+            "hash": "c919e100be2f0ee90814b6346fa18ccb6eafd21f56a6d2dd6b39a34047960e45"
+        },
+        {
+            "date": 1764243236825,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.27",
+            "hash": "8019953cdeb353d2c8fc80a8bbcab42ef7d8dce081ad348ebe904e6c25632b6e"
+        },
+        {
+            "date": 1764243248927,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.28",
+            "hash": "ed4b73d70a36c7da6b2000a289ed7760baf7c70c5200c494a00f9bb32277f76e"
+        },
+        {
+            "date": 1764243262814,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.29",
+            "hash": "bcffb29f05d2a615fce029cb555bcfddd19cf618ce0a47c50d2e471e7d6e550f"
+        },
+        {
+            "date": 1764243277894,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.30",
+            "hash": "bc1d0fb0860bec9701082ffda45749a192d13fde115f3cfd4c5b75f616fa2a69"
+        },
+        {
+            "date": 1764243290410,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.31",
+            "hash": "9ceaf0782ce03d67a3da5edb437d2e978e42690c61d10a47a6361c4de0149b32"
+        },
+        {
+            "date": 1764243302790,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.32",
+            "hash": "94fb25f63640e38f8fff28b3d68b0b792c66824192deb7b78596325d373225df"
+        },
+        {
+            "date": 1764243317075,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.33",
+            "hash": "1be6025891ceaaed6bcadf23d20b5b7fa47c84aeae0f3049471c1a6f68806064"
+        },
+        {
+            "date": 1764243329680,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.34",
+            "hash": "295db5d2f8dc03432c839f8e27248b0096f0f7f6e107a7d4f397bc2f040ae079"
+        },
+        {
+            "date": 1764243346016,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.35",
+            "hash": "e0a5c3551edfe9126c69501562817a7296935bd02fc1546a048cab039015b080"
+        },
+        {
+            "date": 1764243359825,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.36",
+            "hash": "f7e5c520b6625cf565ec49eb621c65b561b4e45206ffe1f3c4faad3b1d4e48dc"
+        },
+        {
+            "date": 1764243372776,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.37",
+            "hash": "709cb349985c9a282b3ac38e575d3e22f4a64ae685b309801a80375562eee96e"
+        },
+        {
+            "date": 1764243385773,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.38",
+            "hash": "52b7112fae50637c0d7ec822a560ea52883fdafb7bbf6893b731e4048f49fb55"
+        },
+        {
+            "date": 1764243398436,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.39",
+            "hash": "8580cc7da12b591627dd153ad4a24e5e218be6172361b5bdad4889669ca876d0"
+        },
+        {
+            "date": 1764243412465,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.40",
+            "hash": "1f9bbb31ed4153a73ac4050c2aa9dc6957030da5cad6fefe502c7b7fd520f64d"
+        },
+        {
+            "date": 1764243425588,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.41",
+            "hash": "d8f8de4cab877cad552d1f96c23507d8e7b7b6695a925a3b48dcdc670882b1b7"
+        },
+        {
+            "date": 1764243442417,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.42",
+            "hash": "afff4cfd83c7361d95037c32ed831e414d5568ece8e691ace0ded497b190a6de"
+        },
+        {
+            "date": 1764243460797,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.43",
+            "hash": "9af36339ea67b80abc2c567e3979cc83112b0839704b1550c49ab4c7fbbd1c8c"
+        },
+        {
+            "date": 1764243472800,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.44",
+            "hash": "bebdd7232336587e00b47621bdacc93b751740807632bedef7cd051e31517a3c"
+        },
+        {
+            "date": 1764243484788,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.45",
+            "hash": "b90b5c7317451b0466b615df771c3c56f8d7847bee0f72c99c2fbcd9cbf35362"
+        },
+        {
+            "date": 1764243500637,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.46",
+            "hash": "2e2c52440e2e7cd303a2075d2f43c80cef8d24d3193cfa8a906bf43da7ca7b85"
+        },
+        {
+            "date": 1764243514040,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.47",
+            "hash": "75ccdf499097c481e0423113e7de3d370ae36dc35138daae29d870e49f320f7c"
+        },
+        {
+            "date": 1764243526156,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.48",
+            "hash": "2fb8b9aa234ee545e4b480930693767e57c28cf0223651678311a8b4be0eb9d2"
+        },
+        {
+            "date": 1764243538485,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.49",
+            "hash": "77e3ea149b9b3eac7fc2f103f561d4835bfd0c1dc021813dcebdee652f6aa0d6"
+        },
+        {
+            "date": 1764243550729,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.50",
+            "hash": "55b6782dbca3bba49d2340d6da8a5aa5f5e361d5423dce1fd47f650e8d4e2b87"
+        },
+        {
+            "date": 1764243563745,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.51",
+            "hash": "cf7e0ef379ae99d68ef3164f6c9cf65dc6477d3aa5935cb90acdb4a8423ab34b"
+        },
+        {
+            "date": 1764243575781,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.52",
+            "hash": "924c1181602f3319776e707d7e8758d2505d7e062046f0d4fd18ab76cd9d9344"
+        },
+        {
+            "date": 1764243593967,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.53",
+            "hash": "1bc66eaa77502a2a4d95e70931e333883b75c2788f144b1ff5ee362cb509880d"
+        },
+        {
+            "date": 1764243626752,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.54",
+            "hash": "29e3e18bc4e335c239a0232a32b3224f1b5d40d0beb82fd8de2289eb73190b80"
+        },
+        {
+            "date": 1764243648391,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.55",
+            "hash": "1d32001ec3f1b8f287a40e11bb4e1c2826048a3b2600cf88961c3bda876a1be6"
+        },
+        {
+            "date": 1764243662801,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.56",
+            "hash": "90cdb9754f5c778e26b4f8d51e29423f707f93ea025beec96d61e127ee879ca7"
+        },
+        {
+            "date": 1764243676799,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.57",
+            "hash": "f505fed63c858c61984a6fc10c906b6ba99113b7efdbaaefa961d380a336bc48"
+        },
+        {
+            "date": 1764243690294,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.58",
+            "hash": "081800abc241463330debf69b2367e16b3c2dfbc69f1a19d43992dee95ff4f8d"
+        },
+        {
+            "date": 1764243705167,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.59",
+            "hash": "a87282256f410f59842cf668f340ce05a9e98678d6ecd87d0bb9742529c6afa2"
+        },
+        {
+            "date": 1764243720657,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.60",
+            "hash": "a7a3f6313e2e0f6199f3466e65c0bdb455d57ebb28249701395b595c50b3b01f"
+        },
+        {
+            "date": 1764243747413,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.61",
+            "hash": "5c6c76a11d511ec67a9536c8673742c066e8e37776fa6d76bab298c92723fd0a"
+        },
+        {
+            "date": 1764243780312,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.62",
+            "hash": "b0c1f07cec87ba987470c97ba5ce1819c645302ff60ff1a69e986a28993b9338"
+        },
+        {
+            "date": 1764243803718,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.63",
+            "hash": "37dc8583f78a7cd759b4bda91cf191317c8cf10d2812f83c04fdb2eb9c0ad2d3"
+        },
+        {
+            "date": 1764243820761,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.64",
+            "hash": "70de0c86bc85cda1e8e0fee3b3ebc84c6014280bf179a0b894a02455c0102df4"
+        },
+        {
+            "date": 1764243834834,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.65",
+            "hash": "bf2e8f7db797620e9c5d00a3ccfe5aa25a041e478587bd0faf38bd4b978e32f5"
+        },
+        {
+            "date": 1764243856625,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.66",
+            "hash": "7e6b807e589616dc0b4cb7142d644cd1ea7e2413cefe5da4c5abaf8a80fd1abb"
+        },
+        {
+            "date": 1764243871014,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.67",
+            "hash": "12773d5876aaa5715c6d3ee3d69c61d05d82fc486bec6fbc637292aea696e1cd"
+        },
+        {
+            "date": 1764243884399,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.68",
+            "hash": "855e51c232e1c0b986dd1d21cbcb69fce1a6aa2f27df7d7fa86d4c4f94f53546"
+        },
+        {
+            "date": 1764243902335,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.69",
+            "hash": "8fd5fd8093ce1cbd5e44a1ce30f207dd395cc45b2c3aa53afdcef7d4a8db0c68"
+        },
+        {
+            "date": 1764243922898,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.70",
+            "hash": "c71bdc1cc022c723f785a2c55d54213af5262b2c494177f30ce0f4c5b3ded706"
+        },
+        {
+            "date": 1764243947886,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.71",
+            "hash": "ee797c6caa1529973488eada193a61b857787900d5d7328d46418dc2811363b6"
+        },
+        {
+            "date": 1764243971111,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.72",
+            "hash": "97cc3f57512b94c8091c9e8caef16f42199a0c46247c31e49b633b47b07ecd56"
+        },
+        {
+            "date": 1764243997527,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-27.log.73",
+            "hash": "60ba548e6d08c23a492b7ea87ddf0ba337244fb8010beb794013e124ad0ba703"
+        },
+        {
+            "date": 1764304104621,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-28.log",
+            "hash": "2a738c7ebc85846fac4c3b23e61c1910996101be83af1dca36d56c48a03ade72"
+        },
+        {
+            "date": 1764390721717,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-29.log",
+            "hash": "a52f794bce009dab7db81bf87b07ff33d8432083c4347418148a3899a8e80904"
+        }
+    ],
+    "hashType": "sha256"
+}

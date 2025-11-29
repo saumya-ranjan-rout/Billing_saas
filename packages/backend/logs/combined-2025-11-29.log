@@ -1,0 +1,53 @@
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-29 10:02:52:252"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-29 10:02:54:254"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-29 10:02:54:254"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-29 10:02:54:254"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-29 10:21:07:217"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-29 10:21:08:218"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-29 10:21:08:218"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-29 10:21:08:218"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-29 10:22:11:2211"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-29 10:22:12:2212"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-29 10:22:12:2212"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-29 10:22:12:2212"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-29 10:30:50:3050"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-29 10:30:51:3051"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-29 10:30:51:3051"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-29 10:30:51:3051"}
+{"level":"info","message":"🧹 Cleared 1 cache keys matching cache:5faad143-48aa-4a14-a394-9a57bdc9bd3f:/api/invoices*","service":"billing-saas-api","timestamp":"2025-11-29 10:35:21:3521"}
+{"level":"info","message":"Processing loyalty for invoice: 130cf31b-6d73-4d00-b383-60d1dc0d3012, totalAmount: 1152.00, type: string","service":"billing-saas-api","timestamp":"2025-11-29 10:35:21:3521"}
+{"level":"info","message":"No cashback earned for invoice 130cf31b-6d73-4d00-b383-60d1dc0d3012 - amount below threshold","service":"billing-saas-api","timestamp":"2025-11-29 10:35:21:3521"}
+{"invoiceId":"130cf31b-6d73-4d00-b383-60d1dc0d3012","level":"info","message":"Invoice created in 301ms","service":"billing-saas-api","tenantId":"5faad143-48aa-4a14-a394-9a57bdc9bd3f","timestamp":"2025-11-29 10:35:21:3521"}
+{"level":"info","message":"Notification sent successfully for user 5c456502-b1b8-4b79-9603-acc272124722","service":"billing-saas-api","timestamp":"2025-11-29 10:35:22:3522"}
+{"level":"info","message":"Processing loyalty for invoice: 130cf31b-6d73-4d00-b383-60d1dc0d3012, totalAmount: 1152.00, type: string","service":"billing-saas-api","timestamp":"2025-11-29 10:35:23:3523"}
+{"level":"info","message":"No cashback earned for invoice 130cf31b-6d73-4d00-b383-60d1dc0d3012 - amount below threshold","service":"billing-saas-api","timestamp":"2025-11-29 10:35:23:3523"}
+{"level":"info","message":"Loyalty processing completed for invoice: 130cf31b-6d73-4d00-b383-60d1dc0d3012","service":"billing-saas-api","timestamp":"2025-11-29 10:35:23:3523"}
+{"level":"info","message":"Processing loyalty for invoice: df3129af-4977-45be-abad-ac0155551373, totalAmount: 32400.00, type: string","service":"billing-saas-api","timestamp":"2025-11-29 10:39:08:398"}
+{"level":"info","message":"Cashback calculation: amount=32400, percentage=5.00, cashback=1620","service":"billing-saas-api","timestamp":"2025-11-29 10:39:08:398"}
+{"level":"info","message":"Customer loyalty update - totalSpent: 62100, availableCashback: 3105, totalCashbackEarned: 3105","service":"billing-saas-api","timestamp":"2025-11-29 10:39:08:398"}
+{"level":"info","message":"Processed cashback of ₹1620 for customer 62e65ded-0213-4559-a2ac-cc4d810b2bb1","service":"billing-saas-api","timestamp":"2025-11-29 10:39:08:398"}
+{"invoiceId":"df3129af-4977-45be-abad-ac0155551373","level":"info","message":"Invoice created in 159ms","service":"billing-saas-api","tenantId":"5faad143-48aa-4a14-a394-9a57bdc9bd3f","timestamp":"2025-11-29 10:39:08:398"}
+{"level":"info","message":"Notification sent successfully for user 5c456502-b1b8-4b79-9603-acc272124722","service":"billing-saas-api","timestamp":"2025-11-29 10:39:09:399"}
+{"level":"info","message":"Loyalty processing completed for invoice: df3129af-4977-45be-abad-ac0155551373","service":"billing-saas-api","timestamp":"2025-11-29 10:39:10:3910"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-29 11:28:42:2842"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-29 11:28:43:2843"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-29 11:28:43:2843"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-29 11:28:43:2843"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-29 11:29:26:2926"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-29 11:29:27:2927"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-29 11:29:27:2927"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-29 11:29:27:2927"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-29 11:47:41:4741"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-29 11:47:42:4742"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-29 11:47:42:4742"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-29 11:47:42:4742"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-29 15:03:33:333"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-29 15:03:34:334"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-29 15:03:34:334"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-29 15:03:34:334"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-29 15:08:13:813"}
+{"level":"info","message":"✅ Database connection established","service":"billing-saas-api","timestamp":"2025-11-29 15:08:14:814"}
+{"level":"info","message":"Database connected successfully","service":"billing-saas-api","timestamp":"2025-11-29 15:08:14:814"}
+{"level":"info","message":"Server running on port 3001 in development mode","service":"billing-saas-api","timestamp":"2025-11-29 15:08:14:814"}
+{"level":"info","message":"✅ Redis connected","service":"billing-saas-api","timestamp":"2025-11-29 15:09:40:940"}
+{"code":"23502","column":"invoiceId","driverError":{"code":"23502","column":"invoiceId","file":"tablecmds.c","length":170,"line":"6451","name":"error","routine":"ATRewriteTable","schema":"public","severity":"ERROR","table":"payments_invoice"},"file":"tablecmds.c","length":170,"level":"error","line":"6451","message":"❌ Database connection failed: column \"invoiceId\" of relation \"payments_invoice\" contains null values","query":"ALTER TABLE \"payments_invoice\" ALTER COLUMN \"invoiceId\" SET NOT NULL","routine":"ATRewriteTable","schema":"public","service":"billing-saas-api","severity":"ERROR","stack":"QueryFailedError: column \"invoiceId\" of relation \"payments_invoice\" contains null values\n    at PostgresQueryRunner.query (C:\\Users\\billing\\Billing_saas\\node_modules\\typeorm\\src\\driver\\postgres\\PostgresQueryRunner.ts:325:19)\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async PostgresQueryRunner.executeQueries (C:\\Users\\billing\\Billing_saas\\node_modules\\src\\query-runner\\BaseQueryRunner.ts:681:13)\n    at async PostgresQueryRunner.changeColumn (C:\\Users\\billing\\Billing_saas\\node_modules\\typeorm\\src\\driver\\postgres\\PostgresQueryRunner.ts:2307:9)\n    at async PostgresQueryRunner.changeColumns (C:\\Users\\billing\\Billing_saas\\node_modules\\typeorm\\src\\driver\\postgres\\PostgresQueryRunner.ts:2319:13)\n    at async RdbmsSchemaBuilder.updateExistColumns (C:\\Users\\billing\\Billing_saas\\node_modules\\src\\schema-builder\\RdbmsSchemaBuilder.ts:969:13)\n    at async RdbmsSchemaBuilder.executeSchemaSyncOperationsInProperOrder (C:\\Users\\billing\\Billing_saas\\node_modules\\src\\schema-builder\\RdbmsSchemaBuilder.ts:229:9)\n    at async RdbmsSchemaBuilder.build (C:\\Users\\billing\\Billing_saas\\node_modules\\src\\schema-builder\\RdbmsSchemaBuilder.ts:95:13)\n    at async DataSource.synchronize (C:\\Users\\billing\\Billing_saas\\node_modules\\src\\data-source\\DataSource.ts:340:9)\n    at async DataSource.initialize (C:\\Users\\billing\\Billing_saas\\node_modules\\src\\data-source\\DataSource.ts:278:43)\n    at async initializeDatabase (C:\\Users\\billing\\Billing_saas\\packages\\backend\\src\\config\\database.ts:118:7)\n    at async ApplicationServer.start (C:\\Users\\billing\\Billing_saas\\packages\\backend\\src\\app.ts:113:7)","table":"payments_invoice","timestamp":"2025-11-29 15:09:42:942"}
