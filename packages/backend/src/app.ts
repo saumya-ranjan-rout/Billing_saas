@@ -34,7 +34,7 @@ class ApplicationServer {
     this.app.use(cors({
       origin: process.env.NODE_ENV === 'production' 
         ? ['https://yourdomain.com', 'https://www.yourdomain.com'] 
-        : ['http://192.168.29.17:3000', 'http://192.168.29.17:3001'],
+        : ['http://192.168.29.12:3000', 'http://192.168.29.12:3001'],
       credentials: true
     }));
 

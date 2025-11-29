@@ -51,13 +51,13 @@ __decorate([
     __metadata("design:type", Invoice_1.Invoice)
 ], PaymentInvoice.prototype, "invoice", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", Object)
 ], PaymentInvoice.prototype, "customerId", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => Customer_1.Customer, customer => customer.payments),
+    (0, typeorm_1.ManyToOne)(() => Customer_1.Customer, customer => customer.payments, { nullable: true }),
     (0, typeorm_1.JoinColumn)({ name: 'customerId' }),
-    __metadata("design:type", Customer_1.Customer)
+    __metadata("design:type", Object)
 ], PaymentInvoice.prototype, "customer", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'decimal', precision: 15, scale: 2 }),

@@ -36,12 +36,12 @@ export class PaymentInvoice extends TenantAwareEntity {
   @JoinColumn({ name: 'invoiceId' })
   invoice: Invoice;
 
-  @Column()
-  customerId: string;
+  @Column({ nullable: true })
+  customerId: string | null;
 
-  @ManyToOne(() => Customer, customer => customer.payments)
+  @ManyToOne(() => Customer, customer => customer.payments , { nullable: true })
   @JoinColumn({ name: 'customerId' })
-  customer: Customer;
+  customer: Customer | null;
 
   @Column({ type: 'decimal', precision: 15, scale: 2 })
   amount: number;
