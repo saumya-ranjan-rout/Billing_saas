@@ -248,6 +248,8 @@ for (const customer of customers) {
 
       const balance = await this.getCustomerBalance(tenantId, customer.id);
 
+     
+
 const totalDueNum = Number(balance.totalDue ?? 0);
 const totalPaidNum = Number(balance.totalPaid ?? 0);
 const balanceNum = Number(balance.balance ?? 0);

@@ -412,16 +412,17 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({
               </div>
               <div className="md:col-span-2 flex flex-col">
                 <Select
-                  label="Tax Type"
-                  value={watch(`items.${index}.taxType`)}
-                  onChange={(value) => {
-                    setValue(`items.${index}.taxType`, value);
-                  }}
-                  options={[
-                    { value: "CGST_SGST", label: "CGST & SGST" },
-                    { value: "IGST", label: "IGST" }
-                  ]}
-                />
+                label="Tax Type"
+  value={watch(`items.${index}.taxType`)}
+  onChange={(value) => {
+    setValue(`items.${index}.taxType`, value as "CGST_SGST" | "IGST");
+  }}
+  options={[
+    { value: "CGST_SGST", label: "CGST & SGST" },
+    { value: "IGST", label: "IGST" },
+  ]}
+/>
+
 
                 {errors.items?.[index]?.taxType && (
                   <p className="text-red-500 text-sm mt-1">

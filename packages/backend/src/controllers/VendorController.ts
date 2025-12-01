@@ -70,12 +70,24 @@ export class VendorController {
       }
 
       const tenantId = req.user.tenantId;
-      const { page, limit, search } = req.query;
-      const options = {
-        page: parseInt(page as string) || 1,
-        limit: parseInt(limit as string) || 10,
-        search: search as string
-      };
+      // const { page, limit, search } = req.query;
+      // const options = {
+      //   page: parseInt(page as string) || 1,
+      //   limit: parseInt(limit as string) || 10,
+      //   search: search as string
+      // };
+       const { page = 1, limit = 10, name, email, phone, status, joinedFrom, joinedTo } = req.query;
+
+const options = {
+  page: Number(page),
+  limit: Number(limit),
+  name: name as string,
+  email: email as string,
+  phone: phone as string,
+  status: status as string,
+  joinedFrom: joinedFrom as string,
+  joinedTo: joinedTo as string,
+};
       const vendors = await this.vendorService.getVendors(tenantId, options);
       res.json(vendors);
     } catch (error) {
@@ -152,6 +164,77 @@ export class VendorController {
     } catch (error) {
       logger.error('Error searching vendors:', error);
       res.status(400).json({ error: getErrorMessage(error) });
+    }
+  }
+
+
+  async getVendorBalance(req: Request, res: Response) {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+  
+      const { id } = req.params;
+      const tenantId = req.user.tenantId;
+  
+      const balance = await this.vendorService.getVendorBalance(tenantId, id);
+  //console.log(balance);
+     return res.json(balance);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+  
+  async createPayment(req: Request, res: Response) {
+    try {
+      if (!req.user) return res.status(401).json({ error: "Unauthorized" });
+  
+      const tenantId = req.user.tenantId;
+      const { amount, vendorId } = req.body;
+  
+      const balance = await this.vendorService.getVendorBalance(tenantId, vendorId);
+ 
+
+//       console.log("amount",amount);
+//       console.log("balance.balance",balance.balance);
+//   console.log(typeof amount);
+// console.log(typeof balance.balance);
+
+      if (amount > balance.balance) {
+        return res.status(400).json({
+          error: `Payment exceeds outstanding balance. Remaining balance: ${balance.balance}`
+        });
+      }
+  
+      const payment = await this.vendorService.recordPayment(req.body);
+
+
+         await this.cacheService.del(`vendor:${vendorId}:${tenantId}`);
+      await this.cacheService.invalidatePattern(`vendors:${tenantId}:*`);
+      await this.cacheService.invalidatePattern(`cache:${tenantId}:/api/vendors*`);
+
+      res.json(payment);
+  
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+  
+  
+  async getPaymentHistory(req: Request, res: Response) {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+  
+      const { id } = req.params;
+      const tenantId = req.user.tenantId;
+  
+      const history = await this.vendorService.getVendorPaymentHistory(tenantId, id);
+  //console.log(balance);
+     return res.json(history);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
     }
   }
 }

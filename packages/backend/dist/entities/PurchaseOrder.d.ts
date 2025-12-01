@@ -35,10 +35,14 @@ export declare class PurchaseOrder extends TenantAwareEntity {
     totalAmount: number;
     amountPaid: number;
     balanceDue: number;
+    paymentMethod: string;
     taxDetails: Array<{
+        cess: boolean;
         taxName: string;
         taxRate: number;
+        cessRate: number;
         taxAmount: number;
+        cessAmount: number;
     }>;
     deletedAt: Date | null;
     tenant: Tenant;

@@ -402,6 +402,9 @@ export interface PurchaseItem {
   receivedQuantity: number;
   isReceived: boolean;
   product?: Product;
+  taxType?: "CGST_SGST" | "IGST";
+  cess?: boolean;
+  cessRate?: number;
 }
 
 export interface PurchaseOrder {
@@ -433,6 +436,8 @@ export interface PurchaseOrder {
   createdAt: string;
   updatedAt: string;
   deletedAt?: string;
+ paymentMethod?:  'cash' | 'bank_transfer' | 'upi' | 'cheque' | 'credit_card' | 'debit_card' | 'wallet' | 'other';
+
 }
 
 

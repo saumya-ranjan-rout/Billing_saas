@@ -61,6 +61,22 @@ __decorate([
     __metadata("design:type", Number)
 ], PurchaseItem.prototype, "discountAmount", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ type: 'varchar', nullable: true }),
+    __metadata("design:type", String)
+], PurchaseItem.prototype, "taxType", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'boolean', default: false }),
+    __metadata("design:type", Boolean)
+], PurchaseItem.prototype, "cess", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 5, scale: 2, default: 0 }),
+    __metadata("design:type", Number)
+], PurchaseItem.prototype, "cessRate", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 15, scale: 2, default: 0 }),
+    __metadata("design:type", Number)
+], PurchaseItem.prototype, "cessAmount", void 0);
+__decorate([
     (0, typeorm_1.Column)({ type: 'decimal', precision: 5, scale: 2, default: 0 }),
     __metadata("design:type", Number)
 ], PurchaseItem.prototype, "taxRate", void 0);

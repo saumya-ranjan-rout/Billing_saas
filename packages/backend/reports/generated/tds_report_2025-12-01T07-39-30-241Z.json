@@ -1,0 +1,26 @@
+{
+  "summary": {
+    "totalPayments": 1,
+    "totalAmount": 1000,
+    "totalTDS": 20
+  },
+  "sections": {
+    "194C": {
+      "section": "194C",
+      "description": "Payment to Contractors",
+      "rate": 2,
+      "totalAmount": 1000,
+      "tdsAmount": 20,
+      "transactions": [
+        {
+          "date": "2025-12-01",
+          "vendor": "Stationery Suppliers",
+          "pan": "ABCDE1234T",
+          "amount": "1000.00",
+          "tds": 20,
+          "paymentMode": "cash"
+        }
+      ]
+    }
+  }
+}

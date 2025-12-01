@@ -12,6 +12,10 @@ export declare class PurchaseItem extends TenantAwareEntity {
     unitPrice: number;
     discount: number;
     discountAmount: number;
+    taxType: string;
+    cess: boolean;
+    cessRate: number;
+    cessAmount: number;
     taxRate: number;
     taxAmount: number;
     lineTotal: number;

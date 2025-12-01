@@ -1,0 +1,23 @@
+{
+  "taxLiability": {
+    "outwardSupply": 2850,
+    "outwardTax": 277.5,
+    "cgst": 71.25,
+    "sgst": 71.25,
+    "igst": 0,
+    "cess": 135
+  },
+  "itcDetails": {
+    "available": 180,
+    "claimed": 150,
+    "reversed": 30,
+    "ineligible": 18
+  },
+  "netPayable": 127.5,
+  "dueDate": "2025-12-21T00:00:00.000Z",
+  "summary": {
+    "totalInvoices": 2,
+    "totalPurchases": 1,
+    "netTaxLiability": 127.5
+  }
+}

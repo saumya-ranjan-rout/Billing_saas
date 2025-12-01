@@ -9,9 +9,60 @@ const database_1 = require("../../config/database");
 const Vendor_1 = require("../../entities/Vendor");
 const validators_1 = require("../../utils/validators");
 const logger_1 = __importDefault(require("../../utils/logger"));
+const PaymentInvoice_1 = require("../../entities/PaymentInvoice");
+const PurchaseOrder_1 = require("../../entities/PurchaseOrder");
 class VendorService {
     constructor() {
+        this.paymentRepository = database_1.AppDataSource.getRepository(PaymentInvoice_1.PaymentInvoice);
+        this.purchaseRepository = database_1.AppDataSource.getRepository(PurchaseOrder_1.PurchaseOrder);
         this.vendorRepository = database_1.AppDataSource.getRepository(Vendor_1.Vendor);
+        this.paymentRepository = database_1.AppDataSource.getRepository(PaymentInvoice_1.PaymentInvoice);
+        this.purchaseRepository = database_1.AppDataSource.getRepository(PurchaseOrder_1.PurchaseOrder);
+    }
+    async getVendorBalance(tenantId, vendorId) {
+        const totalDueResult = await this.purchaseRepository
+            .createQueryBuilder("purchase_orders")
+            .select("SUM(purchase_orders.balanceDue)", "totalDue")
+            .where("purchase_orders.tenantId = :tenantId", { tenantId })
+            .andWhere("purchase_orders.vendorId = :vendorId", { vendorId })
+            .getRawOne();
+        const totalPaidResult = await this.paymentRepository
+            .createQueryBuilder("payment_invoice")
+            .select("SUM(payment_invoice.amount)", "totalPaid")
+            .where("payment_invoice.tenantId = :tenantId", { tenantId })
+            .andWhere("payment_invoice.vendorId = :vendorId", { vendorId })
+            .getRawOne();
+        const totalDue = Number(totalDueResult?.totalDue ?? 0);
+        const totalPaid = Number(totalPaidResult?.totalPaid ?? 0);
+        const balance = totalDue - totalPaid;
+        return {
+            vendorId,
+            totalDue,
+            totalPaid,
+            balance: totalDue - totalPaid
+        };
+    }
+    async recordPayment(data) {
+        const { amount, method, vendorId, paymentDate, notes, status, paymentType, tenantId } = data;
+        const payment = this.paymentRepository.create({
+            amount,
+            method,
+            vendorId,
+            paymentDate,
+            notes,
+            status,
+            paymentType,
+            tenantId,
+            createdAt: new Date(),
+        });
+        return await this.paymentRepository.save(payment);
+    }
+    async getVendorPaymentHistory(tenantId, vendorId) {
+        const PaymentHistory = await this.paymentRepository.find({
+            where: { tenantId, vendorId, deletedAt: (0, typeorm_1.IsNull)() },
+            order: { createdAt: 'DESC' },
+        });
+        return { PaymentHistory };
     }
     async createVendor(tenantId, vendorData) {
         try {
@@ -57,22 +108,56 @@ class VendorService {
     }
     async getVendors(tenantId, options) {
         try {
-            const { page, limit, search } = options;
+            const { page, limit, name, email, phone, status, joinedFrom, joinedTo } = options;
             const skip = (page - 1) * limit;
             let whereConditions = { tenantId, deletedAt: (0, typeorm_1.IsNull)() };
-            if (search) {
-                whereConditions = [
-                    { tenantId, name: (0, typeorm_1.ILike)(`%${search}%`), deletedAt: (0, typeorm_1.IsNull)() },
-                    { tenantId, email: (0, typeorm_1.ILike)(`%${search}%`), deletedAt: (0, typeorm_1.IsNull)() },
-                    { tenantId, phone: (0, typeorm_1.ILike)(`%${search}%`), deletedAt: (0, typeorm_1.IsNull)() }
-                ];
+            if (options.name) {
+                whereConditions.name = (0, typeorm_1.ILike)(`%${options.name}%`);
             }
-            const [vendors, total] = await this.vendorRepository.findAndCount({
+            if (options.email) {
+                whereConditions.email = (0, typeorm_1.ILike)(`%${options.email}%`);
+            }
+            if (options.phone) {
+                whereConditions.phone = (0, typeorm_1.ILike)(`%${options.phone}%`);
+            }
+            if (options.joinedFrom || options.joinedTo) {
+                whereConditions.createdAt = {};
+                if (options.joinedFrom) {
+                    whereConditions.createdAt = (0, typeorm_1.MoreThanOrEqual)(new Date(options.joinedFrom));
+                }
+                if (options.joinedTo) {
+                    whereConditions.createdAt = (0, typeorm_1.LessThanOrEqual)(new Date(options.joinedTo));
+                }
+            }
+            let [vendors, total] = await this.vendorRepository.findAndCount({
                 where: whereConditions,
                 skip,
                 take: limit,
                 order: { createdAt: 'DESC' }
             });
+            for (const vendor of vendors) {
+                const balance = await this.getVendorBalance(tenantId, vendor.id);
+                const totalDueNum = Number(balance.totalDue ?? 0);
+                const totalPaidNum = Number(balance.totalPaid ?? 0);
+                const balanceNum = Number(balance.balance ?? 0);
+                vendor.totalDue = Number(totalDueNum.toFixed(2));
+                vendor.totalPaid = Number(totalPaidNum.toFixed(2));
+                vendor.balance = Number(balanceNum.toFixed(2));
+                if (balanceNum === 0 && totalDueNum > 0) {
+                    vendor.paymentStatus = PaymentInvoice_1.PaymentStatus.COMPLETED;
+                }
+                else if (totalPaidNum > 0 && balanceNum > 0) {
+                    vendor.paymentStatus = PaymentInvoice_1.PaymentStatus.PARTIAL;
+                    ;
+                }
+                else {
+                    vendor.paymentStatus = PaymentInvoice_1.PaymentStatus.PENDING;
+                }
+            }
+            if (options.status) {
+                vendors = vendors.filter(v => v.paymentStatus === options.status);
+                total = vendors.length;
+            }
             return {
                 data: vendors,
                 pagination: {

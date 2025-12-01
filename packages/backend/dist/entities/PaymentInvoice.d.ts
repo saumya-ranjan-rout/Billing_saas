@@ -39,6 +39,7 @@ export declare class PaymentInvoice extends TenantAwareEntity {
     paymentDetails: Record<string, any>;
     deletedAt: Date | null;
     tenant: Tenant;
-    vendor?: Vendor;
+    vendorId: string | null;
+    vendor: Vendor;
 }
 //# sourceMappingURL=PaymentInvoice.d.ts.map

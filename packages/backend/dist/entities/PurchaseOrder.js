@@ -107,6 +107,10 @@ __decorate([
     __metadata("design:type", Number)
 ], PurchaseOrder.prototype, "balanceDue", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ type: 'varchar', length: 50, nullable: true }),
+    __metadata("design:type", String)
+], PurchaseOrder.prototype, "paymentMethod", void 0);
+__decorate([
     (0, typeorm_1.Column)({ type: 'jsonb', nullable: true }),
     __metadata("design:type", Array)
 ], PurchaseOrder.prototype, "taxDetails", void 0);

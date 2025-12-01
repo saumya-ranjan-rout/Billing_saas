@@ -1,7 +1,7 @@
 import { TenantAwareEntity } from './BaseEntity';
 import { Tenant } from './Tenant';
 import { PurchaseOrder } from './PurchaseOrder';
-import { PaymentInvoice } from './PaymentInvoice';
+import { PaymentInvoice, PaymentStatus } from './PaymentInvoice';
 export declare enum VendorType {
     SUPPLIER = "supplier",
     SERVICE_PROVIDER = "service_provider",
@@ -38,5 +38,9 @@ export declare class Vendor extends TenantAwareEntity {
     tenant: Tenant;
     purchaseOrders: PurchaseOrder[];
     payments: PaymentInvoice[];
+    totalDue?: number;
+    totalPaid?: number;
+    balance?: number;
+    paymentStatus?: PaymentStatus;
 }
 //# sourceMappingURL=Vendor.d.ts.map

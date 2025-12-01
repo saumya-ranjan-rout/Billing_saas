@@ -102,7 +102,12 @@ __decorate([
     __metadata("design:type", Tenant_1.Tenant)
 ], PaymentInvoice.prototype, "tenant", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", Object)
+], PaymentInvoice.prototype, "vendorId", void 0);
+__decorate([
     (0, typeorm_1.ManyToOne)(() => Vendor_1.Vendor, vendor => vendor.payments, { nullable: true }),
+    (0, typeorm_1.JoinColumn)({ name: 'vendorId' }),
     __metadata("design:type", Vendor_1.Vendor)
 ], PaymentInvoice.prototype, "vendor", void 0);
 PaymentInvoice = __decorate([

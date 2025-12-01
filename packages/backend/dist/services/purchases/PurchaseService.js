@@ -10,6 +10,7 @@ const PurchaseOrder_1 = require("../../entities/PurchaseOrder");
 const PurchaseItem_1 = require("../../entities/PurchaseItem");
 const Vendor_1 = require("../../entities/Vendor");
 const Product_1 = require("../../entities/Product");
+const PaymentInvoice_1 = require("../../entities/PaymentInvoice");
 const logger_1 = __importDefault(require("../../utils/logger"));
 class PurchaseService {
     constructor() {
@@ -17,6 +18,7 @@ class PurchaseService {
         this.purchaseItemRepository = database_1.AppDataSource.getRepository(PurchaseItem_1.PurchaseItem);
         this.vendorRepository = database_1.AppDataSource.getRepository(Vendor_1.Vendor);
         this.productRepository = database_1.AppDataSource.getRepository(Product_1.Product);
+        this.paymentInvoiceRepository = database_1.AppDataSource.getRepository(PaymentInvoice_1.PaymentInvoice);
     }
     generatePONumber(tenantId) {
         const timestamp = Date.now();
@@ -27,10 +29,14 @@ class PurchaseService {
         const discountAmount = (item.unitPrice * item.quantity * item.discount) / 100;
         const taxableAmount = (item.unitPrice * item.quantity) - discountAmount;
         const taxAmount = (taxableAmount * item.taxRate) / 100;
-        const lineTotal = taxableAmount + taxAmount;
+        const cessAmount = item.cess
+            ? (taxableAmount * (item.cessRate || 0)) / 100
+            : 0;
+        const lineTotal = taxableAmount + taxAmount + cessAmount;
         return {
             discountAmount,
             taxAmount,
+            cessAmount,
             lineTotal,
             receivedQuantity: 0,
             isReceived: false
@@ -56,16 +62,21 @@ class PurchaseService {
                 const itemTotals = this.calculateItemTotals(itemData);
                 subTotal += itemData.unitPrice * itemData.quantity;
                 discountTotal += itemTotals.discountAmount;
-                taxTotal += itemTotals.taxAmount;
-                const existingTax = taxDetails.find(t => t.taxRate === itemData.taxRate);
+                taxTotal += itemTotals.taxAmount + itemTotals.cessAmount;
+                const existingTax = taxDetails.find(t => t.taxRate === itemData.taxRate &&
+                    t.taxType === itemData.taxType);
                 if (existingTax) {
                     existingTax.taxAmount += itemTotals.taxAmount;
+                    existingTax.cessAmount += itemTotals.cessAmount || 0;
                 }
                 else {
                     taxDetails.push({
-                        taxName: `Tax ${itemData.taxRate}%`,
+                        taxName: `${itemData.taxType} ${itemData.taxRate}%`,
                         taxRate: itemData.taxRate,
-                        taxAmount: itemTotals.taxAmount
+                        taxAmount: itemTotals.taxAmount,
+                        cess: itemData.cess ? true : false,
+                        cessRate: itemData.cessRate || 0,
+                        cessAmount: itemTotals.cessAmount || 0
                     });
                 }
                 const purchaseItem = this.purchaseItemRepository.create({
@@ -90,12 +101,39 @@ class PurchaseService {
                 taxTotal,
                 discountTotal,
                 totalAmount,
-                balanceDue: totalAmount,
+                amountPaid: purchaseData.amountPaid,
+                balanceDue: purchaseData.balanceDue,
+                paymentMethod: purchaseData.paymentMethod,
                 taxDetails,
                 items,
                 tenantId
             });
             const savedPO = await queryRunner.manager.save(purchaseOrder);
+            let paymentStatus = PaymentInvoice_1.PaymentStatus.PENDING;
+            if (purchaseData.amountPaid === 0) {
+                paymentStatus = PaymentInvoice_1.PaymentStatus.PENDING;
+            }
+            else if (purchaseData.amountPaid < totalAmount) {
+                paymentStatus = PaymentInvoice_1.PaymentStatus.PARTIAL;
+            }
+            else if (purchaseData.amountPaid === totalAmount) {
+                paymentStatus = PaymentInvoice_1.PaymentStatus.COMPLETED;
+            }
+            const paymentData = {
+                tenantId,
+                invoiceId: null,
+                customerId: null,
+                vendorId: purchaseData.vendorId,
+                amount: purchaseData.amountPaid || 0,
+                method: purchaseData.paymentMethod,
+                status: paymentStatus,
+                paymentType: PaymentInvoice_1.PaymentType.EXPENSE,
+                paymentDate: new Date(),
+                referenceNumber: purchaseData.referenceNumber || null,
+                notes: purchaseData.notes || '',
+            };
+            const paymentRecord = this.paymentInvoiceRepository.create(paymentData);
+            await queryRunner.manager.save(paymentRecord);
             vendor.outstandingBalance = Number(vendor.outstandingBalance) + totalAmount;
             await queryRunner.manager.save(vendor);
             await queryRunner.commitTransaction();
@@ -172,29 +210,57 @@ class PurchaseService {
                 throw new Error('Only draft purchase orders can be modified');
             }
             await this.purchaseItemRepository.delete({ purchaseOrder: { id: poId } });
-            const newItems = updates.items?.map((item) => {
-                const discountAmount = (item.unitPrice * item.quantity * (item.discount ?? 0)) / 100;
-                const taxableAmount = (item.unitPrice * item.quantity) - discountAmount;
-                const taxAmount = (taxableAmount * (item.taxRate ?? 0)) / 100;
-                const lineTotal = taxableAmount + taxAmount;
+            let subTotal = 0;
+            let taxTotal = 0;
+            let discountTotal = 0;
+            const taxDetails = [];
+            const newItems = updates.items.map((item) => {
+                if (!item.cess) {
+                    item.cessRate = 0;
+                }
+                const itemTotals = this.calculateItemTotals(item);
+                subTotal += item.unitPrice * item.quantity;
+                discountTotal += itemTotals.discountAmount;
+                taxTotal += itemTotals.taxAmount + itemTotals.cessAmount;
+                const existing = taxDetails.find(t => t.taxRate === item.taxRate && t.taxType === item.taxType);
+                if (existing) {
+                    existing.taxAmount += itemTotals.taxAmount;
+                    existing.cessAmount += itemTotals.cessAmount;
+                }
+                else {
+                    taxDetails.push({
+                        taxName: `${item.taxType} ${item.taxRate}%`,
+                        taxRate: item.taxRate,
+                        taxAmount: itemTotals.taxAmount,
+                        cess: !!item.cess,
+                        cessRate: item.cessRate || 0,
+                        cessAmount: itemTotals.cessAmount
+                    });
+                }
                 return this.purchaseItemRepository.create({
                     ...item,
+                    ...itemTotals,
                     tenantId,
-                    discountAmount,
-                    taxAmount,
-                    lineTotal,
-                    purchaseOrder,
+                    purchaseOrder
                 });
             });
+            const totalAmount = subTotal - discountTotal + taxTotal;
+            const balanceDue = totalAmount - (updates.amountPaid || 0);
             Object.assign(purchaseOrder, {
                 ...updates,
-                tenantId,
+                subTotal,
+                taxTotal,
+                discountTotal,
+                totalAmount,
+                balanceDue,
+                taxDetails,
                 items: newItems,
+                tenantId
             });
             return await this.purchaseOrderRepository.save(purchaseOrder);
         }
         catch (error) {
-            logger_1.default.error('Error updating purchase order:', error);
+            logger_1.default.error("Error updating purchase order:", error);
             throw error;
         }
     }

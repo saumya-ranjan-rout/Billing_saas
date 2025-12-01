@@ -280,19 +280,6 @@ class ReportService {
                 totalAmount: invoice.totalAmount,
                 placeOfSupply: invoice.customer?.billingAddress?.state || 'Not specified'
             };
-            if (invoice.taxDetails) {
-                invoice.taxDetails.forEach(tax => {
-                    const taxAmount = tax.taxAmount;
-                    if (tax.taxName.includes('CGST'))
-                        invoiceData.cgst += taxAmount;
-                    else if (tax.taxName.includes('SGST'))
-                        invoiceData.sgst += taxAmount;
-                    else if (tax.taxName.includes('IGST'))
-                        invoiceData.igst += taxAmount;
-                    else if (tax.taxName.includes('CESS'))
-                        invoiceData.cess += taxAmount;
-                });
-            }
             const customerCountry = invoice.customer?.billingAddress?.country || 'India';
             if (invoice.customer?.gstin) {
                 if (customerCountry !== 'India') {
@@ -309,10 +296,24 @@ class ReportService {
                 reportData.summary.b2cCount++;
             }
             invoice.items.forEach(item => {
-                const hsnCode = item.metadata?.hsnCode || '999999';
-                if (!reportData.hsnSummary[hsnCode]) {
-                    reportData.hsnSummary[hsnCode] = {
-                        hsnCode,
+                const itemTax = Number(item.taxAmount) || 0;
+                const itemCess = Number(item.cessAmount) || 0;
+                const value = item.unitPrice * item.quantity;
+                if (item.tax_type === 'cgst_sgst') {
+                    const half = itemTax / 2;
+                    invoiceData.cgst += half;
+                    invoiceData.sgst += half;
+                }
+                else if (item.tax_type === 'igst') {
+                    invoiceData.igst += itemTax;
+                }
+                if (item.has_cess && item.cessAmount) {
+                    invoiceData.cess += itemCess;
+                }
+                const hsn = item.metadata?.hsnCode || '999999';
+                if (!reportData.hsnSummary[hsn]) {
+                    reportData.hsnSummary[hsn] = {
+                        hsnCode: hsn,
                         description: item.description,
                         uqc: item.unit || 'NOS',
                         totalQuantity: 0,
@@ -322,10 +323,11 @@ class ReportService {
                         cessAmount: 0
                     };
                 }
-                const itemValue = item.unitPrice * item.quantity;
-                reportData.hsnSummary[hsnCode].totalQuantity += item.quantity;
-                reportData.hsnSummary[hsnCode].taxableValue += itemValue;
-                reportData.hsnSummary[hsnCode].taxAmount += (item.taxAmount || 0);
+                const qty = Number(item.quantity) || 0;
+                reportData.hsnSummary[hsn].totalQuantity += qty;
+                reportData.hsnSummary[hsn].taxableValue += value;
+                reportData.hsnSummary[hsn].taxAmount += itemTax;
+                reportData.hsnSummary[hsn].cessAmount += itemCess;
             });
             reportData.summary.totalTaxableValue += taxableValue;
             reportData.summary.totalTaxAmount += invoiceData.cgst + invoiceData.sgst + invoiceData.igst;
@@ -403,7 +405,7 @@ class ReportService {
                 issueDate: (0, typeorm_1.Between)(new Date(filters.fromDate), new Date(filters.toDate)),
                 deletedAt: (0, typeorm_1.IsNull)()
             },
-            relations: ['taxDetails']
+            relations: ['items']
         });
         const payments = await this.paymentRepository.find({
             where: {
@@ -419,19 +421,20 @@ class ReportService {
         invoices.forEach(invoice => {
             const taxableValue = invoice.subTotal - (invoice.discountTotal || 0);
             outwardSupply += taxableValue;
-            outwardTax += invoice.taxTotal;
-            if (invoice.taxDetails) {
-                invoice.taxDetails.forEach(tax => {
-                    if (tax.taxName.includes('CGST'))
-                        cgst += tax.taxAmount;
-                    else if (tax.taxName.includes('SGST'))
-                        sgst += tax.taxAmount;
-                    else if (tax.taxName.includes('IGST'))
-                        igst += tax.taxAmount;
-                    else if (tax.taxName.includes('CESS'))
-                        cess += tax.taxAmount;
-                });
-            }
+            outwardTax += Number(invoice.taxTotal) || 0;
+            invoice.items?.forEach(item => {
+                const itemTax = Number(item.taxAmount) || 0;
+                if (item.tax_type === 'cgst_sgst') {
+                    cgst += itemTax / 2;
+                    sgst += itemTax / 2;
+                }
+                if (item.tax_type === 'igst') {
+                    igst += itemTax;
+                }
+                if (item.has_cess && item.cessAmount) {
+                    cess += Number(item.cessAmount);
+                }
+            });
         });
         let itcAvailable = 0;
         let itcClaimed = 0;
@@ -476,9 +479,21 @@ class ReportService {
         });
         const records = invoices.map(invoice => {
             const taxableValue = invoice.subTotal - (invoice.discountTotal || 0);
-            const cgst = invoice.taxDetails?.find(t => t.taxName.includes('CGST'))?.taxAmount || 0;
-            const sgst = invoice.taxDetails?.find(t => t.taxName.includes('SGST'))?.taxAmount || 0;
-            const igst = invoice.taxDetails?.find(t => t.taxName.includes('IGST'))?.taxAmount || 0;
+            let cgst = 0, sgst = 0, igst = 0, cess = 0;
+            invoice.items.forEach(item => {
+                const taxAmount = Number(item.taxAmount) || 0;
+                if (item.tax_type === 'cgst_sgst') {
+                    const half = taxAmount / 2;
+                    cgst += half;
+                    sgst += half;
+                }
+                else if (item.tax_type === 'igst') {
+                    igst += taxAmount;
+                }
+                if (item.has_cess && item.cessAmount) {
+                    cess += Number(item.cessAmount) || 0;
+                }
+            });
             return {
                 date: invoice.issueDate,
                 invoiceNo: invoice.invoiceNumber,
@@ -488,7 +503,7 @@ class ReportService {
                 cgst,
                 sgst,
                 igst,
-                totalAmount: invoice.totalAmount,
+                totalAmount: Number(invoice.totalAmount) || 0,
                 paymentStatus: invoice.status,
                 paymentDate: invoice.paidDate,
                 placeOfSupply: invoice.customer?.billingAddress?.state || 'Not specified'
@@ -540,8 +555,8 @@ class ReportService {
                     transactions: []
                 };
             }
-            const tdsAmount = payment.amount * (report.sections[section].rate / 100);
-            report.sections[section].totalAmount += payment.amount;
+            const tdsAmount = Number(payment.amount) * (report.sections[section].rate / 100);
+            report.sections[section].totalAmount += Number(payment.amount);
             report.sections[section].tdsAmount += tdsAmount;
             report.sections[section].transactions.push({
                 date: payment.paymentDate,
@@ -551,7 +566,7 @@ class ReportService {
                 tds: tdsAmount,
                 paymentMode: payment.method
             });
-            report.summary.totalAmount += payment.amount;
+            report.summary.totalAmount += Number(payment.amount);
             report.summary.totalTDS += tdsAmount;
         });
         return report;
@@ -697,17 +712,21 @@ class ReportService {
                         cessAmount: 0
                     };
                 }
-                const itemValue = item.unitPrice * item.quantity;
-                hsnSummary[hsnCode].totalQuantity += item.quantity;
-                hsnSummary[hsnCode].taxableValue += itemValue;
-                hsnSummary[hsnCode].taxAmount += (item.taxAmount || 0);
+                const row = hsnSummary[hsnCode];
+                const itemValue = Number(item.unitPrice) * Number(item.quantity);
+                row.totalQuantity += Number(item.quantity);
+                row.taxableValue += itemValue;
+                row.taxAmount += Number(item.taxAmount || 0);
+                if (item.has_cess && item.cessAmount) {
+                    row.cessAmount += Number(item.cessAmount);
+                }
             });
         });
         return {
             summary: {
                 totalHSNCodes: Object.keys(hsnSummary).length,
-                totalTaxableValue: Object.values(hsnSummary).reduce((sum, item) => sum + item.taxableValue, 0),
-                totalTaxAmount: Object.values(hsnSummary).reduce((sum, item) => sum + item.taxAmount, 0)
+                totalTaxableValue: Object.values(hsnSummary).reduce((sum, item) => sum + Number(item.taxableValue), 0),
+                totalTaxAmount: Object.values(hsnSummary).reduce((sum, item) => sum + Number(item.taxAmount), 0)
             },
             hsnDetails: Object.values(hsnSummary)
         };
@@ -785,11 +804,10 @@ class ReportService {
         return {
             summary: {
                 totalPurchases: payments.length,
-                totalAmount: payments.reduce((sum, p) => sum + p.amount, 0)
+                totalAmount: payments.reduce((sum, p) => sum + Number(p.amount), 0)
             },
             records: payments.map(p => ({
                 date: p.paymentDate,
-                billNo: p.referenceNumber,
                 vendor: p.vendor?.name,
                 vendorGSTIN: p.vendor?.gstin,
                 taxableValue: p.amount,

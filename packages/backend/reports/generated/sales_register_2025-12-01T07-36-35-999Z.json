@@ -1,0 +1,9 @@
+{
+  "summary": {
+    "totalInvoices": 0,
+    "totalTaxableValue": 0,
+    "totalTax": 0,
+    "totalAmount": 0
+  },
+  "records": []
+}

@@ -63,6 +63,22 @@ router.delete(
   vendorController.deleteVendor.bind(vendorController)
 );
 
+router.get(
+  '/:id/balance',
+  rbacMiddleware(['read:vendors']),
+  vendorController.getVendorBalance.bind(vendorController)
+);
+router.post(
+  "/payments",
+  rbacMiddleware(["create:vendors"]),
+  vendorController.createPayment.bind(vendorController)
+);
+router.get(
+  "/:id/paymentHistory",
+  rbacMiddleware(["read:vendors"]),
+  vendorController.getPaymentHistory.bind(vendorController)
+);
+
 export default router;
 
 

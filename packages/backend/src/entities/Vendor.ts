@@ -2,7 +2,8 @@ import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { TenantAwareEntity } from './BaseEntity';
 import { Tenant } from './Tenant';
 import { PurchaseOrder } from './PurchaseOrder';
-import { PaymentInvoice } from './PaymentInvoice';
+import { PaymentInvoice, PaymentStatus } from './PaymentInvoice';
+
 
 export enum VendorType {
   SUPPLIER = 'supplier',
@@ -75,4 +76,10 @@ export class Vendor extends TenantAwareEntity {
 
   @OneToMany(() => PaymentInvoice, payment => payment.vendor)
 payments: PaymentInvoice[];
+
+
+    totalDue?: number;
+  totalPaid?: number;
+  balance?: number;
+  paymentStatus?: PaymentStatus;
 }

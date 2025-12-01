@@ -22,5 +22,8 @@ router.get('/search', (0, rbac_1.rbacMiddleware)(['read:vendors']), (0, cache_1.
 router.get('/:id', (0, rbac_1.rbacMiddleware)(['read:vendors']), (0, cache_1.cacheMiddleware)('5 minutes'), vendorController.getVendor.bind(vendorController));
 router.put('/:id', (0, rbac_1.rbacMiddleware)(['update:vendors']), (0, validation_1.validationMiddleware)(validators_1.vendorSchema), vendorController.updateVendor.bind(vendorController));
 router.delete('/:id', (0, rbac_1.rbacMiddleware)(['delete:vendors']), vendorController.deleteVendor.bind(vendorController));
+router.get('/:id/balance', (0, rbac_1.rbacMiddleware)(['read:vendors']), vendorController.getVendorBalance.bind(vendorController));
+router.post("/payments", (0, rbac_1.rbacMiddleware)(["create:vendors"]), vendorController.createPayment.bind(vendorController));
+router.get("/:id/paymentHistory", (0, rbac_1.rbacMiddleware)(["read:vendors"]), vendorController.getPaymentHistory.bind(vendorController));
 exports.default = router;
 //# sourceMappingURL=vendorRoutes.js.map

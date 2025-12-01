@@ -5,6 +5,7 @@ export declare class PurchaseService {
     private purchaseItemRepository;
     private vendorRepository;
     private productRepository;
+    private paymentInvoiceRepository;
     constructor();
     private generatePONumber;
     private calculateItemTotals;

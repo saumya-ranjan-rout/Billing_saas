@@ -137,6 +137,13 @@ exports.purchaseItemSchema = joi_1.default.object({
     unitPrice: joi_1.default.number().min(0).required(),
     discount: joi_1.default.number().min(0).max(100).default(0),
     taxRate: joi_1.default.number().min(0).max(100).default(0),
+    taxType: joi_1.default.string().valid("CGST_SGST", "IGST").required(),
+    cess: joi_1.default.boolean().default(false),
+    cessRate: joi_1.default.number().min(0).max(100).when("cess", {
+        is: true,
+        then: joi_1.default.required(),
+        otherwise: joi_1.default.optional().default(0),
+    }),
 });
 exports.purchaseOrderSchema = joi_1.default.object({
     vendorId: joi_1.default.string().required(),
@@ -147,6 +154,15 @@ exports.purchaseOrderSchema = joi_1.default.object({
     billingAddress: joi_1.default.string().allow('', null).optional(),
     termsAndConditions: joi_1.default.string().allow('', null).optional(),
     notes: joi_1.default.string().allow('', null).optional(),
+    paymentMethod: joi_1.default.string()
+        .valid('cash', 'bank_transfer', 'cheque', 'credit_card', 'debit_card', 'upi', 'wallet', 'other')
+        .required(),
+    amountPaid: joi_1.default.number()
+        .min(0)
+        .required(),
+    balanceDue: joi_1.default.number()
+        .min(0)
+        .required(),
     items: joi_1.default.array().items(exports.purchaseItemSchema).min(1).required(),
 });
 exports.invoiceItemSchema = joi_1.default.object({
