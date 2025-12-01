@@ -10,7 +10,7 @@ export const validateEmail = (email: string): boolean => {
 export const validateGSTIN = (gstin: string): boolean => {
   const gstinRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
   if (!gstinRegex.test(gstin)) return false;
-  
+
   // Validate state code (first two digits)
   const stateCode = parseInt(gstin.substring(0, 2));
   return stateCode in GST_STATES;
@@ -30,7 +30,7 @@ export const validatePhone = (phone: string): boolean => {
 export const customerSchema = Joi.object({
   name: Joi.string().min(2).max(100).required(),
   email: Joi.string().email().required(),
- // phone: Joi.string().pattern(/^[6-9]\d{9}$/).optional(),
+  // phone: Joi.string().pattern(/^[6-9]\d{9}$/).optional(),
   address: Joi.object({
     line1: Joi.string().required(),
     // line2: Joi.string().allow('').optional(),
@@ -41,14 +41,14 @@ export const customerSchema = Joi.object({
   }).required(),
   //gstin: Joi.string().pattern(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/).optional(),
   phone: Joi.string()
-  .pattern(/^[6-9]\d{9}$/)
-  .allow('', null)
-  .optional(),
+    .pattern(/^[6-9]\d{9}$/)
+    .allow('', null)
+    .optional(),
 
-gstin: Joi.string()
-  .pattern(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/)
-  .allow('', null)
-  .optional(),
+  gstin: Joi.string()
+    .pattern(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/)
+    .allow('', null)
+    .optional(),
 });
 export const vendorSchema = Joi.object({
   name: Joi.string().min(2).max(100).required(),
@@ -128,10 +128,10 @@ export const productSchema = Joi.object({
   sellingPrice: Joi.number().min(0).required(),
   stockQuantity: Joi.number().min(0).default(0),
   lowStockThreshold: Joi.number().min(0).default(0),
-   unit: Joi.string().allow("").optional(),
+  unit: Joi.string().allow("").optional(),
   taxRate: Joi.number().min(0).max(100).default(0),
   categoryName: Joi.string().optional(),
-    categoryId: Joi.string().optional(),
+  categoryId: Joi.string().optional(),
   images: Joi.array().items(Joi.string()).optional(),
   isActive: Joi.boolean().default(true)
 });
@@ -144,6 +144,17 @@ export const purchaseItemSchema = Joi.object({
   unitPrice: Joi.number().min(0).required(),
   discount: Joi.number().min(0).max(100).default(0),
   taxRate: Joi.number().min(0).max(100).default(0),
+  // 21-11-2025
+  taxType: Joi.string().valid("CGST_SGST", "IGST").required(),
+  // ❗ cess is boolean
+  cess: Joi.boolean().default(false),
+
+  // ❗ cessRate only required if cess = true
+  cessRate: Joi.number().min(0).max(100).when("cess", {
+    is: true,
+    then: Joi.required(),
+    otherwise: Joi.optional().default(0),
+  }),
 });
 
 export const purchaseOrderSchema = Joi.object({
@@ -155,6 +166,19 @@ export const purchaseOrderSchema = Joi.object({
   billingAddress: Joi.string().allow('', null).optional(),
   termsAndConditions: Joi.string().allow('', null).optional(),
   notes: Joi.string().allow('', null).optional(),
+  // 27-11-2025
+  // ⭐ NEW FIELDS
+  paymentMethod: Joi.string()
+    .valid('cash', 'bank_transfer', 'cheque', 'credit_card', 'debit_card', 'upi', 'wallet', 'other')
+    .required(),
+
+  amountPaid: Joi.number()
+    .min(0)
+    .required(),
+
+  balanceDue: Joi.number()
+    .min(0)
+    .required(),
   items: Joi.array().items(purchaseItemSchema).min(1).required(),
 });
 
@@ -166,7 +190,7 @@ export const invoiceItemSchema = Joi.object({
   unitPrice: Joi.number().min(0).required(),
   discount: Joi.number().min(0).max(100).default(0),
   taxRate: Joi.number().min(0).max(100).default(0),
-    tax_type: Joi.string().valid("cgst_sgst", "igst").default("cgst_sgst"),
+  tax_type: Joi.string().valid("cgst_sgst", "igst").default("cgst_sgst"),
   has_cess: Joi.boolean().default(false),
   cess_value: Joi.number().min(0).default(0),
 

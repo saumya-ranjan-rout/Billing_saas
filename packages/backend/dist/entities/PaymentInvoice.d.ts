@@ -27,8 +27,8 @@ export declare enum PaymentType {
 export declare class PaymentInvoice extends TenantAwareEntity {
     invoiceId: string | null;
     invoice: Invoice | null;
-    customerId: string;
-    customer: Customer;
+    customerId: string | null;
+    customer: Customer | null;
     amount: number;
     method: PaymentMethod;
     status: PaymentStatus;

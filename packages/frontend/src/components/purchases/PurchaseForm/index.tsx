@@ -21,7 +21,10 @@ const purchaseItemSchema = z.object({
   unit: z.string().min(1, 'Unit is required'),
   unitPrice: z.number().min(0.01, 'Unit Price is required'),
   discount: z.number().min(0).max(100).default(0),
+  taxType: z.enum(["CGST_SGST", "IGST"], { required_error: "Tax Type is required" }),
   taxRate: z.number().min(0).max(100).default(0),
+  cess: z.boolean().default(false),
+  cessRate: z.number().min(0).max(100).optional(),
   tenantId: z.string().optional(),
 });
 
@@ -37,6 +40,13 @@ const purchaseOrderSchema = z.object({
   billingAddress: z.string().optional(),
   termsAndConditions: z.string().optional(),
   notes: z.string().optional(),
+  // 27-11-2025
+  // paymentMethod: z.string().min(1, "Payment Method is required"),
+  // amountPaid: z.number(),
+  // balanceDue: z.number(),
+  paymentMethod: z.string().min(1, "Payment Method is required"),
+  amountPaid: z.number().nonnegative(),
+  balanceDue: z.number().nonnegative(),
   items: z.array(purchaseItemSchema).min(1, 'At least one item is required'),
 });
 
@@ -62,8 +72,8 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({
   // const { post, put, get } = useApi<PurchaseOrder>();
 
   const purchaseApi = useApi<PurchaseOrder>();
-const vendorApi = useApi<Vendor[]>();
-const productApi = useApi<Product[]>();
+  const vendorApi = useApi<Vendor[]>();
+  const productApi = useApi<Product[]>();
 
   const {
     register,
@@ -79,6 +89,9 @@ const productApi = useApi<Product[]>();
       type: undefined,
       vendorId: '',
       orderDate: new Date().toISOString().split('T')[0],
+      paymentMethod: 'cash',      // NEW
+      amountPaid: 0,          // NEW
+      balanceDue: 0,           // NEW
       items: [{
         productId: '',
         description: '',
@@ -86,7 +99,10 @@ const productApi = useApi<Product[]>();
         unit: 'pcs',
         unitPrice: 0,
         discount: 0,
+        taxType: 'CGST_SGST',  // default
         taxRate: 0,
+        cess: false,
+        cessRate: 0,
       }]
     }
   });
@@ -99,43 +115,47 @@ const productApi = useApi<Product[]>();
   const items = watch('items');
 
   // ------------------ Fetch Vendors & Products ------------------
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const [vendorsResponse, productsResponse] = await Promise.all([
-        vendorApi.get('/api/vendors?limit=100'),
-        productApi.get('/api/products?limit=100')
-      ]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [vendorsResponse, productsResponse] = await Promise.all([
+          vendorApi.get('/api/vendors?limit=100'),
+          productApi.get('/api/products?limit=100')
+        ]);
 
-      // ✅ Safely extract arrays no matter the API shape
-const vendorsData = Array.isArray(vendorsResponse)
-  ? vendorsResponse
-  : Array.isArray((vendorsResponse as any)?.data)
-    ? (vendorsResponse as any).data
-    : [];
+        // ✅ Safely extract arrays no matter the API shape
+        const vendorsData = Array.isArray(vendorsResponse)
+          ? vendorsResponse
+          : Array.isArray((vendorsResponse as any)?.data)
+            ? (vendorsResponse as any).data
+            : [];
 
-const productsData = Array.isArray(productsResponse)
-  ? productsResponse
-  : Array.isArray((productsResponse as any)?.data)
-    ? (productsResponse as any).data
-    : [];
+        const productsData = Array.isArray(productsResponse)
+          ? productsResponse
+          : Array.isArray((productsResponse as any)?.data)
+            ? (productsResponse as any).data
+            : [];
 
-      setVendors(vendorsData);
-      setProducts(productsData);
-    } catch (error) {
-      console.error('Failed to fetch data:', error);
-      toast.error('Failed to load form data');
-    } finally {
-      setLoading(false);
-    }
-  };
+        setVendors(vendorsData);
+        setProducts(productsData);
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+        toast.error('Failed to load form data');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  fetchData();
-}, []);
+    fetchData();
+  }, []);
+
+  // 👉 Add this here:
+  const isEdit = !!purchaseOrder;
 
   // ------------------ Reset with existing order ------------------
   useEffect(() => {
     if (purchaseOrder) {
+      console.log(purchaseOrder);
       reset({
         vendorId: purchaseOrder.vendorId || '',
         type: purchaseOrder.type,
@@ -145,6 +165,9 @@ const productsData = Array.isArray(productsResponse)
         billingAddress: purchaseOrder.billingAddress,
         termsAndConditions: purchaseOrder.termsAndConditions,
         notes: purchaseOrder.notes,
+        amountPaid: purchaseOrder.amountPaid,
+        balanceDue: purchaseOrder.balanceDue,
+        paymentMethod: purchaseOrder.paymentMethod,
         items: purchaseOrder.items.map(item => ({
           productId: item.productId ?? '',
           description: item.description,
@@ -152,7 +175,10 @@ const productsData = Array.isArray(productsResponse)
           unit: item.unit ?? 'pcs',
           unitPrice: Number(item.unitPrice) || 0,
           discount: Number(item.discount) || 0,
+          taxType: item.taxType ?? "CGST_SGST",
           taxRate: Number(item.taxRate) || 0,
+          cess: item.cess ?? false,
+          cessRate: Number(item.cessRate) || 0,
         }))
       });
     }
@@ -163,19 +189,24 @@ const productsData = Array.isArray(productsResponse)
     const discountAmount = (item.unitPrice * item.quantity * item.discount) / 100;
     const taxableAmount = (item.unitPrice * item.quantity) - discountAmount;
     const taxAmount = (taxableAmount * item.taxRate) / 100;
-    const lineTotal = taxableAmount + taxAmount;
-    return { discountAmount, taxAmount, lineTotal };
+    const cessAmount = item.cess
+      ? (taxableAmount * (item.cessRate || 0)) / 100
+      : 0;
+    // const lineTotal = taxableAmount + taxAmount;
+    const lineTotal = taxableAmount + taxAmount + cessAmount;
+    return { discountAmount, taxAmount, cessAmount, lineTotal };
   };
 
   const calculateOrderTotals = (items: any[]) => {
-    let subTotal = 0, taxTotal = 0, discountTotal = 0;
+    let subTotal = 0, taxTotal = 0, discountTotal = 0, cessTotal = 0;
     items.forEach(item => {
       const totals = calculateItemTotals(item);
       subTotal += item.unitPrice * item.quantity;
       discountTotal += totals.discountAmount;
       taxTotal += totals.taxAmount;
+      cessTotal += totals.cessAmount;
     });
-    return { subTotal, taxTotal, discountTotal, totalAmount: subTotal - discountTotal + taxTotal };
+    return { subTotal, taxTotal, cessTotal, discountTotal, totalAmount: subTotal - discountTotal + taxTotal + cessTotal };
   };
 
   const handleProductChange = (index: number, productId: string) => {
@@ -191,19 +222,52 @@ const productsData = Array.isArray(productsResponse)
 
   // ------------------ Submit ------------------
   const onSubmit = async (data: PurchaseFormData) => {
+    console.log("📦 SUBMITTING FORM DATA:", data);
+
+    // --- CESS VALIDATION ---
+    for (const item of data.items) {
+      if (item.cess) {
+        if (!item.cessRate || Number(item.cessRate) <= 0) {
+          toast.error("Cess Rate must be greater than 0 when CESS is enabled");
+          return;
+        }
+      }
+    }
+
+    // Calculate totals again
+    const items = data.items || [];
+    const { totalAmount } = calculateOrderTotals(items);
+
+    // --- FINAL VALIDATION CHECK BEFORE SUBMIT ---
+    if (data.amountPaid <= 0) {
+      toast.error("Amount cannot be less than 0");
+      return; // 
+    }
+
+    if (data.amountPaid > totalAmount) {
+      toast.error("Amount cannot be greater than Total Amount");
+      return; //
+    }
+    // ------------------------------------------------
+
     try {
+      // Calculate due amount
+      const balanceDue = Math.max(totals.totalAmount - (data.amountPaid || 0), 0).toFixed(2);
       const payload = {
         ...data,
         orderDate: new Date(data.orderDate).toISOString(),
         expectedDeliveryDate: data.expectedDeliveryDate
           ? new Date(data.expectedDeliveryDate).toISOString()
-          : undefined
+          : undefined,
+        balanceDue
       };
+      console.log("🚀 FINAL PAYLOAD SENT TO API:", payload);
+
       if (purchaseOrder?.id) {
-    await purchaseApi.put(`/api/purchases/${purchaseOrder.id}`, payload);
+        await purchaseApi.put(`/api/purchases/${purchaseOrder.id}`, payload);
         toast.success('Purchase order updated successfully');
       } else {
-       await purchaseApi.post('/api/purchases', payload);
+        await purchaseApi.post('/api/purchases', payload);
         toast.success('Purchase order created successfully');
       }
       onSuccess();
@@ -226,7 +290,7 @@ const productsData = Array.isArray(productsResponse)
           <Select
             label="Vendor"
             value={watch('vendorId')}
-           onChange={(value: string) => setValue('vendorId', value)}
+            onChange={(value: string) => setValue('vendorId', value)}
             options={vendors.map(v => ({ value: v.id, label: v.name }))}
           />
           {errors.vendorId && (
@@ -239,7 +303,7 @@ const productsData = Array.isArray(productsResponse)
           <Select
             label="Type"
             value={watch('type')}
-          onChange={(value: string) => setValue('type', value as 'product' | 'service' | 'expense')}
+            onChange={(value: string) => setValue('type', value as 'product' | 'service' | 'expense')}
             options={[
               { value: 'product', label: 'Product' },
               { value: 'service', label: 'Service' },
@@ -326,7 +390,7 @@ const productsData = Array.isArray(productsResponse)
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-4">
-              <div className="md:col-span-3">
+              <div className="md:col-span-2">
                 <Input
                   label="Unit Price (₹)"
                   type="number"
@@ -346,6 +410,25 @@ const productsData = Array.isArray(productsResponse)
                   disabled={isSubmitting}
                 />
               </div>
+              <div className="md:col-span-2 flex flex-col">
+                <Select
+                  label="Tax Type"
+                  value={watch(`items.${index}.taxType`)}
+                  onChange={(value) => {
+                    setValue(`items.${index}.taxType`, value);
+                  }}
+                  options={[
+                    { value: "CGST_SGST", label: "CGST & SGST" },
+                    { value: "IGST", label: "IGST" }
+                  ]}
+                />
+
+                {errors.items?.[index]?.taxType && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.items[index]?.taxType?.message}
+                  </p>
+                )}
+              </div>
               <div className="md:col-span-2">
                 <Input
                   label="Tax Rate (%)"
@@ -356,6 +439,29 @@ const productsData = Array.isArray(productsResponse)
                   disabled={isSubmitting}
                 />
               </div>
+              {/* CESS Checkbox */}
+              <div className="md:col-span-1">
+                <input
+                  type="checkbox"
+                  checked={watch(`items.${index}.cess`)}
+                  onChange={(e) => setValue(`items.${index}.cess`, e.target.checked)}
+                  className="mr-2"
+                />CESS
+              </div>
+
+              {watch(`items.${index}.cess`) && (
+                <div className="md:col-span-3">
+                  <Input
+                    label="CESS Rate (%)"
+                    type="number"
+                    step="0.01"
+                    {...register(`items.${index}.cessRate`, { valueAsNumber: true })}
+                    error={errors.items?.[index]?.cessRate?.message}
+                    disabled={isSubmitting}
+                  />
+                </div>
+              )}
+              {/* CESS Rate (Only show when CESS is checked) */}
               <div className="md:col-span-3">
                 <Input
                   label="Line Total (₹)"
@@ -391,7 +497,10 @@ const productsData = Array.isArray(productsResponse)
             unit: 'pcs',
             unitPrice: 0,
             discount: 0,
-            taxRate: 0
+            taxType: 'CGST_SGST',
+            taxRate: 0,
+            cess: false,
+            cessRate: 0
           })}
           disabled={isSubmitting}
           className="mt-2"
@@ -410,8 +519,61 @@ const productsData = Array.isArray(productsResponse)
           <div className="text-right font-medium text-red-600">-₹{totals.discountTotal.toFixed(2)}</div>
           <div className="text-right">Tax:</div>
           <div className="text-right font-medium">+₹{totals.taxTotal.toFixed(2)}</div>
+          <div className="text-right">CESS:</div>
+          <div className="text-right font-medium">+₹{totals.cessTotal.toFixed(2)}</div>
           <div className="text-right border-t pt-2 font-semibold">Total:</div>
           <div className="text-right border-t pt-2 font-semibold">₹{totals.totalAmount.toFixed(2)}</div>
+          <div className="text-right border-t pt-2">Payment Method:</div>
+          <div className="text-right border-t pt-2">
+            <div className="flex flex-col">
+              <Select
+                value={watch('paymentMethod')}
+                onChange={(value) => setValue('paymentMethod', value)}
+                options={[
+                  { value: 'cash', label: 'Cash' },
+                  { value: 'bank_transfer', label: 'Bank Transfer' },
+                  { value: 'upi', label: 'UPI' },
+                  { value: 'cheque', label: 'Cheque' },
+                  { value: 'credit_card', label: 'Credit Card' },
+                  { value: 'debit_card', label: 'Debit Card' },
+                  { value: 'wallet', label: 'Wallet' },
+                  { value: 'other', label: 'Other' }
+                ]}
+              />
+              {errors.paymentMethod && (
+                <p className="text-red-500 text-sm mt-1">{errors.paymentMethod.message}</p>
+              )}
+            </div>
+          </div>
+          <div className="text-right">Payment Amount (₹):</div>
+          <div className="text-right">
+            <div className="flex flex-col">
+              <Input
+                type="number"
+                step="0.01"
+                {...register('amountPaid', {
+                  valueAsNumber: true
+                })}
+                error={errors.amountPaid?.message}
+                disabled={isSubmitting}
+                readOnly={isEdit}
+              />
+            </div>
+          </div>
+          <div className="text-right border-t pt-2 font-semibold">Due Amount:</div>
+          <div className="text-right border-t pt-2 font-semibold">₹{Math.max(totals.totalAmount - (watch('amountPaid') || 0), 0).toFixed(2)}
+            {/* <Input
+              type="number"
+              value={Math.max(totals.totalAmount - (watch('amountPaid') || 0), 0).toFixed(2)}
+              disabled
+              className="bg-gray-50"
+            /> */}
+            <input
+              type="hidden"
+              {...register("balanceDue", { valueAsNumber: true })}
+              value={Math.max(totals.totalAmount - (watch("amountPaid") || 0), 0).toFixed(2)}
+            />
+          </div>
         </div>
       </div>
 
@@ -422,28 +584,28 @@ const productsData = Array.isArray(productsResponse)
           {...register('shippingAddress')}
           error={errors.shippingAddress?.message}
           disabled={isSubmitting}
-          // multiline
+        // multiline
         />
         <Input
           label="Billing Address"
           {...register('billingAddress')}
           error={errors.billingAddress?.message}
           disabled={isSubmitting}
-          // multiline
+        // multiline
         />
         <Input
           label="Terms & Conditions"
           {...register('termsAndConditions')}
           error={errors.termsAndConditions?.message}
           disabled={isSubmitting}
-          // multiline
+        // multiline
         />
         <Input
           label="Notes"
           {...register('notes')}
           error={errors.notes?.message}
           disabled={isSubmitting}
-          // multiline
+        // multiline
         />
       </div>
 

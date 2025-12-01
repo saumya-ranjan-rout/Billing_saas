@@ -1,0 +1,19 @@
+{
+  "summary": {
+    "totalHSNCodes": 1,
+    "totalTaxableValue": 31000,
+    "totalTaxAmount": "002700.00180.00"
+  },
+  "hsnDetails": [
+    {
+      "hsnCode": "999999",
+      "description": "Other Services",
+      "uqc": "pcs",
+      "totalQuantity": "01.001.00",
+      "taxableValue": 31000,
+      "taxRate": "10.00",
+      "taxAmount": "02700.00180.00",
+      "cessAmount": 0
+    }
+  ]
+}

@@ -29,7 +29,7 @@ export class ReportService {
   private userRepository: Repository<User>;
   private expenseRepository: Repository<Expense>;
   private taxDetailRepository: Repository<TaxDetail>;
-  private cacheService: CacheService;
+    private cacheService: CacheService;
 
   constructor() {
     this.reportRepository = AppDataSource.getRepository(Report);
@@ -42,7 +42,7 @@ export class ReportService {
     this.userRepository = AppDataSource.getRepository(User);
     this.expenseRepository = AppDataSource.getRepository(Expense);
     this.taxDetailRepository = AppDataSource.getRepository(TaxDetail);
-    this.cacheService = new CacheService();
+        this.cacheService = new CacheService();
   }
 
   async generateReport(tenantId: string, reportType: ReportType, format: ReportFormat, filters: any): Promise<Report> {
@@ -55,7 +55,7 @@ export class ReportService {
       tenantId,
       status: ReportStatus.GENERATING
     });
-    //console.log(report);
+//console.log(report);
     const savedReport = await this.reportRepository.save(report);
 
     try {
@@ -130,13 +130,13 @@ export class ReportService {
       }
 
       const filePath = await this.exportReport(result, reportType, format, filters);
-
+      
       savedReport.filePath = filePath;
       savedReport.recordCount = this.calculateRecordCount(result);
       savedReport.generatedAt = new Date();
       savedReport.status = ReportStatus.COMPLETED;
 
-      await Promise.all([
+       await Promise.all([
         this.cacheService.invalidatePattern(`reports:${tenantId}:*`),
         this.cacheService.invalidatePattern(`cache:${tenantId}:/api/reports*`),
       ]);
@@ -157,9 +157,9 @@ export class ReportService {
 
   private calculateRecordCount(data: any): number {
     if (!data) return 0;
-
+    
     if (Array.isArray(data)) return data.length;
-
+    
     if (typeof data === 'object') {
       // Count records in arrays within the object
       let count = 0;
@@ -170,7 +170,7 @@ export class ReportService {
       });
       return count > 0 ? count : 1; // Return at least 1 for summary reports
     }
-
+    
     return 1;
   }
 
@@ -245,7 +245,7 @@ export class ReportService {
   }
 
   // 🧾 GSTR-1 Outward Supplies Report
-  private async generateGSTR1(tenantId: string, filters: any) {
+ private async generateGSTR1(tenantId: string, filters: any) {
     const invoices = await this.invoiceRepository.find({
       where: {
         tenantId,
@@ -400,7 +400,7 @@ export class ReportService {
         tenantId,
         paymentDate: Between(new Date(filters.fromDate), new Date(filters.toDate)),
         deletedAt: IsNull(),
-        paymentType: PaymentType.EXPENSE
+           paymentType: PaymentType.EXPENSE
       },
       relations: ['vendor']
     });
@@ -454,7 +454,7 @@ export class ReportService {
           ineligibleITC: 0
         });
       }
-
+      
       const vendorSummary = vendorMap.get(vendorKey);
       vendorSummary.totalPurchases++;
       vendorSummary.totalAmount += purchase.taxableValue;
@@ -483,7 +483,7 @@ export class ReportService {
         tenantId,
         paymentDate: Between(new Date(filters.fromDate), new Date(filters.toDate)),
         deletedAt: IsNull(),
-        paymentType: PaymentType.EXPENSE
+paymentType: PaymentType.EXPENSE
       }
     });
 
@@ -642,7 +642,7 @@ export class ReportService {
         tenantId,
         paymentDate: Between(new Date(filters.fromDate), new Date(filters.toDate)),
         deletedAt: IsNull(),
-        paymentType: PaymentType.EXPENSE
+paymentType: PaymentType.EXPENSE
       },
       relations: ['vendor']
     });
@@ -696,7 +696,7 @@ export class ReportService {
   }
 
   // 🔍 Audit Trail Report
-  private async generateAuditTrail(tenantId: string, filters: any) {
+ private async generateAuditTrail(tenantId: string, filters: any) {
     const auditLogs = await this.auditLogRepository.find({
       where: {
         tenantId,
@@ -711,22 +711,22 @@ export class ReportService {
     const records = auditLogs.map(log => ({
       timestamp: log.timestamp,
       // FIXED: Use user's name property
-      //   user: (log.performedBy as User)?.name || 'System',
-      user: (() => {
-        if (!log.performedBy) return 'System';
+    //   user: (log.performedBy as User)?.name || 'System',
+user: (() => {
+  if (!log.performedBy) return 'System';
 
-        const performer: any = log.performedBy;
+  const performer: any = log.performedBy;
 
-        if ('firstName' in performer && 'lastName' in performer) {
-          // User entity
-          return `${performer.firstName} ${performer.lastName}`;
-        } else if ('first_name' in performer && 'last_name' in performer) {
-          // SuperAdmin entity
-          return `${performer.first_name} ${performer.last_name}`;
-        }
+  if ('firstName' in performer && 'lastName' in performer) {
+    // User entity
+    return `${performer.firstName} ${performer.lastName}`;
+  } else if ('first_name' in performer && 'last_name' in performer) {
+    // SuperAdmin entity
+    return `${performer.first_name} ${performer.last_name}`;
+  }
 
-        return 'System';
-      })(),
+  return 'System';
+})(),
       action: log.action,
       resource: log.resource,
       resourceId: log.resourceId,
@@ -793,13 +793,13 @@ export class ReportService {
   }
 
   // 🏦 Cash/Bank Book
-  private async generateCashBankBook(tenantId: string, filters: any) {
+ private async generateCashBankBook(tenantId: string, filters: any) {
     const payments = await this.paymentRepository.find({
       where: {
         tenantId,
         paymentDate: Between(new Date(filters.fromDate), new Date(filters.toDate)),
         deletedAt: IsNull(),
-        paymentType: PaymentType.EXPENSE
+           paymentType: PaymentType.EXPENSE
       },
       relations: ['vendor', 'customer']
     });
@@ -973,7 +973,7 @@ export class ReportService {
         tenantId,
         paymentDate: Between(new Date(filters.fromDate), new Date(filters.toDate)),
         deletedAt: IsNull(),
-        paymentType: PaymentType.EXPENSE
+paymentType: PaymentType.EXPENSE
       },
       relations: ['vendor']
     });
@@ -1035,7 +1035,7 @@ export class ReportService {
 
   private async generateBalanceSheet(tenantId: string, filters: any) {
     const asOfDate = new Date(filters.toDate);
-
+    
     return {
       summary: {
         asOfDate: asOfDate.toLocaleDateString(),
@@ -1163,54 +1163,54 @@ export class ReportService {
   }
 
   // Export methods remain the same as before...
-  //   private async exportReport(data: any, reportType: ReportType, format: ReportFormat, filters: any): Promise<string> {
-  //     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  //     const fileName = `${reportType}_${timestamp}`;
-  //     const reportsDir = path.join(process.cwd(), 'reports', 'generated');
+//   private async exportReport(data: any, reportType: ReportType, format: ReportFormat, filters: any): Promise<string> {
+//     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+//     const fileName = `${reportType}_${timestamp}`;
+//     const reportsDir = path.join(process.cwd(), 'reports', 'generated');
 
-  //     if (!fs.existsSync(reportsDir)) {
-  //       fs.mkdirSync(reportsDir, { recursive: true });
-  //     }
+//     if (!fs.existsSync(reportsDir)) {
+//       fs.mkdirSync(reportsDir, { recursive: true });
+//     }
 
-  //     switch (format) {
-  //       case ReportFormat.EXCEL:
-  //         return await this.exportToExcel(data, reportsDir, fileName, reportType);
-  //       case ReportFormat.PDF:
-  //         return await this.exportToPDF(data, reportsDir, fileName, reportType);
-  //       case ReportFormat.JSON:
-  //         return await this.exportToJSON(data, reportsDir, fileName);
-  //       case ReportFormat.CSV:
-  //         return await this.exportToCSV(data, reportsDir, fileName, reportType);
-  //       default:
-  //         throw new Error(`Unsupported format: ${format}`);
-  //     }
-  //   }
+//     switch (format) {
+//       case ReportFormat.EXCEL:
+//         return await this.exportToExcel(data, reportsDir, fileName, reportType);
+//       case ReportFormat.PDF:
+//         return await this.exportToPDF(data, reportsDir, fileName, reportType);
+//       case ReportFormat.JSON:
+//         return await this.exportToJSON(data, reportsDir, fileName);
+//       case ReportFormat.CSV:
+//         return await this.exportToCSV(data, reportsDir, fileName, reportType);
+//       default:
+//         throw new Error(`Unsupported format: ${format}`);
+//     }
+//   }
 
-  private async exportReport(data: any, reportType: ReportType, format: ReportFormat, filters: any): Promise<string> {
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const fileName = `${reportType}_${timestamp}`;
-    const reportsDir = path.join(process.cwd(), 'reports', 'generated');
+private async exportReport(data: any, reportType: ReportType, format: ReportFormat, filters: any): Promise<string> {
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const fileName = `${reportType}_${timestamp}`;
+  const reportsDir = path.join(process.cwd(), 'reports', 'generated');
 
-    if (!fs.existsSync(reportsDir)) {
-      fs.mkdirSync(reportsDir, { recursive: true });
-    }
-
-    // Always generate a JSON copy for frontend previews
-    await this.exportToJSON(data, reportsDir, fileName);
-
-    switch (format) {
-      case ReportFormat.EXCEL:
-        return await this.exportToExcel(data, reportsDir, fileName, reportType);
-      case ReportFormat.PDF:
-        return await this.exportToPDF(data, reportsDir, fileName, reportType);
-      case ReportFormat.JSON:
-        return await this.exportToJSON(data, reportsDir, fileName);
-      case ReportFormat.CSV:
-        return await this.exportToCSV(data, reportsDir, fileName, reportType);
-      default:
-        throw new Error(`Unsupported format: ${format}`);
-    }
+  if (!fs.existsSync(reportsDir)) {
+    fs.mkdirSync(reportsDir, { recursive: true });
   }
+
+  // Always generate a JSON copy for frontend previews
+  await this.exportToJSON(data, reportsDir, fileName);
+
+  switch (format) {
+    case ReportFormat.EXCEL:
+      return await this.exportToExcel(data, reportsDir, fileName, reportType);
+    case ReportFormat.PDF:
+      return await this.exportToPDF(data, reportsDir, fileName, reportType);
+    case ReportFormat.JSON:
+      return await this.exportToJSON(data, reportsDir, fileName);
+    case ReportFormat.CSV:
+      return await this.exportToCSV(data, reportsDir, fileName, reportType);
+    default:
+      throw new Error(`Unsupported format: ${format}`);
+  }
+}
 
 
   private async exportToExcel(data: any, dir: string, fileName: string, reportType: ReportType): Promise<string> {
@@ -1218,46 +1218,46 @@ export class ReportService {
     const workbook = new ExcelJS.Workbook();
 
     // Summary sheet
-    const summarySheet = this.getOrAddWorksheet(workbook, 'Summary');
-    this.addExcelSummary(summarySheet, data, reportType);
+const summarySheet = this.getOrAddWorksheet(workbook, 'Summary');
+this.addExcelSummary(summarySheet, data, reportType);
 
-    // Data sheets for arrays
-    Object.keys(data).forEach(key => {
-      if (Array.isArray(data[key]) && data[key].length > 0) {
+// Data sheets for arrays
+Object.keys(data).forEach(key => {
+  if (Array.isArray(data[key]) && data[key].length > 0) {
+    const dataSheet = this.getOrAddWorksheet(workbook, this.formatKey(key));
+    this.addExcelData(dataSheet, data[key]);
+  } else if (typeof data[key] === 'object' && data[key] !== null) {
+    const objData = data[key];
+    if (Object.keys(objData).length > 0) {
+      const arrayData = Object.values(objData);
+      if (Array.isArray(arrayData) && arrayData.length > 0) {
         const dataSheet = this.getOrAddWorksheet(workbook, this.formatKey(key));
-        this.addExcelData(dataSheet, data[key]);
-      } else if (typeof data[key] === 'object' && data[key] !== null) {
-        const objData = data[key];
-        if (Object.keys(objData).length > 0) {
-          const arrayData = Object.values(objData);
-          if (Array.isArray(arrayData) && arrayData.length > 0) {
-            const dataSheet = this.getOrAddWorksheet(workbook, this.formatKey(key));
-            this.addExcelData(dataSheet, arrayData);
-          }
-        }
+        this.addExcelData(dataSheet, arrayData);
       }
-    });
+    }
+  }
+});
 
     await workbook.xlsx.writeFile(filePath);
     return filePath;
   }
 
-  private getOrAddWorksheet(workbook: ExcelJS.Workbook, name: string): ExcelJS.Worksheet {
-    let sheet = workbook.getWorksheet(name);
-    if (!sheet) {
-      sheet = workbook.addWorksheet(name);
-    } else {
-      // Avoid duplicates by appending suffix if needed
-      let counter = 1;
-      let newName = `${name}_${counter}`;
-      while (workbook.getWorksheet(newName)) {
-        counter++;
-        newName = `${name}_${counter}`;
-      }
-      sheet = workbook.addWorksheet(newName);
+private getOrAddWorksheet(workbook: ExcelJS.Workbook, name: string): ExcelJS.Worksheet {
+  let sheet = workbook.getWorksheet(name);
+  if (!sheet) {
+    sheet = workbook.addWorksheet(name);
+  } else {
+    // Avoid duplicates by appending suffix if needed
+    let counter = 1;
+    let newName = `${name}_${counter}`;
+    while (workbook.getWorksheet(newName)) {
+      counter++;
+      newName = `${name}_${counter}`;
     }
-    return sheet;
+    sheet = workbook.addWorksheet(newName);
   }
+  return sheet;
+}
 
 
 
@@ -1279,7 +1279,7 @@ export class ReportService {
 
     const headers = Object.keys(records[0]);
     worksheet.addRow(headers.map(h => this.formatKey(h)));
-
+    
     records.forEach(record => {
       worksheet.addRow(headers.map(header => record[header]));
     });

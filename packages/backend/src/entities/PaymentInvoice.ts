@@ -21,7 +21,7 @@ export enum PaymentStatus {
   COMPLETED = 'completed',
   FAILED = 'failed',
   REFUNDED = 'refunded',
-    PARTIAL = 'partial'
+  PARTIAL = 'partial'
 }
 export enum PaymentType {
   INCOME = 'income',
@@ -37,18 +37,18 @@ export class PaymentInvoice extends TenantAwareEntity {
   // @JoinColumn({ name: 'invoiceId' })
   // invoice: Invoice;
   @Column({ nullable: true })
-invoiceId: string | null;
+  invoiceId: string | null;
 
-@ManyToOne(() => Invoice, invoice => invoice.payments, { nullable: true })
-@JoinColumn({ name: 'invoiceId' })
-invoice: Invoice | null;
+  @ManyToOne(() => Invoice, invoice => invoice.payments, { nullable: true })
+  @JoinColumn({ name: 'invoiceId' })
+  invoice: Invoice | null;
 
-  @Column()
-  customerId: string;
+  @Column({ nullable: true })
+  customerId: string | null;
 
-  @ManyToOne(() => Customer, customer => customer.payments)
+  @ManyToOne(() => Customer, customer => customer.payments, { nullable: true })
   @JoinColumn({ name: 'customerId' })
-  customer: Customer;
+  customer: Customer | null;
 
   @Column({ type: 'decimal', precision: 15, scale: 2 })
   amount: number;
@@ -58,7 +58,7 @@ invoice: Invoice | null;
 
   @Column({ type: 'enum', enum: PaymentStatus, default: PaymentStatus.PENDING })
   status: PaymentStatus;
-  
+
   @Column({ type: 'enum', enum: PaymentType, default: PaymentType.EXPENSE })
   paymentType: PaymentType;
 
@@ -90,6 +90,15 @@ invoice: Invoice | null;
   @ManyToOne(() => Tenant, tenant => tenant.payments)
   @JoinColumn({ name: 'tenantId' })
   tenant: Tenant;
+
+  // @ManyToOne(() => Vendor, vendor => vendor.payments, { nullable: true })
+  // vendor?: Vendor;
+
+  // ✅ Add vendorId column explicitly (required)
+  @Column({ nullable: true })
+  vendorId: string | null;
+
   @ManyToOne(() => Vendor, vendor => vendor.payments, { nullable: true })
-vendor?: Vendor;
+  @JoinColumn({ name: 'vendorId' })
+  vendor: Vendor;
 }

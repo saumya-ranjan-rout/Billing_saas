@@ -1,0 +1,67 @@
+{
+  "summary": {
+    "totalInvoices": 3,
+    "totalTaxableValue": 28900,
+    "totalTaxAmount": 3042,
+    "totalCessAmount": 90,
+    "b2bCount": 2,
+    "b2cCount": 1,
+    "exportCount": 0
+  },
+  "b2bInvoices": [
+    {
+      "invoiceNumber": "INV-bd3f-1763975891063-263",
+      "issueDate": "2025-11-24",
+      "customer": "Vihan Raghubansi",
+      "customerGSTIN": "09BCDEG5678H1Z8",
+      "taxableValue": 27000,
+      "cgst": 1350,
+      "sgst": 1350,
+      "igst": 0,
+      "cess": 0,
+      "totalAmount": "29700.00",
+      "placeOfSupply": "Odisha"
+    },
+    {
+      "invoiceNumber": "INV-bd3f-1764392721023-745",
+      "issueDate": "2025-11-29",
+      "customer": "Ehsan Contractor",
+      "customerGSTIN": "07PQRSX9090K1Z3",
+      "taxableValue": 900,
+      "cgst": 81,
+      "sgst": 81,
+      "igst": 0,
+      "cess": 90,
+      "totalAmount": "1152.00",
+      "placeOfSupply": "Odisha"
+    }
+  ],
+  "b2cInvoices": [
+    {
+      "invoiceNumber": "INV-bd3f-1763976102437-631",
+      "issueDate": "2025-11-24",
+      "customer": "Katha Singh",
+      "customerGSTIN": "",
+      "taxableValue": 1000,
+      "cgst": 90,
+      "sgst": 90,
+      "igst": 0,
+      "cess": 0,
+      "totalAmount": "1180.00",
+      "placeOfSupply": "Odisha"
+    }
+  ],
+  "exportInvoices": [],
+  "hsnSummary": {
+    "999999": {
+      "hsnCode": "999999",
+      "description": "Monitor",
+      "uqc": "pcs",
+      "totalQuantity": 3,
+      "taxableValue": 32000,
+      "taxRate": "10.00",
+      "taxAmount": 3042,
+      "cessAmount": 90
+    }
+  }
+}

@@ -77,11 +77,18 @@ export class PurchaseOrder extends TenantAwareEntity {
   @Column({ type: 'decimal', precision: 15, scale: 2, default: 0 })
   balanceDue: number;
 
+  // 27-11-2025
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  paymentMethod: string;
+
   @Column({ type: 'jsonb', nullable: true })
   taxDetails: Array<{
+    cess: boolean;
     taxName: string;
     taxRate: number;
+    cessRate: number;
     taxAmount: number;
+    cessAmount: number;
   }>;
 
   @Column({ type: 'timestamp', nullable: true })
