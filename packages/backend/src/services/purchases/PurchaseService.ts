@@ -332,6 +332,8 @@ export class PurchaseService {
       }
 
       const updatedPO = await queryRunner.manager.save(purchaseOrder);
+
+      
       await queryRunner.commitTransaction();
       return updatedPO;
     } catch (error) {

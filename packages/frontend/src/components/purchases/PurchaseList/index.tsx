@@ -7,6 +7,13 @@ import { toast } from 'sonner';
 // import Pagination from '../../common/Pagination';
 // import { Badge } from '../../common/Badge';
 // import Button from '../../common/Button';
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue
+} from '@/components/ui/Select';
 import { Pagination } from '@/components/ui/Pagination';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -25,7 +32,7 @@ const PurchaseList: React.FC<PurchaseListProps> = ({ onEditPurchase }) => {
     pages: 0,
   });
 
-  const { get, del } = useApi<PaginatedResponse<PurchaseOrder>>();
+  const { get, del,patch } = useApi<PaginatedResponse<PurchaseOrder>>();
 
   // ✅ moved outside so reusable
   const fetchPurchaseOrders = async () => {
@@ -62,6 +69,16 @@ const PurchaseList: React.FC<PurchaseListProps> = ({ onEditPurchase }) => {
       toast.error( error?.message || 'Failed to delete Purchase order ❌');
     }
   };
+  const handleStatusChange = async (invoiceId: string, newStatus: string) => {
+    try {
+      await patch(`/api/purchases/${invoiceId}/status`, { status: newStatus });
+      toast.success("Status updated!");
+  
+      fetchPurchaseOrders(); // refresh table
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to update status");
+    }
+  };
 
 const getStatusBadge = (status: string) => {
   const statusConfig: Record<string, { label: string; variant: 'default' | 'outline' | 'danger' | 'success' | 'warning' }> = {
@@ -95,11 +112,56 @@ const getStatusBadge = (status: string) => {
       header: 'Order Date',
       render: (value: string) => new Date(value).toLocaleDateString()
     },
+    // {
+    //   key: 'status',
+    //   header: 'Status',
+    //   render: (value: string) => getStatusBadge(value)
+    // },
     {
-      key: 'status',
-      header: 'Status',
-      render: (value: string) => getStatusBadge(value)
+      key: "status",
+      header: "Status",
+      render: (_: string, row: PurchaseOrder) => {
+        const statusMap: Record<string, { label: string; variant: any }> = {
+          draft: { label: 'Draft', variant: 'outline' },
+          pending: { label: 'Pending', variant: 'default' },
+          approved: { label: 'Approved', variant: 'warning' },
+          ordered: { label: 'Ordered', variant: 'warning' },
+          paid: { label: 'Paid', variant: 'success' },
+          received: { label: 'Received', variant: 'danger' },
+          cancelled: { label: 'Cancelled', variant: 'outline' },
+        };
+    
+        return (
+          <Select
+            value={row.status}
+            onValueChange={(val) => handleStatusChange(row.id, val)}
+          >
+            <SelectTrigger className="w-[140px]">
+              <SelectValue>
+                {statusMap[row.status] && (
+                  <Badge variant={statusMap[row.status].variant}>
+                    {statusMap[row.status].label}
+                  </Badge>
+                )}
+              </SelectValue>
+            </SelectTrigger>
+    
+            <SelectContent>
+              {Object.entries(statusMap).map(([value, { label, variant }]) => (
+                <SelectItem
+                  key={value}
+                  value={value}
+                  className="flex items-center gap-2"
+                >
+                  <Badge variant={variant}>{label}</Badge>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        );
+      },
     },
+    
     {
       key: 'totalAmount',
       header: 'Total Amount',
