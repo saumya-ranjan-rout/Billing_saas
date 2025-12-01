@@ -3,3 +3,5 @@ node_modules
 .env
 .env.*
 packages/frontend/.env.local
+packages/frontend/.next/
+packages/backend/logs/
