@@ -389,6 +389,11 @@
             "date": 1764390721717,
             "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-11-29.log",
             "hash": "a52f794bce009dab7db81bf87b07ff33d8432083c4347418148a3899a8e80904"
+        },
+        {
+            "date": 1764563625841,
+            "name": "C:\\Users\\billing\\Billing_saas\\packages\\backend\\logs\\combined-2025-12-01.log",
+            "hash": "8b9a859d967bf192d1f0fc582c896efed0ed52c8c39168834cce7c7962f00ddb"
         }
     ],
     "hashType": "sha256"

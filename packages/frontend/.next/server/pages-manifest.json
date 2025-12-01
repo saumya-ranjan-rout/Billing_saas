@@ -1,0 +1,15 @@
+{
+  "/_app": "pages/_app.js",
+  "/_error": "pages/_error.js",
+  "/_document": "pages/_document.js",
+  "/app/customers": "pages/app/customers.js",
+  "/app/subscription": "pages/app/subscription.js",
+  "/app/loyality": "pages/app/loyality.js",
+  "/auth/login": "pages/auth/login.js",
+  "/app/settings": "pages/app/settings.js",
+  "/app/dashboard": "pages/app/dashboard.js",
+  "/app/purchases": "pages/app/purchases.js",
+  "/app/reports": "pages/app/reports.js",
+  "/app/users": "pages/app/users.js",
+  "/app/invoices": "pages/app/invoices.js"
+}

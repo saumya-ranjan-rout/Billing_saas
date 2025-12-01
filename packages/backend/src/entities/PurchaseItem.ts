@@ -39,6 +39,19 @@ export class PurchaseItem extends TenantAwareEntity {
   @Column({ type: 'decimal', precision: 15, scale: 2 })
   discountAmount: number;
 
+  // ✨ NEW COLUMNS 24-11-2025
+  @Column({ type: 'varchar', nullable: true })
+  taxType: string;
+
+  @Column({ type: 'boolean', default: false })
+  cess: boolean;
+
+  @Column({ type: 'decimal', precision: 5, scale: 2, default: 0 })
+  cessRate: number;
+
+  @Column({ type: 'decimal', precision: 15, scale: 2, default: 0 })
+  cessAmount: number;
+
   @Column({ type: 'decimal', precision: 5, scale: 2, default: 0 })
   taxRate: number;
 

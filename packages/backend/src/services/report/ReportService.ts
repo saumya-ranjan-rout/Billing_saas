@@ -29,7 +29,7 @@ export class ReportService {
   private userRepository: Repository<User>;
   private expenseRepository: Repository<Expense>;
   private taxDetailRepository: Repository<TaxDetail>;
-    private cacheService: CacheService;
+  private cacheService: CacheService;
 
   constructor() {
     this.reportRepository = AppDataSource.getRepository(Report);
@@ -42,7 +42,7 @@ export class ReportService {
     this.userRepository = AppDataSource.getRepository(User);
     this.expenseRepository = AppDataSource.getRepository(Expense);
     this.taxDetailRepository = AppDataSource.getRepository(TaxDetail);
-        this.cacheService = new CacheService();
+    this.cacheService = new CacheService();
   }
 
   async generateReport(tenantId: string, reportType: ReportType, format: ReportFormat, filters: any): Promise<Report> {
@@ -55,7 +55,7 @@ export class ReportService {
       tenantId,
       status: ReportStatus.GENERATING
     });
-//console.log(report);
+    //console.log(report);
     const savedReport = await this.reportRepository.save(report);
 
     try {
@@ -130,13 +130,13 @@ export class ReportService {
       }
 
       const filePath = await this.exportReport(result, reportType, format, filters);
-      
+
       savedReport.filePath = filePath;
       savedReport.recordCount = this.calculateRecordCount(result);
       savedReport.generatedAt = new Date();
       savedReport.status = ReportStatus.COMPLETED;
 
-       await Promise.all([
+      await Promise.all([
         this.cacheService.invalidatePattern(`reports:${tenantId}:*`),
         this.cacheService.invalidatePattern(`cache:${tenantId}:/api/reports*`),
       ]);
@@ -157,9 +157,9 @@ export class ReportService {
 
   private calculateRecordCount(data: any): number {
     if (!data) return 0;
-    
+
     if (Array.isArray(data)) return data.length;
-    
+
     if (typeof data === 'object') {
       // Count records in arrays within the object
       let count = 0;
@@ -170,7 +170,7 @@ export class ReportService {
       });
       return count > 0 ? count : 1; // Return at least 1 for summary reports
     }
-    
+
     return 1;
   }
 
@@ -245,7 +245,7 @@ export class ReportService {
   }
 
   // 🧾 GSTR-1 Outward Supplies Report
- private async generateGSTR1(tenantId: string, filters: any) {
+  private async generateGSTR1(tenantId: string, filters: any) {
     const invoices = await this.invoiceRepository.find({
       where: {
         tenantId,
@@ -288,16 +288,16 @@ export class ReportService {
         placeOfSupply: invoice.customer?.billingAddress?.state || 'Not specified'
       };
 
-      // Calculate tax breakdown
-      if (invoice.taxDetails) {
-        invoice.taxDetails.forEach(tax => {
-          const taxAmount = tax.taxAmount;
-          if (tax.taxName.includes('CGST')) invoiceData.cgst += taxAmount;
-          else if (tax.taxName.includes('SGST')) invoiceData.sgst += taxAmount;
-          else if (tax.taxName.includes('IGST')) invoiceData.igst += taxAmount;
-          else if (tax.taxName.includes('CESS')) invoiceData.cess += taxAmount;
-        });
-      }
+      // // Calculate tax breakdown
+      // if (invoice.taxDetails) {
+      //   invoice.taxDetails.forEach(tax => {
+      //     const taxAmount = tax.taxAmount;
+      //     if (tax.taxName.includes('CGST')) invoiceData.cgst += taxAmount;
+      //     else if (tax.taxName.includes('SGST')) invoiceData.sgst += taxAmount;
+      //     else if (tax.taxName.includes('IGST')) invoiceData.igst += taxAmount;
+      //     else if (tax.taxName.includes('CESS')) invoiceData.cess += taxAmount;
+      //   });
+      // }
 
       // Categorize invoices - FIXED: Use country from billingAddress or default to India
       const customerCountry = invoice.customer?.billingAddress?.country || 'India';
@@ -314,12 +314,58 @@ export class ReportService {
         reportData.summary.b2cCount++;
       }
 
-      // HSN Summary
+      // // HSN Summary
+      // invoice.items.forEach(item => {
+      //   const hsnCode = item.metadata?.hsnCode || '999999';
+      //   if (!reportData.hsnSummary[hsnCode]) {
+      //     reportData.hsnSummary[hsnCode] = {
+      //       hsnCode,
+      //       description: item.description,
+      //       uqc: item.unit || 'NOS',
+      //       totalQuantity: 0,
+      //       taxableValue: 0,
+      //       taxRate: item.taxRate,
+      //       taxAmount: 0,
+      //       cessAmount: 0
+      //     };
+      //   }
+
+      //   const itemValue = item.unitPrice * item.quantity;
+      //   reportData.hsnSummary[hsnCode].totalQuantity += item.quantity;
+      //   reportData.hsnSummary[hsnCode].taxableValue += itemValue;
+      //   reportData.hsnSummary[hsnCode].taxAmount += (item.taxAmount || 0);
+      // });
+
+      // -----------------------------
+      // 📌 Item-wise tax calculation
+      // -----------------------------
       invoice.items.forEach(item => {
-        const hsnCode = item.metadata?.hsnCode || '999999';
-        if (!reportData.hsnSummary[hsnCode]) {
-          reportData.hsnSummary[hsnCode] = {
-            hsnCode,
+        const itemTax = Number(item.taxAmount) || 0;
+        const itemCess = Number(item.cessAmount) || 0;
+        const value = item.unitPrice * item.quantity;
+
+        if (item.tax_type === 'cgst_sgst') {
+          const half = itemTax / 2;
+          invoiceData.cgst += half;
+          invoiceData.sgst += half;
+        } else if (item.tax_type === 'igst') {
+          invoiceData.igst += itemTax;
+        }
+
+        // CESS (ONLY IF has_cess = TRUE)
+        if (item.has_cess && item.cessAmount) {
+          invoiceData.cess += itemCess;
+        }
+
+        // invoiceData.cess += itemCess;
+
+        // -----------------------------
+        // 📌 HSN summary calculation
+        // -----------------------------
+        const hsn = item.metadata?.hsnCode || '999999';
+        if (!reportData.hsnSummary[hsn]) {
+          reportData.hsnSummary[hsn] = {
+            hsnCode: hsn,
             description: item.description,
             uqc: item.unit || 'NOS',
             totalQuantity: 0,
@@ -330,10 +376,12 @@ export class ReportService {
           };
         }
 
-        const itemValue = item.unitPrice * item.quantity;
-        reportData.hsnSummary[hsnCode].totalQuantity += item.quantity;
-        reportData.hsnSummary[hsnCode].taxableValue += itemValue;
-        reportData.hsnSummary[hsnCode].taxAmount += (item.taxAmount || 0);
+        const qty = Number(item.quantity) || 0;
+
+        reportData.hsnSummary[hsn].totalQuantity += qty;
+        reportData.hsnSummary[hsn].taxableValue += value;
+        reportData.hsnSummary[hsn].taxAmount += itemTax;
+        reportData.hsnSummary[hsn].cessAmount += itemCess;
       });
 
       // Update summary
@@ -352,7 +400,7 @@ export class ReportService {
         tenantId,
         paymentDate: Between(new Date(filters.fromDate), new Date(filters.toDate)),
         deletedAt: IsNull(),
-           paymentType: PaymentType.EXPENSE
+        paymentType: PaymentType.EXPENSE
       },
       relations: ['vendor']
     });
@@ -406,7 +454,7 @@ export class ReportService {
           ineligibleITC: 0
         });
       }
-      
+
       const vendorSummary = vendorMap.get(vendorKey);
       vendorSummary.totalPurchases++;
       vendorSummary.totalAmount += purchase.taxableValue;
@@ -427,7 +475,7 @@ export class ReportService {
         issueDate: Between(new Date(filters.fromDate), new Date(filters.toDate)),
         deletedAt: IsNull()
       },
-      relations: ['taxDetails']
+      relations: ['items']
     });
 
     const payments = await this.paymentRepository.find({
@@ -446,18 +494,42 @@ export class ReportService {
     invoices.forEach(invoice => {
       const taxableValue = invoice.subTotal - (invoice.discountTotal || 0);
       outwardSupply += taxableValue;
-      outwardTax += invoice.taxTotal;
+      outwardTax += Number(invoice.taxTotal) || 0;
 
-      // Calculate tax breakdown
-      if (invoice.taxDetails) {
-        invoice.taxDetails.forEach(tax => {
-          if (tax.taxName.includes('CGST')) cgst += tax.taxAmount;
-          else if (tax.taxName.includes('SGST')) sgst += tax.taxAmount;
-          else if (tax.taxName.includes('IGST')) igst += tax.taxAmount;
-          else if (tax.taxName.includes('CESS')) cess += tax.taxAmount;
-        });
-      }
+      invoice.items?.forEach(item => {
+        const itemTax = Number(item.taxAmount) || 0;
+
+        if (item.tax_type === 'cgst_sgst') {
+          cgst += itemTax / 2;
+          sgst += itemTax / 2;
+        }
+
+        if (item.tax_type === 'igst') {
+          igst += itemTax;
+        }
+
+        // CESS (ONLY IF has_cess = TRUE)
+        if (item.has_cess && item.cessAmount) {
+          cess += Number(item.cessAmount);
+        }
+      });
     });
+
+    // invoices.forEach(invoice => {
+    //   const taxableValue = invoice.subTotal - (invoice.discountTotal || 0);
+    //   outwardSupply += taxableValue;
+    //   outwardTax += Number(invoice.taxTotal) || 0;
+
+    //   // Calculate tax breakdown
+    //   if (invoice.taxDetails) {
+    //     invoice.taxDetails.forEach(tax => {
+    //       if (tax.taxName.includes('CGST')) cgst += tax.taxAmount;
+    //       else if (tax.taxName.includes('SGST')) sgst += tax.taxAmount;
+    //       else if (tax.taxName.includes('IGST')) igst += tax.taxAmount;
+    //       else if (tax.taxName.includes('CESS')) cess += tax.taxAmount;
+    //     });
+    //   }
+    // });
 
     let itcAvailable = 0;
     let itcClaimed = 0;
@@ -509,9 +581,32 @@ export class ReportService {
 
     const records = invoices.map(invoice => {
       const taxableValue = invoice.subTotal - (invoice.discountTotal || 0);
-      const cgst = invoice.taxDetails?.find(t => t.taxName.includes('CGST'))?.taxAmount || 0;
-      const sgst = invoice.taxDetails?.find(t => t.taxName.includes('SGST'))?.taxAmount || 0;
-      const igst = invoice.taxDetails?.find(t => t.taxName.includes('IGST'))?.taxAmount || 0;
+      // const cgst = invoice.taxDetails?.find(t => t.taxName.includes('CGST'))?.taxAmount || 0;
+      // const sgst = invoice.taxDetails?.find(t => t.taxName.includes('SGST'))?.taxAmount || 0;
+      // const igst = invoice.taxDetails?.find(t => t.taxName.includes('IGST'))?.taxAmount || 0;
+      let cgst = 0, sgst = 0, igst = 0, cess = 0;
+
+      // 🔥 TAX CALCULATION FROM ITEMS (NOT TAXDETAIL TABLE)
+      invoice.items.forEach(item => {
+        const taxAmount = Number(item.taxAmount) || 0;
+
+        // Case 1 → CGST + SGST (Intra-state)
+        if (item.tax_type === 'cgst_sgst') {
+          const half = taxAmount / 2;
+          cgst += half;
+          sgst += half;
+        }
+
+        // Case 2 → IGST (Inter-state)
+        else if (item.tax_type === 'igst') {
+          igst += taxAmount;
+        }
+
+        // CESS calculation only when has_cess = true
+        if (item.has_cess && item.cessAmount) {
+          cess += Number(item.cessAmount) || 0;
+        }
+      });
 
       return {
         date: invoice.issueDate,
@@ -522,7 +617,7 @@ export class ReportService {
         cgst,
         sgst,
         igst,
-        totalAmount: invoice.totalAmount,
+        totalAmount: Number(invoice.totalAmount) || 0,
         paymentStatus: invoice.status,
         paymentDate: invoice.paidDate,
         placeOfSupply: invoice.customer?.billingAddress?.state || 'Not specified'
@@ -547,7 +642,7 @@ export class ReportService {
         tenantId,
         paymentDate: Between(new Date(filters.fromDate), new Date(filters.toDate)),
         deletedAt: IsNull(),
-           paymentType: PaymentType.EXPENSE
+        paymentType: PaymentType.EXPENSE
       },
       relations: ['vendor']
     });
@@ -581,8 +676,8 @@ export class ReportService {
         };
       }
 
-      const tdsAmount = payment.amount * (report.sections[section].rate / 100);
-      report.sections[section].totalAmount += payment.amount;
+      const tdsAmount = Number(payment.amount) * (report.sections[section].rate / 100);
+      report.sections[section].totalAmount += Number(payment.amount);
       report.sections[section].tdsAmount += tdsAmount;
       report.sections[section].transactions.push({
         date: payment.paymentDate,
@@ -593,7 +688,7 @@ export class ReportService {
         paymentMode: payment.method
       });
 
-      report.summary.totalAmount += payment.amount;
+      report.summary.totalAmount += Number(payment.amount);
       report.summary.totalTDS += tdsAmount;
     });
 
@@ -601,7 +696,7 @@ export class ReportService {
   }
 
   // 🔍 Audit Trail Report
- private async generateAuditTrail(tenantId: string, filters: any) {
+  private async generateAuditTrail(tenantId: string, filters: any) {
     const auditLogs = await this.auditLogRepository.find({
       where: {
         tenantId,
@@ -616,22 +711,22 @@ export class ReportService {
     const records = auditLogs.map(log => ({
       timestamp: log.timestamp,
       // FIXED: Use user's name property
-    //   user: (log.performedBy as User)?.name || 'System',
-user: (() => {
-  if (!log.performedBy) return 'System';
+      //   user: (log.performedBy as User)?.name || 'System',
+      user: (() => {
+        if (!log.performedBy) return 'System';
 
-  const performer: any = log.performedBy;
+        const performer: any = log.performedBy;
 
-  if ('firstName' in performer && 'lastName' in performer) {
-    // User entity
-    return `${performer.firstName} ${performer.lastName}`;
-  } else if ('first_name' in performer && 'last_name' in performer) {
-    // SuperAdmin entity
-    return `${performer.first_name} ${performer.last_name}`;
-  }
+        if ('firstName' in performer && 'lastName' in performer) {
+          // User entity
+          return `${performer.firstName} ${performer.lastName}`;
+        } else if ('first_name' in performer && 'last_name' in performer) {
+          // SuperAdmin entity
+          return `${performer.first_name} ${performer.last_name}`;
+        }
 
-  return 'System';
-})(),
+        return 'System';
+      })(),
       action: log.action,
       resource: log.resource,
       resourceId: log.resourceId,
@@ -698,13 +793,13 @@ user: (() => {
   }
 
   // 🏦 Cash/Bank Book
- private async generateCashBankBook(tenantId: string, filters: any) {
+  private async generateCashBankBook(tenantId: string, filters: any) {
     const payments = await this.paymentRepository.find({
       where: {
         tenantId,
         paymentDate: Between(new Date(filters.fromDate), new Date(filters.toDate)),
         deletedAt: IsNull(),
-           paymentType: PaymentType.EXPENSE
+        paymentType: PaymentType.EXPENSE
       },
       relations: ['vendor', 'customer']
     });
@@ -766,18 +861,40 @@ user: (() => {
           };
         }
 
-        const itemValue = item.unitPrice * item.quantity;
-        hsnSummary[hsnCode].totalQuantity += item.quantity;
-        hsnSummary[hsnCode].taxableValue += itemValue;
-        hsnSummary[hsnCode].taxAmount += (item.taxAmount || 0);
+        // const itemValue = item.unitPrice * item.quantity;
+        // hsnSummary[hsnCode].totalQuantity += Number(item.quantity);
+        // hsnSummary[hsnCode].taxableValue += itemValue;
+        // // hsnSummary[hsnCode].taxAmount += Number(item.taxAmount || 0);
+        // // ➤ TAX AMOUNT (CGST + SGST + IGST combined per item)
+        // hsnSummary[hsnSummary].taxAmount += Number(item.taxAmount || 0);
+
+        // // ➤ CESS CALCULATION
+        // // If has_cess is true AND cessAmount exists
+        // if (item.has_cess === true) {
+        //   const cessValue = Number(item.cessAmount || 0);
+        //   hsnSummary[hsnCode].cessAmount += cessValue;
+        // }
+        const row = hsnSummary[hsnCode];
+
+        const itemValue = Number(item.unitPrice) * Number(item.quantity);
+
+        row.totalQuantity += Number(item.quantity);
+        row.taxableValue += itemValue;
+        row.taxAmount += Number(item.taxAmount || 0);
+
+        // ✅ ADD CESS CALCULATION
+        if (item.has_cess && item.cessAmount) {
+          row.cessAmount += Number(item.cessAmount);
+        }
+
       });
     });
 
     return {
       summary: {
         totalHSNCodes: Object.keys(hsnSummary).length,
-        totalTaxableValue: Object.values(hsnSummary).reduce((sum: number, item: any) => sum + item.taxableValue, 0),
-        totalTaxAmount: Object.values(hsnSummary).reduce((sum: number, item: any) => sum + item.taxAmount, 0)
+        totalTaxableValue: Object.values(hsnSummary).reduce((sum: number, item: any) => sum + Number(item.taxableValue), 0),
+        totalTaxAmount: Object.values(hsnSummary).reduce((sum: number, item: any) => sum + Number(item.taxAmount), 0)
       },
       hsnDetails: Object.values(hsnSummary)
     };
@@ -856,7 +973,7 @@ user: (() => {
         tenantId,
         paymentDate: Between(new Date(filters.fromDate), new Date(filters.toDate)),
         deletedAt: IsNull(),
-           paymentType: PaymentType.EXPENSE
+        paymentType: PaymentType.EXPENSE
       },
       relations: ['vendor']
     });
@@ -864,11 +981,11 @@ user: (() => {
     return {
       summary: {
         totalPurchases: payments.length,
-        totalAmount: payments.reduce((sum, p) => sum + p.amount, 0)
+        totalAmount: payments.reduce((sum, p) => sum + Number(p.amount), 0)
       },
       records: payments.map(p => ({
         date: p.paymentDate,
-        billNo: p.referenceNumber,
+        // billNo: p.referenceNumber,
         vendor: p.vendor?.name,
         vendorGSTIN: p.vendor?.gstin,
         taxableValue: p.amount,
@@ -918,7 +1035,7 @@ user: (() => {
 
   private async generateBalanceSheet(tenantId: string, filters: any) {
     const asOfDate = new Date(filters.toDate);
-    
+
     return {
       summary: {
         asOfDate: asOfDate.toLocaleDateString(),
@@ -1046,54 +1163,54 @@ user: (() => {
   }
 
   // Export methods remain the same as before...
-//   private async exportReport(data: any, reportType: ReportType, format: ReportFormat, filters: any): Promise<string> {
-//     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-//     const fileName = `${reportType}_${timestamp}`;
-//     const reportsDir = path.join(process.cwd(), 'reports', 'generated');
+  //   private async exportReport(data: any, reportType: ReportType, format: ReportFormat, filters: any): Promise<string> {
+  //     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  //     const fileName = `${reportType}_${timestamp}`;
+  //     const reportsDir = path.join(process.cwd(), 'reports', 'generated');
 
-//     if (!fs.existsSync(reportsDir)) {
-//       fs.mkdirSync(reportsDir, { recursive: true });
-//     }
+  //     if (!fs.existsSync(reportsDir)) {
+  //       fs.mkdirSync(reportsDir, { recursive: true });
+  //     }
 
-//     switch (format) {
-//       case ReportFormat.EXCEL:
-//         return await this.exportToExcel(data, reportsDir, fileName, reportType);
-//       case ReportFormat.PDF:
-//         return await this.exportToPDF(data, reportsDir, fileName, reportType);
-//       case ReportFormat.JSON:
-//         return await this.exportToJSON(data, reportsDir, fileName);
-//       case ReportFormat.CSV:
-//         return await this.exportToCSV(data, reportsDir, fileName, reportType);
-//       default:
-//         throw new Error(`Unsupported format: ${format}`);
-//     }
-//   }
+  //     switch (format) {
+  //       case ReportFormat.EXCEL:
+  //         return await this.exportToExcel(data, reportsDir, fileName, reportType);
+  //       case ReportFormat.PDF:
+  //         return await this.exportToPDF(data, reportsDir, fileName, reportType);
+  //       case ReportFormat.JSON:
+  //         return await this.exportToJSON(data, reportsDir, fileName);
+  //       case ReportFormat.CSV:
+  //         return await this.exportToCSV(data, reportsDir, fileName, reportType);
+  //       default:
+  //         throw new Error(`Unsupported format: ${format}`);
+  //     }
+  //   }
 
-private async exportReport(data: any, reportType: ReportType, format: ReportFormat, filters: any): Promise<string> {
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  const fileName = `${reportType}_${timestamp}`;
-  const reportsDir = path.join(process.cwd(), 'reports', 'generated');
+  private async exportReport(data: any, reportType: ReportType, format: ReportFormat, filters: any): Promise<string> {
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const fileName = `${reportType}_${timestamp}`;
+    const reportsDir = path.join(process.cwd(), 'reports', 'generated');
 
-  if (!fs.existsSync(reportsDir)) {
-    fs.mkdirSync(reportsDir, { recursive: true });
+    if (!fs.existsSync(reportsDir)) {
+      fs.mkdirSync(reportsDir, { recursive: true });
+    }
+
+    // Always generate a JSON copy for frontend previews
+    await this.exportToJSON(data, reportsDir, fileName);
+
+    switch (format) {
+      case ReportFormat.EXCEL:
+        return await this.exportToExcel(data, reportsDir, fileName, reportType);
+      case ReportFormat.PDF:
+        return await this.exportToPDF(data, reportsDir, fileName, reportType);
+      case ReportFormat.JSON:
+        return await this.exportToJSON(data, reportsDir, fileName);
+      case ReportFormat.CSV:
+        return await this.exportToCSV(data, reportsDir, fileName, reportType);
+      default:
+        throw new Error(`Unsupported format: ${format}`);
+    }
   }
-
-  // Always generate a JSON copy for frontend previews
-  await this.exportToJSON(data, reportsDir, fileName);
-
-  switch (format) {
-    case ReportFormat.EXCEL:
-      return await this.exportToExcel(data, reportsDir, fileName, reportType);
-    case ReportFormat.PDF:
-      return await this.exportToPDF(data, reportsDir, fileName, reportType);
-    case ReportFormat.JSON:
-      return await this.exportToJSON(data, reportsDir, fileName);
-    case ReportFormat.CSV:
-      return await this.exportToCSV(data, reportsDir, fileName, reportType);
-    default:
-      throw new Error(`Unsupported format: ${format}`);
-  }
-}
 
 
   private async exportToExcel(data: any, dir: string, fileName: string, reportType: ReportType): Promise<string> {
@@ -1101,46 +1218,46 @@ private async exportReport(data: any, reportType: ReportType, format: ReportForm
     const workbook = new ExcelJS.Workbook();
 
     // Summary sheet
-const summarySheet = this.getOrAddWorksheet(workbook, 'Summary');
-this.addExcelSummary(summarySheet, data, reportType);
+    const summarySheet = this.getOrAddWorksheet(workbook, 'Summary');
+    this.addExcelSummary(summarySheet, data, reportType);
 
-// Data sheets for arrays
-Object.keys(data).forEach(key => {
-  if (Array.isArray(data[key]) && data[key].length > 0) {
-    const dataSheet = this.getOrAddWorksheet(workbook, this.formatKey(key));
-    this.addExcelData(dataSheet, data[key]);
-  } else if (typeof data[key] === 'object' && data[key] !== null) {
-    const objData = data[key];
-    if (Object.keys(objData).length > 0) {
-      const arrayData = Object.values(objData);
-      if (Array.isArray(arrayData) && arrayData.length > 0) {
+    // Data sheets for arrays
+    Object.keys(data).forEach(key => {
+      if (Array.isArray(data[key]) && data[key].length > 0) {
         const dataSheet = this.getOrAddWorksheet(workbook, this.formatKey(key));
-        this.addExcelData(dataSheet, arrayData);
+        this.addExcelData(dataSheet, data[key]);
+      } else if (typeof data[key] === 'object' && data[key] !== null) {
+        const objData = data[key];
+        if (Object.keys(objData).length > 0) {
+          const arrayData = Object.values(objData);
+          if (Array.isArray(arrayData) && arrayData.length > 0) {
+            const dataSheet = this.getOrAddWorksheet(workbook, this.formatKey(key));
+            this.addExcelData(dataSheet, arrayData);
+          }
+        }
       }
-    }
-  }
-});
+    });
 
     await workbook.xlsx.writeFile(filePath);
     return filePath;
   }
 
-private getOrAddWorksheet(workbook: ExcelJS.Workbook, name: string): ExcelJS.Worksheet {
-  let sheet = workbook.getWorksheet(name);
-  if (!sheet) {
-    sheet = workbook.addWorksheet(name);
-  } else {
-    // Avoid duplicates by appending suffix if needed
-    let counter = 1;
-    let newName = `${name}_${counter}`;
-    while (workbook.getWorksheet(newName)) {
-      counter++;
-      newName = `${name}_${counter}`;
+  private getOrAddWorksheet(workbook: ExcelJS.Workbook, name: string): ExcelJS.Worksheet {
+    let sheet = workbook.getWorksheet(name);
+    if (!sheet) {
+      sheet = workbook.addWorksheet(name);
+    } else {
+      // Avoid duplicates by appending suffix if needed
+      let counter = 1;
+      let newName = `${name}_${counter}`;
+      while (workbook.getWorksheet(newName)) {
+        counter++;
+        newName = `${name}_${counter}`;
+      }
+      sheet = workbook.addWorksheet(newName);
     }
-    sheet = workbook.addWorksheet(newName);
+    return sheet;
   }
-  return sheet;
-}
 
 
 
@@ -1162,7 +1279,7 @@ private getOrAddWorksheet(workbook: ExcelJS.Workbook, name: string): ExcelJS.Wor
 
     const headers = Object.keys(records[0]);
     worksheet.addRow(headers.map(h => this.formatKey(h)));
-    
+
     records.forEach(record => {
       worksheet.addRow(headers.map(header => record[header]));
     });
