@@ -617,6 +617,7 @@ export class ReportService {
         cgst,
         sgst,
         igst,
+        cess,
         totalAmount: Number(invoice.totalAmount) || 0,
         paymentStatus: invoice.status,
         paymentDate: invoice.paidDate,

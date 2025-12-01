@@ -175,7 +175,8 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({
           unit: item.unit ?? 'pcs',
           unitPrice: Number(item.unitPrice) || 0,
           discount: Number(item.discount) || 0,
-          taxType: item.taxType ?? "CGST_SGST",
+          // taxType: item.taxType ?? "CGST_SGST",
+          taxType: (item.taxType ?? "CGST_SGST") as "CGST_SGST" | "IGST",
           taxRate: Number(item.taxRate) || 0,
           cess: item.cess ?? false,
           cessRate: Number(item.cessRate) || 0,
@@ -412,18 +413,16 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({
               </div>
               <div className="md:col-span-2 flex flex-col">
                 <Select
-                label="Tax Type"
-  value={watch(`items.${index}.taxType`)}
-  onChange={(value) => {
-    setValue(`items.${index}.taxType`, value as "CGST_SGST" | "IGST");
-  }}
-  options={[
-    { value: "CGST_SGST", label: "CGST & SGST" },
-    { value: "IGST", label: "IGST" },
-  ]}
-/>
-
-
+                  label="Tax Type"
+                  value={watch(`items.${index}.taxType`)}
+                  onChange={(value) => {
+                    setValue(`items.${index}.taxType`, value as "CGST_SGST" | "IGST");
+                  }}
+                  options={[
+                    { value: "CGST_SGST", label: "CGST & SGST" },
+                    { value: "IGST", label: "IGST" },
+                  ]}
+                />
                 {errors.items?.[index]?.taxType && (
                   <p className="text-red-500 text-sm mt-1">
                     {errors.items[index]?.taxType?.message}
