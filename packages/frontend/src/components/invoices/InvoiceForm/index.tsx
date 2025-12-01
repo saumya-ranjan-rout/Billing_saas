@@ -782,6 +782,7 @@ if (invoice?.loyaltyTransactions?.[0]?.type === "redeem") {
   // label="Payment Amount"
   readOnly={isEditable}
   type="number"
+  step="0.01"
   {...register("paymentAmount", {
     valueAsNumber: true,
     onChange: (e) => {
