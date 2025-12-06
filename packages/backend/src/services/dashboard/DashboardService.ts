@@ -1,6 +1,6 @@
 import { Between, IsNull } from 'typeorm';
 import { AppDataSource } from '../../config/database';
-import { Invoice,InvoiceStatus  } from '../../entities/Invoice';
+import { Invoice, InvoiceStatus } from '../../entities/Invoice';
 import { Customer } from '../../entities/Customer';
 import { Payment } from '../../entities/Payment';
 import { CacheService } from '../cache/CacheService';
@@ -44,18 +44,18 @@ export class DashboardService {
 
       // ⚡ Fetch only small sets (limit 5)
       const recentInvoices = await AppDataSource.getRepository(Invoice).find({
-       where: { tenantId, deletedAt: IsNull() },
+        where: { tenantId, deletedAt: IsNull() },
         relations: ['customer'],
         take: 5,
         order: { createdAt: 'DESC' },
       });
 
       const pendingInvoices = await AppDataSource.getRepository(Invoice).find({
-     where: { 
-  tenantId, 
-  status: InvoiceStatus.PENDING,
-  deletedAt: IsNull()
-},
+        where: {
+          tenantId,
+          status: InvoiceStatus.PENDING,
+          deletedAt: IsNull()
+        },
         relations: ['customer'],
         take: 5,
         order: { dueDate: 'ASC' },
@@ -95,7 +95,7 @@ export class DashboardService {
     }, 300); // cache for 5 minutes
   }
 
-  
+
   private async getTotalInvoices(tenantId: string): Promise<number> {
     const repo = AppDataSource.getRepository(Invoice);
     return await repo.count({
@@ -126,11 +126,11 @@ export class DashboardService {
   private async getPendingInvoices(tenantId: string) {
     const repo = AppDataSource.getRepository(Invoice);
     return await repo.find({
-where: { 
-  tenantId, 
-  status: InvoiceStatus.PENDING,
-  deletedAt: IsNull()
-},
+      where: {
+        tenantId,
+        status: InvoiceStatus.PENDING,
+        deletedAt: IsNull()
+      },
       relations: ['customer'],
       take: 10,
       order: { dueDate: 'ASC' }
@@ -150,13 +150,13 @@ where: {
   private async getOverdueInvoices(tenantId: string) {
     const repo = AppDataSource.getRepository(Invoice);
     const today = new Date();
-    
+
     return await repo
       .createQueryBuilder('invoice')
       .where('invoice.tenantId = :tenantId', { tenantId })
       .andWhere('invoice.dueDate < :today', { today })
-      .andWhere('invoice.status IN (:...statuses)', { 
-        statuses: ['sent', 'viewed', 'partial'] 
+      .andWhere('invoice.status IN (:...statuses)', {
+        statuses: ['sent', 'viewed', 'partial']
       })
       .andWhere('invoice.deletedAt IS NULL')
       .leftJoinAndSelect('invoice.customer', 'customer')

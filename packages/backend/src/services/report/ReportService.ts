@@ -10,6 +10,7 @@ import { Product } from '../../entities/Product';
 import { User } from '../../entities/User';
 import { Expense } from '../../entities/Expense';
 import { TaxDetail } from '../../entities/TaxDetail';
+import { PurchaseOrder } from '../../entities/PurchaseOrder';
 import logger from '../../utils/logger';
 import * as ExcelJS from 'exceljs';
 import * as fs from 'fs';
@@ -29,6 +30,7 @@ export class ReportService {
   private userRepository: Repository<User>;
   private expenseRepository: Repository<Expense>;
   private taxDetailRepository: Repository<TaxDetail>;
+  private purchaseOrderRepository: Repository<PurchaseOrder>;
   private cacheService: CacheService;
 
   constructor() {
@@ -42,6 +44,7 @@ export class ReportService {
     this.userRepository = AppDataSource.getRepository(User);
     this.expenseRepository = AppDataSource.getRepository(Expense);
     this.taxDetailRepository = AppDataSource.getRepository(TaxDetail);
+    this.purchaseOrderRepository = AppDataSource.getRepository(PurchaseOrder);
     this.cacheService = new CacheService();
   }
 
@@ -979,9 +982,21 @@ export class ReportService {
       relations: ['vendor']
     });
 
+    const purchases = await this.purchaseOrderRepository.find({
+      where: {
+        tenantId,
+        orderDate: Between(
+          new Date(filters.fromDate),
+          new Date(filters.toDate)
+        ),
+        deletedAt: IsNull()
+      },
+      relations: ['vendor', 'items']   // optional
+    });
+
     return {
       summary: {
-        totalPurchases: payments.length,
+        totalPurchases: purchases.length,
         totalAmount: payments.reduce((sum, p) => sum + Number(p.amount), 0)
       },
       records: payments.map(p => ({

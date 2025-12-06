@@ -115,13 +115,13 @@ const Dashboard: React.FC = () => {
   const filteredInvoices =
     filter === "month"
       ? dashboardData.recentInvoices.filter((inv) => {
-          const date = new Date(inv.date);
-          const now = new Date();
-          return (
-            date.getMonth() === now.getMonth() &&
-            date.getFullYear() === now.getFullYear()
-          );
-        })
+        const date = new Date(inv.date);
+        const now = new Date();
+        return (
+          date.getMonth() === now.getMonth() &&
+          date.getFullYear() === now.getFullYear()
+        );
+      })
       : dashboardData.recentInvoices;
 
   // Fake revenue breakdown for chart (grouped by day)
@@ -170,34 +170,34 @@ const Dashboard: React.FC = () => {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-<MetricCard
-  title="Total Revenue"
-  value={`₹${dashboardData.totalRevenue.toLocaleString()}`}
-  change={12.5}
-  icon={DollarSign}
-  color="blue"
-/>
-   <MetricCard
-  title="New Customers"
-  value={dashboardData.newCustomers}
-  change={8.2}
-  icon={Users}
-  color="green"
-/>
-        <MetricCard
-  title="Pending Invoices"
-  value={dashboardData.pendingInvoices}
-  change={-3.4}
-  icon={FileText}
-  color="yellow"
-/>
-<MetricCard
-  title="Paid Invoices"
-  value={dashboardData.paidInvoices}
-  change={5.7}
-  icon={TrendingUp}
-  color="blue"
-/>
+          <MetricCard
+            title="Total Revenue"
+            value={`₹${dashboardData.totalRevenue.toLocaleString()}`}
+            change={12.5}
+            icon={DollarSign}
+            color="blue"
+          />
+          <MetricCard
+            title="New Customers"
+            value={dashboardData.newCustomers}
+            change={8.2}
+            icon={Users}
+            color="green"
+          />
+          <MetricCard
+            title="Pending Invoices"
+            value={dashboardData.pendingInvoices}
+            change={-3.4}
+            icon={FileText}
+            color="yellow"
+          />
+          <MetricCard
+            title="Paid Invoices"
+            value={dashboardData.paidInvoices}
+            change={5.7}
+            icon={TrendingUp}
+            color="blue"
+          />
         </div>
 
         {/* Recent Invoices & Customers */}
@@ -208,11 +208,11 @@ const Dashboard: React.FC = () => {
               <h2 className="text-lg font-semibold text-gray-900">
                 Recent Invoices
               </h2>
-            <Link href="/app/invoices">
-  <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-    View all
-  </button>
-</Link>
+              <Link href="/app/invoices">
+                <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                  View all
+                </button>
+              </Link>
             </div>
             <div className="space-y-2">
               {filteredInvoices.map((invoice) => (
@@ -231,13 +231,12 @@ const Dashboard: React.FC = () => {
                   <div className="text-right">
                     <p className="font-semibold">₹{invoice.amount}</p>
                     <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        invoice.status === "paid"
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${invoice.status === "paid"
                           ? "bg-green-100 text-green-800"
                           : invoice.status === "pending"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : "bg-red-100 text-red-800"
-                      }`}
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
                     >
                       {invoice.status}
                     </span>
@@ -253,18 +252,18 @@ const Dashboard: React.FC = () => {
               <h2 className="text-lg font-semibold text-gray-900">
                 Recent Customers
               </h2>
-           <Link href="/app/customers">
-  <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-    View all
-  </button>
-</Link>
+              <Link href="/app/customers">
+                <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                  View all
+                </button>
+              </Link>
             </div>
 
             <div className="space-y-2">
               {dashboardData.recentCustomers.map((customer) => (
                 <div key={customer.id} className="list-row flex items-center">
                   <div className="avatar-circle">
-                      {customer.name.charAt(0)}
+                    {customer.name.charAt(0)}
                   </div>
                   <div className="ml-4">
                     <p className="font-medium text-gray-900">
@@ -273,7 +272,7 @@ const Dashboard: React.FC = () => {
                     <p className="text-sm text-gray-500">{customer.email}</p>
                   </div>
                   <div className="ml-auto text-sm text-gray-500">
-                    
+
                     Joined {new Date(customer.joinedDate).toLocaleDateString()}
                   </div>
                 </div>
@@ -285,8 +284,8 @@ const Dashboard: React.FC = () => {
         {/* Revenue Chart */}
         <div className="dashboard-card">
           <h2 className="text-lg font-semibold text-gray-900 mb-6">
-              Revenue Overview
-            </h2>
+            Revenue Overview
+          </h2>
 
           <div className="h-72 chart-wrapper">
             {revenueData.length > 0 ? (
