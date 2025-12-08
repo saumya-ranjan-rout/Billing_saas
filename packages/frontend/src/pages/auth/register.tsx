@@ -17,8 +17,17 @@ const registerSchema = z
     accountType: z.enum(["admin", "professional"]),
     businessName: z.string().min(2, "Business name is required"),
     subdomain: z.string().optional(),
-    firstName: z.string().min(2, "First name is required"),
-    lastName: z.string().min(2, "Last name is required"),
+    // firstName: z.string().min(2, "First name is required"),
+    // lastName: z.string().min(2, "Last name is required"),
+    firstName: z
+      .string()
+      .min(2, "First name is required")
+      .regex(/^[A-Za-z]+$/, "Only alphabets are allowed"),
+
+    lastName: z
+      .string()
+      .min(2, "Last name is required")
+      .regex(/^[A-Za-z]+$/, "Only alphabets are allowed"),
     email: z.string().email("Invalid email address"),
     password: z.string().min(6, "Password must be at least 6 characters"),
 
@@ -100,7 +109,8 @@ const Register: React.FC = () => {
         throw new Error("Registration failed. Please try again.");
       }
     } catch (error: any) {
-      setNotificationMsg(error?.data?.error || "Something went wrong");
+      console.log("FULL ERROR:", error);
+      setNotificationMsg(error?.data?.error || error?.data?.message || "Something went wrong");
       setShowNotification(true);
     }
   };
@@ -118,7 +128,7 @@ const Register: React.FC = () => {
       {/* MAIN WRAPPER */}
       <div className="w-full max-w-6xl bg-white rounded-3xl shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2">
 
-       {/* LEFT PANEL — Hidden on mobile */}
+        {/* LEFT PANEL — Hidden on mobile */}
         <div className="hidden md:flex p-12 bg-gradient-to-b from-[#6b4efc] to-[#386bfd] text-white flex-col justify-center">
 
           <h1 className="text-4xl font-bold mb-4">Create Your Account</h1>
@@ -159,196 +169,217 @@ const Register: React.FC = () => {
                 height={110}
                 className="object-contain"
               />
-          </div>
+            </div>
 
             <h2 className="text-3xl font-semibold text-center text-slate-900">
-                  Register your Account
-                </h2>
+              Register your Account
+            </h2>
 
             <p className="mt-2 mb-8 text-center text-sm text-slate-600">
               Already have an account?
-                  <Link
-                    href="/auth/login"
+              <Link
+                href="/auth/login"
                 className="text-blue-600 hover:underline ml-1"
-                  >
-                    Sign in
-                  </Link>
-                </p>
+              >
+                Sign in
+              </Link>
+            </p>
 
             {/* FORM */}
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               {/* 2 Columns */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* LEFT FIELDS */}
-                  <div className="space-y-4">
-                    <FormInput
-                      id="firstName"
-                      label="First Name"
-                      error={errors.firstName?.message}
-                      {...register("firstName")}
-                    />
-                    <FormInput
-                      id="lastName"
-                      label="Last Name"
-                      error={errors.lastName?.message}
-                      {...register("lastName")}
-                    />
-                    <FormInput
-                      id="businessName"
-                      label="Business Name"
-                      error={errors.businessName?.message}
-                      {...register("businessName")}
-                    />
-                    <FormInput
-                      id="subdomain"
-                      label="Subdomain"
-                      error={errors.subdomain?.message}
-                      {...register("subdomain")}
-                    />
-                    <FormInput
-                      id="email"
-                      type="email"
-                      label="Email Address"
-                      error={errors.email?.message}
-                      {...register("email")}
-                    />
-                    <FormInput
-                      id="password"
-                      type="password"
-                      label="Password"
-                      error={errors.password?.message}
-                      {...register("password")}
-                    />
-                  </div>
+                <div className="space-y-4">
+                  {/* <FormInput
+                    id="firstName"
+                    label="First Name"
+                    error={errors.firstName?.message}
+                    {...register("firstName")}
+                  />
+                  <FormInput
+                    id="lastName"
+                    label="Last Name"
+                    error={errors.lastName?.message}
+                    {...register("lastName")}
+                  /> */}
+                  <FormInput
+                    id="firstName"
+                    label="First Name"
+                    error={errors.firstName?.message}
+                    {...register("firstName")}
+                    onInput={(e) => {
+                      const input = e.target as HTMLInputElement;
+                      input.value = input.value.replace(/[^A-Za-z]/g, "");
+                    }}
+                  />
 
-                  {/* Right Column (6 fields) */}
-                  <div className="space-y-4">
-                    {/* ✅ Account Type Dropdown */}
-                    <div>
+                  <FormInput
+                    id="lastName"
+                    label="Last Name"
+                    error={errors.lastName?.message}
+                    {...register("lastName")}
+                    onInput={(e) => {
+                      const input = e.target as HTMLInputElement;
+                      input.value = input.value.replace(/[^A-Za-z]/g, "");
+                    }}
+                  />
+                  <FormInput
+                    id="businessName"
+                    label="Business Name"
+                    error={errors.businessName?.message}
+                    {...register("businessName")}
+                  />
+                  <FormInput
+                    id="subdomain"
+                    label="Subdomain"
+                    error={errors.subdomain?.message}
+                    {...register("subdomain")}
+                  />
+                  <FormInput
+                    id="email"
+                    type="email"
+                    label="Email Address"
+                    error={errors.email?.message}
+                    {...register("email")}
+                  />
+                  <FormInput
+                    id="password"
+                    type="password"
+                    label="Password"
+                    error={errors.password?.message}
+                    {...register("password")}
+                  />
+                </div>
+
+                {/* Right Column (6 fields) */}
+                <div className="space-y-4">
+                  {/* ✅ Account Type Dropdown */}
+                  <div>
                     <label
                       htmlFor="accountType"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                        Account Type
-                      </label>
-                      <select
+                      Account Type
+                    </label>
+                    <select
                       id="accountType"
-                        {...register("accountType")}
+                      {...register("accountType")}
                       className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
-                      >
-                        {/* <option value="">Select Account Type</option> */}
-                        <option value="admin">Business User</option>
+                    >
+                      {/* <option value="">Select Account Type</option> */}
+                      <option value="admin">Business User</option>
                       <option value="professional">
                         Professional (CA, CS, Lawyer, Tax Consultant)
                       </option>
-                      </select>
-                      {errors.accountType && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {errors.accountType.message}
-                        </p>
-                      )}
-                    </div>
+                    </select>
+                    {errors.accountType && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.accountType.message}
+                      </p>
+                    )}
+                  </div>
 
-                    {accountType === "professional" && (
-                      <>
-                       <div>
+                  {accountType === "professional" && (
+                    <>
+                      <div>
                         <label
                           htmlFor="professionType"
                           className="block text-sm font-medium text-gray-700 mb-1"
                         >
-         Profession Type
-       </label>
-       <select
-         {...register("professionType")}
+                          Profession Type
+                        </label>
+                        <select
+                          {...register("professionType")}
                           className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
-       >
-         <option value="">Select Profession</option>
-         <option value="CA">Chartered Accountant (CA)</option>
-         <option value="CS">Company Secretary (CS)</option>
-       <option value="Advocate">Advocate</option>
-         <option value="TaxConsultant">Tax Consultant</option>
-       </select>
-       {errors.professionType && (
-         <p className="text-red-500 text-sm mt-1">
-           {errors.professionType.message}
-         </p>
-      )}
-    </div>
-                        <FormInput
-                          id="licenseNo"
-                          label="License No (e.g., CA: CA12345 | CS: ACS12345 | Lawyer: UP/1234/2015 | TaxConsultant: TXC1234)"
-                          error={errors.licenseNo?.message}
-                          {...register("licenseNo")}
-                        />
-                        <Button
-                          type="button"
-                          className="w-full bg-green-600 text-white mt-2"
-                          onClick={async () => {
-                            const licence = getValues("licenseNo");
-                            const prof = getValues("professionType");
-
-                            if (!licence || !prof) {
-                              alert("Select profession and enter license number");
-                              return;
-                            }
-
-                            try {
-                              const res = await fetch("/api/auth/validate-license", {
-                                method: "POST",
-                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({ professionType: prof, licenseNo: licence }),
-                              });
-                              const data = await res.json();
-                              if (data.success) {
-                                alert(`✅ Verified: ${data.data.name || "Valid License"}`);
-                              } else {
-                                alert(`❌ ${data.message}`);
-                              }
-                            } catch (err) {
-                              alert("Verification failed, try again later");
-                            }
-                          }}
                         >
-                          Verify License
-                        </Button>
-                      </>
-                    )}
+                          <option value="">Select Profession</option>
+                          <option value="CA">Chartered Accountant (CA)</option>
+                          <option value="CS">Company Secretary (CS)</option>
+                          <option value="Advocate">Advocate</option>
+                          <option value="TaxConsultant">Tax Consultant</option>
+                        </select>
+                        {errors.professionType && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {errors.professionType.message}
+                          </p>
+                        )}
+                      </div>
+                      <FormInput
+                        id="licenseNo"
+                        label="License No (e.g., CA: CA12345 | CS: ACS12345 | Lawyer: UP/1234/2015 | TaxConsultant: TXC1234)"
+                        error={errors.licenseNo?.message}
+                        {...register("licenseNo")}
+                      />
+                      <Button
+                        type="button"
+                        className="w-full bg-green-600 text-white mt-2"
+                        onClick={async () => {
+                          const licence = getValues("licenseNo");
+                          const prof = getValues("professionType");
 
-                    <FormInput
-                      id="pan"
-                      label="PAN No. (e.g.,ABCDE1234F)"
-                      error={errors.pan?.message}
-                      {...register("pan")}
-                    />
-                    <FormInput
-                      id="gst"
-                      label="GST No. (e.g.,22AAAAA0000A1Z5)"
-                      error={errors.gst?.message}
-                      {...register("gst")}
-                    />
-                  </div>
+                          if (!licence || !prof) {
+                            alert("Select profession and enter license number");
+                            return;
+                          }
+
+                          try {
+                            const res = await fetch("/api/auth/validate-license", {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({ professionType: prof, licenseNo: licence }),
+                            });
+                            const data = await res.json();
+                            if (data.success) {
+                              alert(`✅ Verified: ${data.data.name || "Valid License"}`);
+                            } else {
+                              alert(`❌ ${data.message}`);
+                            }
+                          } catch (err) {
+                            alert("Verification failed, try again later");
+                          }
+                        }}
+                      >
+                        Verify License
+                      </Button>
+                    </>
+                  )}
+
+                  <FormInput
+                    id="pan"
+                    label="PAN No. (e.g.,ABCDE1234F)"
+                    error={errors.pan?.message}
+                    {...register("pan")}
+                  />
+                  <FormInput
+                    id="gst"
+                    label="GST No. (e.g.,22AAAAA0000A1Z5)"
+                    error={errors.gst?.message}
+                    {...register("gst")}
+                  />
                 </div>
+              </div>
 
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={isLoading}
-                  isLoading={isLoading}
-                >
-                  Create Account
-                </Button>
-              </form>
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={isLoading}
+                isLoading={isLoading}
+              >
+                Create Account
+              </Button>
+            </form>
 
-              {isClient && (
-                <NotificationToast
-                  show={showNotification}
-                  onClose={() => setShowNotification(false)}
-                  message={notificationMsg}
-                  type={
-                    notificationMsg.includes("successful") ? "success" : "error"
-                  }
-                />
-              )}
+            {isClient && (
+              <NotificationToast
+                show={showNotification}
+                onClose={() => setShowNotification(false)}
+                message={notificationMsg}
+                type={
+                  notificationMsg.includes("successful") ? "success" : "error"
+                }
+              />
+            )}
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import { Repository, ILike, IsNull } from "typeorm";
 import { AppDataSource } from "../../config/database";
-import { User,UserStatus } from "../../entities/User";
+import { User, UserStatus } from "../../entities/User";
 import logger from "../../utils/logger";
 import * as bcrypt from "bcryptjs";
 import { PaginatedResponse } from "../../types/customTypes";
@@ -21,13 +21,13 @@ export class UserService {
 
       if (existingUser) throw new Error("User with this email already exists");
 
-   const activeUsersCount = await this.userRepository.count({
-      where: { status: UserStatus.ACTIVE, tenantId },
-    });
+      const activeUsersCount = await this.userRepository.count({
+        where: { status: UserStatus.ACTIVE, tenantId },
+      });
 
-    if (activeUsersCount >= 3) {
-      throw new Error("Tenant already has 3 active users");
-    }
+      if (activeUsersCount >= 3) {
+        throw new Error("Tenant already has 3 active users");
+      }
 
       const user = this.userRepository.create({ ...userData, tenantId });
       const savedUser = await this.userRepository.save(user);
@@ -59,10 +59,10 @@ export class UserService {
 
     const whereConditions = search
       ? [
-          { tenantId, firstName: ILike(`%${search}%`) },
-          { tenantId, lastName: ILike(`%${search}%`) },
-          { tenantId, email: ILike(`%${search}%`) },
-        ]
+        { tenantId, firstName: ILike(`%${search}%`) },
+        { tenantId, lastName: ILike(`%${search}%`) },
+        { tenantId, email: ILike(`%${search}%`) },
+      ]
       : { tenantId };
 
     const [users, total] = await this.userRepository.findAndCount({
@@ -79,18 +79,54 @@ export class UserService {
   }
 
   // ✅ Update user
-  async updateUser(tenantId: string, userId: string, updates: Partial<User>): Promise<User> {
-    const user = await this.getUser(tenantId, userId);
-    Object.assign(user, updates);
-    await this.userRepository.save(user);
+  async updateUser(
+    tenantId: string,
+    userId: string,
+    updates: Partial<User>
+  ): Promise<User> {
+    try {
+      const user = await this.getUser(tenantId, userId);
 
-    return this.userRepository.findOneOrFail({ where: { id: userId }, relations: ["tenant"] });
+      // ✅ Check if email is being updated
+      if (updates.email && updates.email !== user.email) {
+        const emailExists = await this.userRepository.findOne({
+          where: { email: updates.email, tenantId },
+        });
+
+        if (emailExists) {
+          throw new Error("User with this email already exists");
+        }
+      }
+
+      // ✅ Check active users count only if status is being changed to ACTIVE
+      if (updates.status === UserStatus.ACTIVE && user.status !== UserStatus.ACTIVE) {
+        const activeUsersCount = await this.userRepository.count({
+          where: { status: UserStatus.ACTIVE, tenantId },
+        });
+
+        if (activeUsersCount >= 3) {
+          throw new Error("Tenant already has 3 active users");
+        }
+      }
+
+      // Update user fields
+      Object.assign(user, updates);
+      await this.userRepository.save(user);
+
+      return await this.userRepository.findOneOrFail({
+        where: { id: userId },
+        relations: ["tenant"],
+      });
+    } catch (error) {
+      logger.error("Error updating user:", error);
+      throw error;
+    }
   }
 
   // ✅ Soft delete user
   async deleteUser(tenantId: string, userId: string): Promise<void> {
     const user = await this.getUser(tenantId, userId);
- user.status = UserStatus.SUSPENDED;
+    user.status = UserStatus.SUSPENDED;
     await this.userRepository.save(user);
   }
 

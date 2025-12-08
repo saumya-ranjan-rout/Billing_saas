@@ -37,7 +37,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
   customer,
   onSuccess,
   onCancel,
-  onRefresh, 
+  onRefresh,
 }) => {
   const { post, put, del } = useApi<Customer>();
   const {
@@ -60,7 +60,8 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
         name: customer.name,
         email: customer.email,
         phone: customer.phone || '',
-        taxId: customer.gstin || customer.pan || '',
+        // taxId: customer.gstin || customer.pan || '',
+        taxId: customer.gstin || '',
         address: {
           line1: customer.billingAddress?.line1 || '',
           city: customer.billingAddress?.city || '',
@@ -72,16 +73,16 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
     }
   }, [customer, reset]);
 
-const handleApiError = (error: any, fallbackMessage: string) => {
-  console.error(fallbackMessage, error);
+  const handleApiError = (error: any, fallbackMessage: string) => {
+    console.error(fallbackMessage, error);
 
-  if (error?.message?.includes("fails to match") || error?.message?.includes("is required")) {
-    // Split multiple errors if backend sends them
-    error.message.split(",").forEach((msg: string) => toast.error(msg.trim()));
-  } else {
-    toast.error(error?.message || fallbackMessage);
-  }
-};
+    if (error?.message?.includes("fails to match") || error?.message?.includes("is required")) {
+      // Split multiple errors if backend sends them
+      error.message.split(",").forEach((msg: string) => toast.error(msg.trim()));
+    } else {
+      toast.error(error?.message || fallbackMessage);
+    }
+  };
 
   const onSubmit = async (data: CustomerFormData) => {
     try {
@@ -100,11 +101,11 @@ const handleApiError = (error: any, fallbackMessage: string) => {
         await post(`/api/customers`, payload);
         toast.success('Customer created successfully ✅');
       }
- onRefresh();
+      onRefresh();
       onSuccess();
     } catch (error: any) {
-       const err = error?.message || "Failed to save customer";
-    handleApiError(error, err);
+      const err = error?.message || "Failed to save customer";
+      handleApiError(error, err);
     }
   };
 

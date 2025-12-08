@@ -66,8 +66,41 @@ export class AuthService extends BaseService<User> {
       const tenantRepo = queryRunner.manager.getRepository(Tenant);
       const userRepo = queryRunner.manager.getRepository(User);
 
+      // Check duplicate Email
+      if (data.email) {
+      const existingUser = await userRepo.findOne({ where: { email: data.email } });
+
+if (existingUser) {
+  throw { status: 400, message: "This email is already registered" };
+}
+      }
+   
+    // Check duplicate PAN
+    if (data.pan) {
+const existingPan = await tenantRepo.findOne({ where: { pan: data.pan } });
+if (existingPan) {
+  throw { status: 400, message: "This PAN number is already registered" };
+}
+    }
+
+// Check duplicate GST
+if (data.gst) {
+const existingGst = await tenantRepo.findOne({ where: { gst: data.gst } });
+if (existingGst) {
+  throw { status: 400, message: "This GST number is already registered" };
+}
+}
+
+// Check duplicate License No
+if (data.licenseNo) {
+  const existingLicense = await tenantRepo.findOne({ where: { licenseNo: data.licenseNo } });
+  if (existingLicense) {
+    throw { status: 400, message: "This License No is already registered" };
+  }
+}
+
       // ✅ 1. Create Tenant
-  const tenant = tenantRepo.create({
+      const tenant = tenantRepo.create({
         name: `${data.firstName} ${data.lastName}`,
         businessName: data.businessName ?? '',
         subdomain: data.subdomain ?? '',
@@ -81,12 +114,12 @@ export class AuthService extends BaseService<User> {
         isActive: true,
       });
 
-      const savedTenant = await tenantRepo.save(tenant);
+    const savedTenant = await tenantRepo.save(tenant);
 
-      // ✅ 2. Hash Password
-  //  console.log('Raw password before hashing:', data.password);
-const hashedPassword = await bcrypt.hash(data.password.trim(), 12);
-//console.log('Hashed password after bcrypt:', hashedPassword);
+    // ✅ 2. Hash Password
+    //  console.log('Raw password before hashing:', data.password);
+    const hashedPassword = await bcrypt.hash(data.password.trim(), 12);
+    //console.log('Hashed password after bcrypt:', hashedPassword);
     let userRole: UserRole = UserRole.USER;
     if (data.accountType?.toLowerCase() === "admin") {
       userRole = UserRole.ADMIN;
@@ -98,24 +131,31 @@ const hashedPassword = await bcrypt.hash(data.password.trim(), 12);
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
-       // password: hashedPassword,
-       password: data.password.trim(),
+        // password: hashedPassword,
+        password: data.password.trim(),
         status: UserStatus.ACTIVE,
-       // role: UserRole.ADMIN, // <-- Using enum
+        // role: UserRole.ADMIN, // <-- Using enum
         role: userRole,
         tenantId: savedTenant.id, // <-- Use the inserted tenant ID
       });
-//console.log('User before saving:', user);
+      //console.log('User before saving:', user);
       const savedUser = await userRepo.save(user);
       //console.log('User registered successfully:', savedUser);
       // ✅ 4. Commit Transaction
       await queryRunner.commitTransaction();
       return savedUser;
 
-    } catch (error) {
+    // } catch (error) {
+    //   await queryRunner.rollbackTransaction();
+    //   console.error('Error during registerWithTenant:', error);
+    //   throw error;
+    } catch (error: any) {
       await queryRunner.rollbackTransaction();
-      console.error('Error during registerWithTenant:', error);
-      throw error;
+
+      throw {
+        status: error.status || 400,
+        message: error.error || error.message || "Registration failed"
+      };
     } finally {
       await queryRunner.release();
     }

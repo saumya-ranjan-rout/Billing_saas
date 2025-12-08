@@ -6,7 +6,7 @@ export const authApi = api.injectEndpoints({
     login: builder.mutation<
       // { user: User; token: string; tenants: Tenant[] }, 
       // { email: string; password: string }
-        { user: any; accessToken: string; refreshToken: string, check_subscription: boolean }, // response type
+      { user: any; accessToken: string; refreshToken: string, check_subscription: boolean }, // response type
       { email: string; password: string; }    // request type  tenantId: string 
     >({
       query: (credentials) => ({
@@ -17,7 +17,7 @@ export const authApi = api.injectEndpoints({
       invalidatesTags: ['User'],
     }),
 
-      superUserLogin: builder.mutation<
+    superUserLogin: builder.mutation<
       { user: any; accessToken: string; refreshToken: string },
       { tenant: string; email: string; password: string }
     >({
@@ -28,28 +28,30 @@ export const authApi = api.injectEndpoints({
       }),
       invalidatesTags: ['User'],
     }),
-   register: builder.mutation<
-  { user: User; token: string; tenant: Tenant },
-  { 
-    email: string;
-    password: string;
-    firstName: string;
-    lastName: string;
-    businessName: string;
-     subdomain?: string;
-    accountType?: string;
-    professionType?: string;
-    licenseNo?: string;
-    pan?: string;
-    gst?: string;
-  }
->({
-  query: (userData) => ({
-    url: '/auth/register',
-    method: 'POST',
-    body: userData,
-  }),
+
+    register: builder.mutation<
+      { user: User; token: string; tenant: Tenant },
+      {
+        email: string;
+        password: string;
+        firstName: string;
+        lastName: string;
+        businessName: string;
+        subdomain?: string;
+        accountType?: string;
+        professionType?: string;
+        licenseNo?: string;
+        pan?: string;
+        gst?: string;
+      }
+    >({
+      query: (userData) => ({
+        url: '/auth/register',
+        method: 'POST',
+        body: userData,
+      }),
     }),
+    
     getCurrentUser: builder.query<User, void>({
       query: () => '/auth/me',
       providesTags: ['User'],
@@ -81,7 +83,7 @@ export const authApi = api.injectEndpoints({
 
 export const {
   useLoginMutation,
-    useSuperUserLoginMutation,
+  useSuperUserLoginMutation,
   useRegisterMutation,
   useGetCurrentUserQuery,
   useForgotPasswordMutation,
