@@ -25,9 +25,9 @@ const invoiceItemSchema = z.object({
   unitPrice: z.number().min(0.01, 'Unit price must be positive'),
   discount: z.number().min(0).max(100).default(0),
   taxRate: z.number().min(0).max(100).default(0),
-tax_type: z.string().min(1, 'Tax Type is required').optional(),
-has_cess: z.boolean().default(false),
-cess_value: z.number().min(0).max(100).default(0),
+  tax_type: z.string().min(1, 'Tax Type is required').optional(),
+  has_cess: z.boolean().default(false),
+  cess_value: z.number().min(0).max(100).default(0),
 });
 
 const invoiceSchema = z.object({
@@ -43,17 +43,17 @@ const invoiceSchema = z.object({
     required_error: 'Payment terms are required',
     invalid_type_error: 'Payment terms are required',
   }),
- paymentMethod: z.enum([
-  "cash",
-  "bank_transfer",
-  "cheque",
-  "credit_card",
-  "debit_card",
-  "upi",
-  "wallet",
-  "other"
-]),
-paymentAmount: z.number().min(0, "Payment amount must be positive"),
+  paymentMethod: z.enum([
+    "cash",
+    "bank_transfer",
+    "cheque",
+    "credit_card",
+    "debit_card",
+    "upi",
+    "wallet",
+    "other"
+  ]),
+  paymentAmount: z.number().min(0, "Payment amount must be positive"),
   shippingAddress: z.string().optional(),
   billingAddress: z.string().optional(),
   termsAndConditions: z.string().optional(),
@@ -83,14 +83,14 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoice, onSuccess, onCancel 
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-   const [cashBack, setCashbackAmount] = useState(0);
-      const [cashbackInvoiceId, setCashbackInvoiceId] = useState<string[]>([]);
-//srr
- const [customerName, setCustomerName] = useState("");
- const [customerEmail, setCustomerEmail] = useState("");
-//srr
+  const [cashBack, setCashbackAmount] = useState(0);
+  const [cashbackInvoiceId, setCashbackInvoiceId] = useState<string[]>([]);
+  //srr
+  const [customerName, setCustomerName] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
+  //srr
   const { post, put, get } = useApi<Invoice>();
-    const { get:gett } = useApi<ApiResponse>();
+  const { get: gett } = useApi<ApiResponse>();
   const {
     register,
     handleSubmit,
@@ -102,14 +102,14 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoice, onSuccess, onCancel 
   } = useForm<InvoiceFormData>({
     resolver: zodResolver(invoiceSchema),
     defaultValues: {
-     // customerId: '',
+      // customerId: '',
       customerName: '',
-  customerEmail: '',
+      customerEmail: '',
       type: 'standard',
       issueDate: new Date().toISOString().split('T')[0],
       paymentTerms: 'net_15',
-   paymentMethod: "cash",
-paymentAmount: 0,
+      paymentMethod: "cash",
+      paymentAmount: 0,
       items: [
         {
           productId: '',
@@ -119,9 +119,9 @@ paymentAmount: 0,
           unitPrice: 0,
           discount: 0,
           taxRate: 0,
-           tax_type: "cgst_sgst",
-  has_cess: false,
-  cess_value: 0,
+          tax_type: "cgst_sgst",
+          has_cess: false,
+          cess_value: 0,
 
 
         },
@@ -130,40 +130,40 @@ paymentAmount: 0,
   });
 
   const { fields, append, remove } = useFieldArray({ control, name: 'items' });
-   const [selectedCustomerId, setSelectedCustomerId] = useState<string>('');
-    const [loyaltyData, setLoyaltyData] = useState<any>(null);
+  const [selectedCustomerId, setSelectedCustomerId] = useState<string>('');
+  const [loyaltyData, setLoyaltyData] = useState<any>(null);
   const items = watch('items');
- // const customerId = watch('customerId');
+  // const customerId = watch('customerId');
   const paymentTerms = watch('paymentTerms');
   const issueDate = watch('issueDate');
-  
+
   useEffect(() => {
     if (selectedCustomerId) {
       fetchLoyaltyData(selectedCustomerId);
-      
+
     }
   }, [selectedCustomerId]);
 
-    const fetchLoyaltyData = async (customerId: string) => {
-      if (!customerId) return;
-      try {
-        const res = await gett(`/api/loyalty/customer/${customerId}/summary`);
-        if (res.success) {
-          const invoiceIds = res.recentTransactions?.map((t: any) => t.invoiceId) || [];
-setCashbackInvoiceId(invoiceIds);
-          setLoyaltyData({
-            summary: res.summary,
-            recentTransactions: res.recentTransactions,
-            program: res.program,
-          });
-          console.log(loyaltyData);
-        } else {
-          toast.error(res.error || 'Failed to load loyalty data');
-        }
-      } catch (err: any) {
-        toast.error(err.message || 'Error fetching loyalty data');
+  const fetchLoyaltyData = async (customerId: string) => {
+    if (!customerId) return;
+    try {
+      const res = await gett(`/api/loyalty/customer/${customerId}/summary`);
+      if (res.success) {
+        const invoiceIds = res.recentTransactions?.map((t: any) => t.invoiceId) || [];
+        setCashbackInvoiceId(invoiceIds);
+        setLoyaltyData({
+          summary: res.summary,
+          recentTransactions: res.recentTransactions,
+          program: res.program,
+        });
+        console.log(loyaltyData);
+      } else {
+        toast.error(res.error || 'Failed to load loyalty data');
       }
-    };
+    } catch (err: any) {
+      toast.error(err.message || 'Error fetching loyalty data');
+    }
+  };
   // ------------------ Fetch Customers & Products ------------------
   useEffect(() => {
     const fetchData = async () => {
@@ -177,14 +177,14 @@ setCashbackInvoiceId(invoiceIds);
         const customersData = Array.isArray(customersResponse)
           ? customersResponse
           : Array.isArray((customersResponse as any)?.data)
-          ? (customersResponse as any).data
-          : [];
+            ? (customersResponse as any).data
+            : [];
 
         const productsData = Array.isArray(productsResponse)
           ? productsResponse
           : Array.isArray((productsResponse as any)?.data)
-          ? (productsResponse as any).data
-          : [];
+            ? (productsResponse as any).data
+            : [];
 
         setCustomers(customersData);
         setProducts(productsData);
@@ -199,16 +199,16 @@ setCashbackInvoiceId(invoiceIds);
   }, [get]);
 
   // ------------------ Reset with existing invoice ------------------
-   useEffect(() => {
-   // alert(cashBack);
+  useEffect(() => {
+    // alert(cashBack);
     if (invoice) {
       //  console.log("hello:",invoice?.loyaltyTransactions?.[0]?.type);
-    
 
-if (invoice?.loyaltyTransactions?.[0]?.type === "redeem") {
-  const cashback = Number(invoice?.loyaltyTransactions?.[0]?.cashbackAmount) || 0;
-  setCashbackAmount(Math.abs(cashback));
-}
+
+      if (invoice?.loyaltyTransactions?.[0]?.type === "redeem") {
+        const cashback = Number(invoice?.loyaltyTransactions?.[0]?.cashbackAmount) || 0;
+        setCashbackAmount(Math.abs(cashback));
+      }
       setSelectedCustomerId(invoice.customer?.id || '');
       console.log('Resetting form with invoice:', invoice);
       reset({
@@ -233,23 +233,23 @@ if (invoice?.loyaltyTransactions?.[0]?.type === "redeem") {
         //   taxRate: Number(item.taxRate) || 0,
         // })),
         items: (invoice.items ?? []).map((item) => ({
-  productId: item.productId ?? '',
-  description: item.description ?? '',
-  quantity: Number(item.quantity) || 1,
-  unit: item.unit ?? 'pcs',
-  unitPrice: Number(item.unitPrice) || 0,
-  discount: Number(item.discount) || 0,
-  taxRate: Number(item.taxRate) || 0,
-  tax_type: item.tax_type || "cgst_sgst",
-  has_cess: item.has_cess || false,
-  cess_value: Number(item.cess_value) || 0,
-})),
+          productId: item.productId ?? '',
+          description: item.description ?? '',
+          quantity: Number(item.quantity) || 1,
+          unit: item.unit ?? 'pcs',
+          unitPrice: Number(item.unitPrice) || 0,
+          discount: Number(item.discount) || 0,
+          taxRate: Number(item.taxRate) || 0,
+          tax_type: item.tax_type || "cgst_sgst",
+          has_cess: item.has_cess || false,
+          cess_value: Number(item.cess_value) || 0,
+        })),
       });
     }
   }, [invoice, reset]);
 
   // ------------------ Helpers ------------------
-   const calculateDueDate = (issueDate: string, terms: string) => {
+  const calculateDueDate = (issueDate: string, terms: string) => {
     if (!issueDate) return '';
     const date = new Date(issueDate);
     switch (terms) {
@@ -270,42 +270,42 @@ if (invoice?.loyaltyTransactions?.[0]?.type === "redeem") {
   //   return { discountAmount, taxAmount, lineTotal };
   // };
   const calculateItemTotals = (item: any) => {
-  const discountAmount = (item.unitPrice * item.quantity * item.discount) / 100;
-  const taxableAmount = item.unitPrice * item.quantity - discountAmount;
-// alert(item.tax_type);
-  let taxAmount = 0;
+    const discountAmount = (item.unitPrice * item.quantity * item.discount) / 100;
+    const taxableAmount = item.unitPrice * item.quantity - discountAmount;
+    // alert(item.tax_type);
+    let taxAmount = 0;
 
-  if (item.tax_type === "cgst_sgst") {
-    // total taxRate split into CGST + SGST
-    taxAmount = (taxableAmount * item.taxRate) / 100;
-  }
+    if (item.tax_type === "cgst_sgst") {
+      // total taxRate split into CGST + SGST
+      taxAmount = (taxableAmount * item.taxRate) / 100;
+    }
 
-  if (item.tax_type === "igst") {
-    // IGST → full taxRate
-    taxAmount = (taxableAmount * item.taxRate) / 100;
-  }
+    if (item.tax_type === "igst") {
+      // IGST → full taxRate
+      taxAmount = (taxableAmount * item.taxRate) / 100;
+    }
 
-  const cessAmount = item.has_cess
-    ? (taxableAmount * item.cess_value) / 100
-    : 0;
+    const cessAmount = item.has_cess
+      ? (taxableAmount * item.cess_value) / 100
+      : 0;
 
-  const lineTotal = taxableAmount + taxAmount + cessAmount;
+    const lineTotal = taxableAmount + taxAmount + cessAmount;
 
-  return { discountAmount, taxAmount, cessAmount, lineTotal };
-};
+    return { discountAmount, taxAmount, cessAmount, lineTotal };
+  };
 
 
   const calculateOrderTotals = (items: any[]) => {
-  //  alert('redeemedPoints'+redeemedPoints);
+    //  alert('redeemedPoints'+redeemedPoints);
     let subTotal = 0, taxTotal = 0, discountTotal = 0;
     items.forEach((item) => {
       const totals = calculateItemTotals(item);
       subTotal += item.unitPrice * item.quantity;
       discountTotal += totals.discountAmount;
-      taxTotal += totals.taxAmount+totals.cessAmount;
+      taxTotal += totals.taxAmount + totals.cessAmount;
     });
-      const paymentAmount = Number(watch("paymentAmount") || 0);
-    return { subTotal, taxTotal, discountTotal, totalAmount: subTotal - discountTotal + taxTotal,dueTotal:(subTotal - discountTotal + taxTotal)-cashBack-paymentAmount };
+    const paymentAmount = Number(watch("paymentAmount") || 0);
+    return { subTotal, taxTotal, discountTotal, totalAmount: subTotal - discountTotal + taxTotal, dueTotal: (subTotal - discountTotal + taxTotal) - cashBack - paymentAmount };
   };
 
   const handleProductChange = (index: number, productId: string) => {
@@ -321,14 +321,21 @@ if (invoice?.loyaltyTransactions?.[0]?.type === "redeem") {
 
   // Submit: send customerName & customerEmail; backend will create/get customer
   const onSubmit = async (data: InvoiceFormData) => {
-   // alert('Form submitted'); 
- // "redeem" or "redeemed"
+    // ✅ Loop through each item and validate CESS
+    for (const item of data.items) {
+      if (item.has_cess && (!item.cess_value || item.cess_value <= 0)) {
+        toast.error("CESS rate must be greater than 0 when CESS is enabled");
+        return;
+      }
+    }
 
-  // console.log(data); 
+    // alert('Form submitted'); 
+    // "redeem" or "redeemed"
+    // console.log(data); 
     try {
       const payload = {
         ...data,
-        cashBack :cashBack,
+        cashBack: cashBack,
         issueDate: new Date(data.issueDate).toISOString(),
         dueDate: calculateDueDate(data.issueDate, data.paymentTerms),
       };
@@ -356,70 +363,70 @@ if (invoice?.loyaltyTransactions?.[0]?.type === "redeem") {
   const totalAmount = totals.totalAmount;
   const isEditable = Boolean(invoice);
 
-// const isEditable = Boolean(
-//   invoice &&
-//   Number(loyaltyData?.summary?.availableCashback) <= 0 &&
-//   Number(invoice?.amountPaid) >= Number(loyaltyData?.program?.minimumPurchaseAmount)
-// );
+  // const isEditable = Boolean(
+  //   invoice &&
+  //   Number(loyaltyData?.summary?.availableCashback) <= 0 &&
+  //   Number(invoice?.amountPaid) >= Number(loyaltyData?.program?.minimumPurchaseAmount)
+  // );
 
-
+  const Required = () => <span className="text-red-500">*</span>;
 
   return (
- <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="flex flex-col">
-  <label className="text-sm font-medium text-gray-700 mb-1">Customer</label>
-  <CreatableSelect
-    isClearable
-    isDisabled={!!invoice} // disable in update form
-    value={
-      (() => {
-        const currentName = watch('customerName');
-        const existing = customers.find(c => c.name === currentName);
-        return existing ? { value: existing.id, label: existing.name } : (currentName ? { value: 'new', label: currentName } : null);
-      })()
-    }
-    onChange={(newValue: any) => {
-      if (!newValue) {
-        setValue('customerName', '');
-        setValue('customerEmail', '');
-        return;
-      }
+          <label className="text-sm font-medium text-gray-700 mb-1">Customer <Required /></label>
+          <CreatableSelect
+            isClearable
+            isDisabled={!!invoice} // disable in update form
+            value={
+              (() => {
+                const currentName = watch('customerName');
+                const existing = customers.find(c => c.name === currentName);
+                return existing ? { value: existing.id, label: existing.name } : (currentName ? { value: 'new', label: currentName } : null);
+              })()
+            }
+            onChange={(newValue: any) => {
+              if (!newValue) {
+                setValue('customerName', '');
+                setValue('customerEmail', '');
+                return;
+              }
 
-      // existing customer selected
-      const selected = customers.find(c => c.id === newValue.value);
-      if (selected) {
-        setValue('customerName', selected.name, { shouldDirty: true });
-        setValue('customerEmail', selected.email || '', { shouldDirty: true });
-          setSelectedCustomerId(selected.id);
-     
-      } else {
-        // new customer typed
-        setValue('customerName', newValue.label, { shouldDirty: true });
-        setValue('customerEmail', '', { shouldDirty: true });
-      }
-    }}
-    options={customers.map(c => ({ value: c.id, label: c.name }))}
-    placeholder="Select or type a customer"
-  />
-  {errors.customerName && (
-    <p className="text-red-500 text-sm mt-1">{errors.customerName.message}</p>
-  )}
-</div>
+              // existing customer selected
+              const selected = customers.find(c => c.id === newValue.value);
+              if (selected) {
+                setValue('customerName', selected.name, { shouldDirty: true });
+                setValue('customerEmail', selected.email || '', { shouldDirty: true });
+                setSelectedCustomerId(selected.id);
 
-{/* Customer Email */}
-<div className="flex flex-col">
-  <label className="text-sm font-medium text-gray-700 mb-1">Customer Email</label>
-  <Input
-    {...register('customerEmail')}
-    placeholder="Enter customer email"
-    disabled={
-      !!invoice || 
-      !!customers.find(c => c.name === watch('customerName'))
-    }
-    error={errors.customerEmail?.message}
-  />
-</div>
+              } else {
+                // new customer typed
+                setValue('customerName', newValue.label, { shouldDirty: true });
+                setValue('customerEmail', '', { shouldDirty: true });
+              }
+            }}
+            options={customers.map(c => ({ value: c.id, label: c.name }))}
+            placeholder="Select or type a customer"
+          />
+          {errors.customerName && (
+            <p className="text-red-500 text-sm mt-1">{errors.customerName.message}</p>
+          )}
+        </div>
+
+        {/* Customer Email */}
+        <div className="flex flex-col">
+          <label className="text-sm font-medium text-gray-700 mb-1">Customer Email <Required /></label>
+          <Input
+            {...register('customerEmail')}
+            placeholder="Enter customer email"
+            disabled={
+              !!invoice ||
+              !!customers.find(c => c.name === watch('customerName'))
+            }
+            error={errors.customerEmail?.message}
+          />
+        </div>
 
         <div className="flex flex-col">
           <label className="text-sm font-medium text-gray-700 mb-1">Invoice Type</label>
@@ -443,21 +450,21 @@ if (invoice?.loyaltyTransactions?.[0]?.type === "redeem") {
         </div>
 
 
-</div>
+      </div>
 
 
-{/* srr */}
+      {/* srr */}
       {/* Dates */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Input
-          label="Issue Date"
+          label={<span>Issue Date <Required /></span>}
           type="date"
           {...register('issueDate')}
           error={errors.issueDate?.message}
           disabled={isSubmitting}
         />
 
-       <div className="flex flex-col">
+        <div className="flex flex-col">
           <label className="text-sm font-medium text-gray-700 mb-1">Payment Terms</label>
 
           <Select
@@ -494,8 +501,8 @@ if (invoice?.loyaltyTransactions?.[0]?.type === "redeem") {
         {fields.map((field, index) => (
           <div key={field.id} className="border rounded-lg p-4 mb-4">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-               <div className="md:col-span-4 flex flex-col">
-                <label className="text-sm font-medium text-gray-700 mb-1">Product</label>
+              <div className="md:col-span-4 flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">Product <Required /></label>
 
                 <Select
                   value={items[index]?.productId || (items[index]?.productId === '' ? 'custom' : items[index]?.productId)}
@@ -519,8 +526,8 @@ if (invoice?.loyaltyTransactions?.[0]?.type === "redeem") {
               </div>
 
               <div className="md:col-span-4">
-                <Input
-                  label="Description"
+                <Input                 
+                  label={<span>Description <Required /></span>}
                   {...register(`items.${index}.description`)}
                   error={errors.items?.[index]?.description?.message}
                   disabled={isSubmitting}
@@ -529,7 +536,7 @@ if (invoice?.loyaltyTransactions?.[0]?.type === "redeem") {
 
               <div className="md:col-span-2">
                 <Input
-                  label="Quantity"
+                  label={<span>Quantity <Required /></span>}
                   type="number"
                   step="0.01"
                   {...register(`items.${index}.quantity`, { valueAsNumber: true })}
@@ -540,7 +547,7 @@ if (invoice?.loyaltyTransactions?.[0]?.type === "redeem") {
 
               <div className="md:col-span-2">
                 <Input
-                  label="Unit"
+                  label={<span>Unit <Required /></span>}
                   {...register(`items.${index}.unit`)}
                   error={errors.items?.[index]?.unit?.message}
                   disabled={isSubmitting}
@@ -550,8 +557,8 @@ if (invoice?.loyaltyTransactions?.[0]?.type === "redeem") {
 
             <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-4">
               <div className="md:col-span-2">
-                <Input
-                  label="Unit Price (₹)"
+                <Input                
+                  label={<span>Unit Price (₹) <Required /></span>}
                   type="number"
                   step="0.01"
                   {...register(`items.${index}.unitPrice`, { valueAsNumber: true })}
@@ -570,17 +577,17 @@ if (invoice?.loyaltyTransactions?.[0]?.type === "redeem") {
                   disabled={isSubmitting}
                 />
               </div>
-    <div className="md:col-span-2">
-        <label className="text-sm font-medium text-gray-700 mb-1">Tax Type</label>
-  <select
-{...register(`items.${index}.tax_type`)}
-    className="w-full border p-2 rounded"
-  >
-    {/* <option value="">Select Tax Type</option> */}
-    <option value="cgst_sgst">CGST & SGST</option>
-    <option value="igst">IGST</option>
-  </select>
-</div>
+              <div className="md:col-span-2">
+                <label className="text-sm font-medium text-gray-700 mb-1">Tax Type</label>
+                <select
+                  {...register(`items.${index}.tax_type`)}
+                  className="w-full border p-2 rounded"
+                >
+                  {/* <option value="">Select Tax Type</option> */}
+                  <option value="cgst_sgst">CGST & SGST</option>
+                  <option value="igst">IGST</option>
+                </select>
+              </div>
 
 
 
@@ -595,30 +602,30 @@ if (invoice?.loyaltyTransactions?.[0]?.type === "redeem") {
                 />
               </div>
               {/* CESS CHECKBOX */}
-  <div className="md:col-span-1">
-  <input
-    type="checkbox"
-    {...register(`items.${index}.has_cess`)}
-  />CESS
-</div>
+              <div className="md:col-span-1">
+                <input
+                  type="checkbox"
+                  {...register(`items.${index}.has_cess`)}
+                />CESS
+              </div>
 
-{/* CONDITIONAL CESS FIELD */}
+              {/* CONDITIONAL CESS FIELD */}
 
-  {watch(`items.${index}.has_cess`) && (
-     <div className="md:col-span-3">
+              {watch(`items.${index}.has_cess`) && (
+                <div className="md:col-span-3">
 
-     <Input
-                  label="CESS Rate (%)"
-                  type="number"
-                  step="0.01"
-                  {...register(`items.${index}.cess_value`, { valueAsNumber: true })}
-                  error={errors.items?.[index]?.cess_value?.message}
-                  disabled={isSubmitting}
-                />
-  </div>
-  )}
+                  <Input
+                    label={<span>CESS Rate (%) <Required /></span>}
+                    type="number"
+                    step="0.01"
+                    {...register(`items.${index}.cess_value`, { valueAsNumber: true })}
+                    error={errors.items?.[index]?.cess_value?.message}
+                    disabled={isSubmitting}
+                  />
+                </div>
+              )}
 
- 
+
               <div className="md:col-span-3">
                 <Input
                   label="Line Total (₹)"
@@ -690,120 +697,119 @@ if (invoice?.loyaltyTransactions?.[0]?.type === "redeem") {
           <div className="text-right border-t pt-2 font-semibold">
             ₹{totals.totalAmount.toFixed(2)}
           </div>
-         <>
+          <>
 
-  {invoice?.loyaltyTransactions?.[0]?.type === "redeem" ? (
-    <>
-        <div className="text-right pt-2 font-semibold"></div>
-      <div className="text-right pt-2 font-semibold">
-      <button
-        type="button"
-        className="px-2 py-1 text-xs rounded-md text-white font-semibold bg-green-600"
-      >
-        Redeemed
-      </button>
+            {invoice?.loyaltyTransactions?.[0]?.type === "redeem" ? (
+              <>
+                <div className="text-right pt-2 font-semibold"></div>
+                <div className="text-right pt-2 font-semibold">
+                  <button
+                    type="button"
+                    className="px-2 py-1 text-xs rounded-md text-white font-semibold bg-green-600"
+                  >
+                    Redeemed
+                  </button>
 
-      <span className="ml-2 text-sm">
-        (₹{invoice?.loyaltyTransactions?.[0]?.cashbackAmount})
-      </span>
-      </div>
-    </>
-  ) : (
-    loyaltyData?.summary?.availableCashback > 0 &&
-    totals.totalAmount >= loyaltyData?.summary?.availableCashback &&
-    !cashbackInvoiceId.includes(invoice?.id ?? "") && (
-      <>
-          <div className="text-right pt-2 font-semibold"></div>
-      <div className="text-right pt-2 font-semibold">
-        <button
-          type="button"
-          onClick={() => {
-            const newState =
-              redeemStatus === "redeemed" ? "redeem" : "redeemed";
-            setRedeemStatus(newState);
+                  <span className="ml-2 text-sm">
+                    (₹{invoice?.loyaltyTransactions?.[0]?.cashbackAmount})
+                  </span>
+                </div>
+              </>
+            ) : (
+              loyaltyData?.summary?.availableCashback > 0 &&
+              totals.totalAmount >= loyaltyData?.summary?.availableCashback &&
+              !cashbackInvoiceId.includes(invoice?.id ?? "") && (
+                <>
+                  <div className="text-right pt-2 font-semibold"></div>
+                  <div className="text-right pt-2 font-semibold">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const newState =
+                          redeemStatus === "redeemed" ? "redeem" : "redeemed";
+                        setRedeemStatus(newState);
 
-            setCashbackAmount(
-              newState === "redeemed"
-                ? loyaltyData?.summary?.availableCashback || 0
-                : 0
-            );
+                        setCashbackAmount(
+                          newState === "redeemed"
+                            ? loyaltyData?.summary?.availableCashback || 0
+                            : 0
+                        );
 
-            calculateOrderTotals(items);
-          }}
-          className={`px-2 py-1 text-xs rounded-md text-white font-semibold ${
-            redeemStatus === "redeemed" ? "bg-green-600" : "bg-blue-600"
-          }`}
-        >
-          {redeemStatus === "redeemed" ? "Redeemed" : "Redeem"}
-        </button>
+                        calculateOrderTotals(items);
+                      }}
+                      className={`px-2 py-1 text-xs rounded-md text-white font-semibold ${redeemStatus === "redeemed" ? "bg-green-600" : "bg-blue-600"
+                        }`}
+                    >
+                      {redeemStatus === "redeemed" ? "Redeemed" : "Redeem"}
+                    </button>
 
-        <span className="ml-2 text-sm">
-          (₹{loyaltyData?.summary?.availableCashback})
-        </span>
-      </div>
-      </>
-    )
-  )}
-</>
+                    <span className="ml-2 text-sm">
+                      (₹{loyaltyData?.summary?.availableCashback})
+                    </span>
+                  </div>
+                </>
+              )
+            )}
+          </>
 
 
-    <div className="text-right border-t">Payment Method:</div>
-     <div className="text-right  border-t">
+          <div className="text-right border-t">Payment Method:</div>
+          <div className="text-right  border-t">
             <Select
-    value={watch("paymentMethod")}
-   onValueChange={(v) =>
-  setValue("paymentMethod", v as any) // simplest fix
-}
-  >
-    <SelectTrigger>
-      <SelectValue placeholder="Select method" />
-    </SelectTrigger>
-    <SelectContent>
-      <SelectItem value="cash">Cash</SelectItem>
-      <SelectItem value="bank_transfer">Bank Transfer</SelectItem>
-      <SelectItem value="cheque">Cheque</SelectItem>
-      <SelectItem value="credit_card">Credit Card</SelectItem>
-      <SelectItem value="debit_card">Debit Card</SelectItem>
-      <SelectItem value="upi">UPI</SelectItem>
-      <SelectItem value="wallet">Wallet</SelectItem>
-      <SelectItem value="other">Other</SelectItem>
-    </SelectContent>
-  </Select>
-  {errors.paymentMethod && (
-    <p className="text-red-500 text-sm">
-      {errors.paymentMethod.message}
-    </p>
-  )}
+              value={watch("paymentMethod")}
+              onValueChange={(v) =>
+                setValue("paymentMethod", v as any) // simplest fix
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select method" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="cash">Cash</SelectItem>
+                <SelectItem value="bank_transfer">Bank Transfer</SelectItem>
+                <SelectItem value="cheque">Cheque</SelectItem>
+                <SelectItem value="credit_card">Credit Card</SelectItem>
+                <SelectItem value="debit_card">Debit Card</SelectItem>
+                <SelectItem value="upi">UPI</SelectItem>
+                <SelectItem value="wallet">Wallet</SelectItem>
+                <SelectItem value="other">Other</SelectItem>
+              </SelectContent>
+            </Select>
+            {errors.paymentMethod && (
+              <p className="text-red-500 text-sm">
+                {errors.paymentMethod.message}
+              </p>
+            )}
           </div>
-         <div className="text-right border-t">Payment Amount:</div>
-     <div className="text-right border-t">
-      
-<Input
-  // label="Payment Amount"
-  readOnly={isEditable}
-  type="number"
-  step="0.01"
-  {...register("paymentAmount", {
-    valueAsNumber: true,
-    onChange: (e) => {
-      const value = Number(e.target.value);
-      const total = totals.totalAmount - cashBack;
+          <div className="text-right border-t">Payment Amount:</div>
+          <div className="text-right border-t">
 
-      if (value > total) {
-        toast.error("Payment amount cannot exceed total amount");
-        setValue("paymentAmount", 0);   // ⬅️ RESET TO ZERO
-      }
-    },
-  })}
-  error={errors.paymentAmount?.message}
-/>
+            <Input
+              // label="Payment Amount"
+              readOnly={isEditable}
+              type="number"
+              step="0.01"
+              {...register("paymentAmount", {
+                valueAsNumber: true,
+                onChange: (e) => {
+                  const value = Number(e.target.value);
+                  const total = totals.totalAmount - cashBack;
+
+                  if (value > total) {
+                    toast.error("Payment amount cannot exceed total amount");
+                    setValue("paymentAmount", 0);   // ⬅️ RESET TO ZERO
+                  }
+                },
+              })}
+              error={errors.paymentAmount?.message}
+            />
 
 
-  {errors.paymentAmount && (
-    <p className="text-red-500 text-sm">{errors.paymentAmount.message}</p>
-  )}
+            {errors.paymentAmount && (
+              <p className="text-red-500 text-sm">{errors.paymentAmount.message}</p>
+            )}
           </div>
-   <div className="text-right border-t pt-2 font-semibold">Due:</div>
+          <div className="text-right border-t pt-2 font-semibold">Due:</div>
           <div className="text-right border-t pt-2 font-semibold">
             ₹{totals.dueTotal.toFixed(2)}
           </div>
@@ -818,28 +824,28 @@ if (invoice?.loyaltyTransactions?.[0]?.type === "redeem") {
           {...register('shippingAddress')}
           error={errors.shippingAddress?.message}
           disabled={isSubmitting}
-          // multiline
+        // multiline
         />
         <Input
           label="Billing Address"
           {...register('billingAddress')}
           error={errors.billingAddress?.message}
           disabled={isSubmitting}
-          // multiline
+        // multiline
         />
         <Input
           label="Terms & Conditions"
           {...register('termsAndConditions')}
           error={errors.termsAndConditions?.message}
           disabled={isSubmitting}
-          // multiline
+        // multiline
         />
         <Input
           label="Notes"
           {...register('notes')}
           error={errors.notes?.message}
           disabled={isSubmitting}
-          // multiline
+        // multiline
         />
       </div>
 

@@ -129,6 +129,8 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSuccess, onCancel, onRefres
     e.currentTarget.value = e.currentTarget.value.replace(/[^A-Za-z]/g, "");
   };
 
+  const Required = () => <span className="text-red-500">*</span>;
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {/* Basic Info */}
@@ -147,8 +149,8 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSuccess, onCancel, onRefres
           disabled={isSubmitting}
           required
         /> */}
-        <Input
-          label="First Name"
+        <Input          
+          label={<span>First Name <Required /></span>}
           {...register("firstName", {
             required: "First name is required",
             pattern: {
@@ -159,11 +161,10 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSuccess, onCancel, onRefres
           onInput={allowOnlyAlphabets}
           error={errors.firstName?.message}
           disabled={isSubmitting}
-          required
         />
 
         <Input
-          label="Last Name"
+          label={<span>Last Name <Required /></span>}
           {...register("lastName", {
             required: "Last name is required",
             pattern: {
@@ -174,27 +175,24 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSuccess, onCancel, onRefres
           onInput={allowOnlyAlphabets}
           error={errors.lastName?.message}
           disabled={isSubmitting}
-          required
         />
       </div>
 
       <Input
-        label="Email"
+        label={<span>Email <Required /></span>}
         type="email"
         {...register("email")}
         error={errors.email?.message}
         disabled={isSubmitting}
-        required
       />
 
       {!user && (
         <Input
-          label="Password"
+          label={<span>Password <Required /></span>}
           type="password"
           {...register("password")}
           error={errors.password?.message}
           disabled={isSubmitting}
-          required
         />
       )}
 

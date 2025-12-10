@@ -123,6 +123,8 @@ const Register: React.FC = () => {
     );
   }
 
+  const Required = () => <span className="text-red-500">*</span>;
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#eef2ff] px-4">
       {/* MAIN WRAPPER */}
@@ -205,7 +207,7 @@ const Register: React.FC = () => {
                   /> */}
                   <FormInput
                     id="firstName"
-                    label="First Name"
+                    label={<span>First Name <Required /></span>}
                     error={errors.firstName?.message}
                     {...register("firstName")}
                     onInput={(e) => {
@@ -216,7 +218,7 @@ const Register: React.FC = () => {
 
                   <FormInput
                     id="lastName"
-                    label="Last Name"
+                    label={<span>Last Name <Required /></span>}
                     error={errors.lastName?.message}
                     {...register("lastName")}
                     onInput={(e) => {
@@ -224,29 +226,33 @@ const Register: React.FC = () => {
                       input.value = input.value.replace(/[^A-Za-z]/g, "");
                     }}
                   />
+
                   <FormInput
                     id="businessName"
-                    label="Business Name"
+                    label={<span>Business Name <Required /></span>}
                     error={errors.businessName?.message}
                     {...register("businessName")}
                   />
+
                   <FormInput
                     id="subdomain"
                     label="Subdomain"
                     error={errors.subdomain?.message}
                     {...register("subdomain")}
                   />
+
                   <FormInput
                     id="email"
                     type="email"
-                    label="Email Address"
+                    label={<span>Email Address <Required /></span>}
                     error={errors.email?.message}
                     {...register("email")}
                   />
+
                   <FormInput
                     id="password"
                     type="password"
-                    label="Password"
+                    label={<span>Password <Required /></span>}
                     error={errors.password?.message}
                     {...register("password")}
                   />
@@ -287,7 +293,7 @@ const Register: React.FC = () => {
                           htmlFor="professionType"
                           className="block text-sm font-medium text-gray-700 mb-1"
                         >
-                          Profession Type
+                          Profession Type <Required />
                         </label>
                         <select
                           {...register("professionType")}
@@ -347,13 +353,14 @@ const Register: React.FC = () => {
 
                   <FormInput
                     id="pan"
-                    label="PAN No. (e.g.,ABCDE1234F)"
+                    label={<span>PAN No. (e.g., ABCDE1234F) <Required /></span>}
                     error={errors.pan?.message}
                     {...register("pan")}
                   />
+
                   <FormInput
                     id="gst"
-                    label="GST No. (e.g.,22AAAAA0000A1Z5)"
+                    label={<span>GST No. (e.g., 22AAAAA0000A1Z5) <Required /></span>}
                     error={errors.gst?.message}
                     {...register("gst")}
                   />

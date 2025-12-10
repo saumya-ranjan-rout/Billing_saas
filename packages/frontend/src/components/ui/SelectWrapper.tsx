@@ -14,7 +14,9 @@ interface Option {
 }
 
 interface SelectWrapperProps {
-  label?: string;
+  // label?: string;
+  // 09-12-2025(Y)
+  label?: React.ReactNode;
   value?: string;
   onChange?: (value: string) => void;
   options: Option[];

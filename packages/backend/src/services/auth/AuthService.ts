@@ -75,13 +75,13 @@ if (existingUser) {
 }
       }
    
-    // Check duplicate PAN
-    if (data.pan) {
-const existingPan = await tenantRepo.findOne({ where: { pan: data.pan } });
-if (existingPan) {
-  throw { status: 400, message: "This PAN number is already registered" };
-}
-    }
+//     // Check duplicate PAN
+//     if (data.pan) {
+// const existingPan = await tenantRepo.findOne({ where: { pan: data.pan } });
+// if (existingPan) {
+//   throw { status: 400, message: "This PAN number is already registered" };
+// }
+//     }
 
 // Check duplicate GST
 if (data.gst) {
