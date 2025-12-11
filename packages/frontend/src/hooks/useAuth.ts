@@ -21,7 +21,7 @@ export const useAuth = () => {
   const tenantId = user?.tenantId || null;
 
   // ✅ Add logout functionality
-const handleLogout = () => {
+  const handleLogout = () => {
     try {
       // ✅ Redux logout
       dispatch(logout());

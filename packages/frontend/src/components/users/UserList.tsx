@@ -6,6 +6,7 @@ import { Pagination } from "@/components/ui/Pagination";
 import { useApi } from "../../hooks/useApi";
 import { toast } from "sonner";
 import { User } from "../../types";
+import { useAuth } from "../../hooks/useAuth";
 
 // interface User {
 //   id: string;
@@ -42,14 +43,39 @@ const UserList: React.FC<UserListProps> = ({ onEditUser, refreshTrigger }) => {
     pages: 0,
   });
 
+  const { user: loggedInUser } = useAuth();
+  console.log("Loggeninuser Data", loggedInUser);
+
   const { get, del } = useApi<PaginatedResponse<User>>();
 
+  // const fetchUsers = async () => {
+  //   try {
+  //     const response = await get(
+  //       `/api/users?page=${pagination.page}&limit=${pagination.limit}`
+  //     );
+  //     setUsers(response.data);
+  //     setPagination(response.pagination);
+  //   } catch (error: any) {
+  //     console.error("Failed to fetch users:", error);
+  //     toast.error(error?.message || "Failed to load users ❌");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const fetchUsers = async () => {
     try {
       const response = await get(
         `/api/users?page=${pagination.page}&limit=${pagination.limit}`
       );
-      setUsers(response.data);
+
+      let list = response.data;
+
+      // 👉 If logged-in user is NOT admin, hide admin users
+      if (loggedInUser?.role !== "admin") {
+        list = list.filter((u) => u.role !== "admin");
+      }
+
+      setUsers(list);
       setPagination(response.pagination);
     } catch (error: any) {
       console.error("Failed to fetch users:", error);
@@ -71,7 +97,7 @@ const UserList: React.FC<UserListProps> = ({ onEditUser, refreshTrigger }) => {
       fetchUsers();
     } catch (error: any) {
       console.error("Delete failed:", error);
-      toast.error( error?.message || "Failed to delete user ❌");
+      toast.error(error?.message || "Failed to delete user ❌");
     }
   };
 
@@ -114,8 +140,8 @@ const UserList: React.FC<UserListProps> = ({ onEditUser, refreshTrigger }) => {
           value === "active"
             ? "bg-green-100 text-green-800"
             : value === "invited"
-            ? "bg-yellow-100 text-yellow-800"
-            : "bg-red-100 text-red-800";
+              ? "bg-yellow-100 text-yellow-800"
+              : "bg-red-100 text-red-800";
         return (
           <span className={`px-2 py-1 text-xs rounded ${color}`}>
             {value.toUpperCase()}
@@ -133,18 +159,24 @@ const UserList: React.FC<UserListProps> = ({ onEditUser, refreshTrigger }) => {
       header: "Actions",
       render: (value: any, row: User) => (
         <div className="flex space-x-3">
-          <button
-            onClick={() => onEditUser(row)}
-            className="text-blue-600 hover:text-blue-900 font-medium"
-          >
-            Edit
-          </button>
-          <button
-            onClick={() => handleDelete(row.id)}
-            className="text-red-600 hover:text-red-900 font-medium"
-          >
-            Delete
-          </button>
+          {/* Hide Edit/Delete for logged-in user AND non-admin users */}
+          {loggedInUser?.role === "admin" && loggedInUser?.id !== row.id && (
+            <>
+              <button
+                onClick={() => onEditUser(row)}
+                className="text-blue-600 hover:text-blue-900 font-medium"
+              >
+                Edit
+              </button>
+
+              <button
+                onClick={() => handleDelete(row.id)}
+                className="text-red-600 hover:text-red-900 font-medium"
+              >
+                Delete
+              </button>
+            </>
+          )}
         </div>
       ),
     },

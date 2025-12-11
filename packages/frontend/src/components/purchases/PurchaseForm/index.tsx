@@ -295,6 +295,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({
             value={watch('vendorId')}
             onChange={(value: string) => setValue('vendorId', value)}
             options={vendors.map(v => ({ value: v.id, label: v.name }))}
+            disabled={isEdit}
           />
           {errors.vendorId && (
             <p className="text-red-500 text-sm mt-1">{errors.vendorId.message}</p>
@@ -542,6 +543,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({
                   { value: 'wallet', label: 'Wallet' },
                   { value: 'other', label: 'Other' }
                 ]}
+                disabled={isEdit}
               />
               {errors.paymentMethod && (
                 <p className="text-red-500 text-sm mt-1">{errors.paymentMethod.message}</p>

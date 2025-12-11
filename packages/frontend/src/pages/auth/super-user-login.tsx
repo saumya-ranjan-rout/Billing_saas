@@ -23,9 +23,19 @@ import { useApi } from "../../hooks/useApi";
 import Image from "next/image";
 
 const superUserLoginSchema = z.object({
-  tenant: z.string(),
-  email: z.string().email("Invalid email address"),
-  password: z.string(),
+  // tenant: z.string(),
+  // email: z.string().email("Invalid email address"),
+  // password: z.string(),
+  tenant: z.string().min(1, "Tenant is required"),
+
+  email: z
+    .string()
+    .min(1, "Email is required")
+    .email("Invalid email address"),
+
+  password: z
+    .string()
+    .min(1, "Password is required"),
 });
 
 type SuperUserLoginFormData = z.infer<typeof superUserLoginSchema>;
@@ -138,6 +148,8 @@ const SuperUserLogin: React.FC = () => {
     );
   }
 
+  const Required = () => <span className="text-red-500">*</span>;
+
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-[#f2f4ff] px-4">
 
@@ -218,7 +230,7 @@ const SuperUserLogin: React.FC = () => {
 
               {/* TENANT */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Tenant</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Tenant <Required /></label>
 
                 <Select onValueChange={(v) => setValue("tenant", v)}>
                   <SelectTrigger className="w-full">
@@ -250,9 +262,8 @@ const SuperUserLogin: React.FC = () => {
               <FormInput
                 id="email"
                 type="email"
-                label="Email address"
-                autoComplete="email"
-                required
+                label={<span>Email Address <Required /></span>}
+                autoComplete="email"               
                 error={errors.email?.message}
                 {...register("email")}
               />
@@ -260,14 +271,11 @@ const SuperUserLogin: React.FC = () => {
               <FormInput
                 id="password"
                 type="password"
-                label="Password"
-                autoComplete="current-password"
-                required
+                label={<span>Password <Required /></span>}
+                autoComplete="current-password"                
                 error={errors.password?.message}
                 {...register("password")}
               />
-
-
 
               <div className="flex items-center justify-between text-sm">
                 <label className="flex items-center gap-2 text-slate-700">
