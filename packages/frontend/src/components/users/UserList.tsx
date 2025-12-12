@@ -46,6 +46,9 @@ const UserList: React.FC<UserListProps> = ({ onEditUser, refreshTrigger }) => {
   const { user: loggedInUser } = useAuth();
   console.log("Loggeninuser Data", loggedInUser);
 
+  const isAdminOrSuperAdmin =
+    ["admin", "super_admin"].includes(loggedInUser?.role ?? "");
+
   const { get, del } = useApi<PaginatedResponse<User>>();
 
   // const fetchUsers = async () => {
@@ -70,10 +73,21 @@ const UserList: React.FC<UserListProps> = ({ onEditUser, refreshTrigger }) => {
 
       let list = response.data;
 
-      // 👉 If logged-in user is NOT admin, hide admin users
-      if (loggedInUser?.role !== "admin") {
-        list = list.filter((u) => u.role !== "admin");
+      // // 👉 If logged-in user is NOT admin, hide admin users
+      // if (loggedInUser?.role !== "admin") {
+      //   list = list.filter((u) => u.role !== "admin");
+      // }
+      // // 👉 Condition 2: If user not admin or super_admin → hide both roles
+      // if (!["admin", "super_admin"].includes(loggedInUser?.role)) {
+      //   list = list.filter(
+      //     (u) => u.role !== "admin" && u.role !== "super_admin"
+      //   );
+      // }
+
+      if (!isAdminOrSuperAdmin) {
+        list = list.filter((u) => !["admin", "super_admin"].includes(u.role));
       }
+
 
       setUsers(list);
       setPagination(response.pagination);
@@ -160,7 +174,7 @@ const UserList: React.FC<UserListProps> = ({ onEditUser, refreshTrigger }) => {
       render: (value: any, row: User) => (
         <div className="flex space-x-3">
           {/* Hide Edit/Delete for logged-in user AND non-admin users */}
-          {loggedInUser?.role === "admin" && loggedInUser?.id !== row.id && (
+          {isAdminOrSuperAdmin && loggedInUser?.id !== row.id && (
             <>
               <button
                 onClick={() => onEditUser(row)}
