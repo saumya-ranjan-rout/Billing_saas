@@ -204,6 +204,47 @@ export class AuthController {
       });
     }
   }
+
+  async forgotPassword(req: Request, res: Response) {
+    try {
+      const { email } = req.body;
+
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+
+      await this.authService.forgotPassword(email);
+
+      // return res.json({
+      //   message: "Password reset link sent to your email",
+      // });
+      return res.status(200).json({
+        success: true,
+        message: "Password reset email sent",
+      });
+    } catch (error) {
+      return res.status(400).json({
+        message: (error as Error).message,
+      });
+    }
+  }
+
+  async resetPassword(req: Request, res: Response) {
+    try {
+      const { token, password } = req.body;
+
+      await this.authService.resetPasswordConfirm(token, password);
+
+      return res.status(200).json({
+        success: true,
+        message: "Password reset successful",
+      });
+    } catch (error) {
+      return res.status(400).json({
+        message: (error as Error).message,
+      });
+    }
+  }
 }
 
 

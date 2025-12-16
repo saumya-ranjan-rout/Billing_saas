@@ -1,7 +1,7 @@
 import * as jwt from "jsonwebtoken";
 // import * as bcrypt from "bcryptjs";
 import bcrypt from "bcryptjs";
-import { Repository,QueryRunner,Not,MoreThanOrEqual } from "typeorm";
+import { Repository, QueryRunner, Not, MoreThanOrEqual } from "typeorm";
 import { User, UserStatus,UserRole } from "../../entities/User";
 import { Tenant,TenantStatus } from "../../entities/Tenant";
 import { Subscription } from "../../entities/Subscription";
@@ -26,12 +26,14 @@ export class AuthService extends BaseService<User> {
   private tenantRepository: Repository<Tenant>;
   private subscriptionRepository: Repository<Subscription>;
   private refreshTokens: Set<string>; // store valid refresh tokens (in-memory, replace with DB/Redis in prod)
+  private userRepository: Repository<User>;
 
   constructor() {
     super(AppDataSource.getRepository(User));
     this.emailService = new EmailService();
     this.tenantRepository = AppDataSource.getRepository(Tenant);
     this.subscriptionRepository = AppDataSource.getRepository(Subscription);
+    this.userRepository = AppDataSource.getRepository(User);
     this.refreshTokens = new Set();
   }
 
@@ -522,6 +524,49 @@ async getTenants(): Promise<Tenant[]> {
   } catch (error) {
     throw new Error('Failed to fetch tenants');
   }
+}
+
+async forgotPassword(email: string): Promise<void> {
+  const user = await this.userRepository.findOne({
+    where: { email },
+  });
+
+  // ❌ User not found
+  if (!user) {
+    throw new Error("Email not registered");
+  }
+
+  // ✅ Create reset token
+  const token = jwt.sign(
+    {
+      userId: user.id,
+      email: user.email,
+    },
+    process.env.JWT_SECRET!,
+    { expiresIn: "1h" }
+  );
+
+  // ✅ Reset link
+  const resetLink = `${process.env.FRONTEND_URL}/auth/reset-password?token=${token}`;
+
+  // ✅ Send mail using EmailService
+  await this.emailService.sendPasswordResetEmail(
+    user.email,
+    token
+  );
+}
+
+async resetPasswordConfirm(token: string, newPassword: string) {
+  const payload = jwt.verify(token, process.env.JWT_SECRET!) as any;
+
+  const user = await this.userRepository.findOne({
+    where: { id: payload.userId },
+  });
+
+  if (!user) throw new UnauthorizedError("Invalid or expired reset token");
+
+  user.password = await bcrypt.hash(newPassword, 10);
+  await this.userRepository.save(user);
 }
 }
 

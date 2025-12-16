@@ -14,6 +14,14 @@ export class EmailService {
         pass: process.env.SMTP_PASS,
       },
     });
+
+    this.transporter.verify((error, success) => {
+      if (error) {
+        console.error("SMTP Error:", error);
+      } else {
+        console.log("SMTP Server is ready to send emails");
+      }
+    });
   }
 
   async sendInvitationEmail(to: string, userId: string, tenantId: string): Promise<void> {
@@ -41,8 +49,31 @@ export class EmailService {
     }
   }
 
+  // async sendPasswordResetEmail(to: string, resetToken: string): Promise<void> {
+  //   const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+
+  //   const mailOptions = {
+  //     from: process.env.EMAIL_FROM,
+  //     to,
+  //     subject: "Password Reset Request",
+  //     html: `
+  //       <h2>Password Reset Request</h2>
+  //       <p>Click the link below to reset your password:</p>
+  //       <a href="${resetLink}">Reset Password</a>
+  //       <p>This link will expire in 1 hour.</p>
+  //       <p>If you didn't request this reset, please ignore this email.</p>
+  //     `,
+  //   };
+
+  //   try {
+  //     await this.transporter.sendMail(mailOptions);
+  //   } catch (error) {
+  //     throw new BadRequestError("Failed to send password reset email");
+  //   }
+  // }
+
   async sendPasswordResetEmail(to: string, resetToken: string): Promise<void> {
-    const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+    const resetLink = `${process.env.FRONTEND_URL}/auth/reset-password?token=${resetToken}`;
 
     const mailOptions = {
       from: process.env.EMAIL_FROM,

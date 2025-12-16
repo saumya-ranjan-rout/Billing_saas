@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import Link from 'next/link';
 import { ArrowRight, Mail, ShieldCheck } from "lucide-react";
+import { useApi } from '../../hooks/useApi';
 
 const forgotPasswordSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -14,19 +15,39 @@ type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 const ForgotPasswordPage: React.FC = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { get, post } = useApi<any>();
 
   const { register, handleSubmit, formState: { errors } } = useForm<ForgotPasswordFormData>({
     resolver: zodResolver(forgotPasswordSchema),
   });
 
+  // const onSubmit = async (data: ForgotPasswordFormData) => {
+  //   setIsLoading(true);
+  //   // Simulate API call
+  //   setTimeout(() => {
+  //     console.log(data);
+  //     setIsLoading(false);
+  //     setIsSubmitted(true);
+  //   }, 2000);
+  // };
   const onSubmit = async (data: ForgotPasswordFormData) => {
     setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      console.log(data);
-      setIsLoading(false);
+
+    try {
+      const result = await post("/api/auth/forgot-password", {
+        email: data.email,
+      });
+
+      if (!result.success) {
+        throw new Error(result.message || "Something went wrong");
+      }
+
       setIsSubmitted(true);
-    }, 2000);
+    } catch (error: any) {
+      alert(error.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -66,8 +87,8 @@ const ForgotPasswordPage: React.FC = () => {
                   type="email"
                   autoComplete="email"
                   className={`relative block w-full pl-10 pr-4 py-3 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 ${errors.email
-                      ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
-                      : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+                    ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
+                    : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
                     }`}
                   placeholder="Email address"
                 />
