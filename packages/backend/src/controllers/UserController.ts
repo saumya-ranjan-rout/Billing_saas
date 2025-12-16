@@ -10,7 +10,7 @@ function getErrorMessage(error: unknown): string {
 }
 
 export class UserController {
-  constructor(private userService: UserService, private cacheService: CacheService) {}
+  constructor(private userService: UserService, private cacheService: CacheService) { }
 
   // ✅ Create new user
   async createUser(req: Request, res: Response) {
@@ -138,6 +138,34 @@ export class UserController {
     } catch (error) {
       logger.error("Error resetting password:", error);
       res.status(400).json({ error: getErrorMessage(error) });
+    }
+  }
+
+  // ✅ Change logged-in user's password
+  async changePassword(req: Request, res: Response) {
+    try {
+      const { oldPassword, newPassword } = req.body;
+
+      if (!req.user) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      if (!oldPassword || !newPassword) {
+        return res.status(400).json({ message: "Old and new password are required" });
+      }
+
+      const userId = req.user.id;
+      const tenantId = req.user.tenantId;
+
+      await this.userService.changePassword(userId, tenantId, oldPassword, newPassword);
+
+      // 🔁 Invalidate user cache
+      await this.cacheService.invalidatePattern(`users:${tenantId}:*`);
+
+      res.json({ message: "Password updated successfully" });
+    } catch (error) {
+      logger.error("Change password error:", error);
+      res.status(400).json({ message: getErrorMessage(error) });
     }
   }
 }

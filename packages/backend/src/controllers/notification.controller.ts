@@ -1,20 +1,20 @@
 import { Request, Response } from 'express';
 import { NotificationService } from '../services/notification.service';
 // import { AuthenticatedRequest } from '../middleware/auth.middleware';
- 
+
 export class NotificationController {
   private notificationService: NotificationService;
- 
+
   constructor() {
     this.notificationService = new NotificationService();
   }
- 
 
-    registerPushToken = async (req: Request, res: Response): Promise<void> => {
+
+  registerPushToken = async (req: Request, res: Response): Promise<void> => {
     try {
       const userId = req.user!.id;
       const { token, platform } = req.body;
-      
+
       await this.notificationService.registerPushToken(userId, token, platform);
       res.json({ success: true, message: 'Push token registered successfully' });
     } catch (error) {
@@ -28,7 +28,7 @@ export class NotificationController {
   //   try {
   //     const userId = req.user!.id;
   //     const { token, platform } = req.body;
-      
+
   //     await this.notificationService.registerPushToken(userId, token, platform);
   //     res.json({ success: true, message: 'Push token registered successfully' });
   //   } catch (error) {
@@ -38,7 +38,7 @@ export class NotificationController {
   //     });
   //   }
   // };
- 
+
   sendPushNotification = async (req: Request, res: Response): Promise<void> => {
     try {
       // Only admins and accountants can send notifications
@@ -49,7 +49,7 @@ export class NotificationController {
         });
         return;
       }
- 
+
       const { userId, title, body, data } = req.body;
       await this.notificationService.sendPushNotification(userId, title, body, data);
       res.json({ success: true, message: 'Notification sent successfully' });
@@ -60,18 +60,18 @@ export class NotificationController {
       });
     }
   };
- 
+
   getUserNotifications = async (req: Request, res: Response): Promise<void> => {
     try {
       const userId = req.user!.id;
       const { page = 1, limit = 20 } = req.query;
-      
+
       const notifications = await this.notificationService.getUserNotifications(
         userId,
         parseInt(page as string),
         parseInt(limit as string)
       );
-      
+
       res.json({ success: true, notifications });
     } catch (error) {
       res.status(500).json({
@@ -80,7 +80,7 @@ export class NotificationController {
       });
     }
   };
- 
+
   getUnreadCount = async (req: Request, res: Response): Promise<void> => {
     try {
       const userId = req.user!.id;
@@ -93,12 +93,12 @@ export class NotificationController {
       });
     }
   };
- 
+
   markAsRead = async (req: Request, res: Response): Promise<void> => {
     try {
       const userId = req.user!.id;
       const { id } = req.params;
-      
+
       await this.notificationService.markAsRead(userId, id);
       res.json({ success: true, message: 'Notification marked as read' });
     } catch (error) {
@@ -108,7 +108,7 @@ export class NotificationController {
       });
     }
   };
- 
+
   markAllAsRead = async (req: Request, res: Response): Promise<void> => {
     try {
       const userId = req.user!.id;
@@ -121,12 +121,12 @@ export class NotificationController {
       });
     }
   };
- 
+
   deleteNotification = async (req: Request, res: Response): Promise<void> => {
     try {
       const userId = req.user!.id;
       const { id } = req.params;
-      
+
       await this.notificationService.deleteNotification(userId, id);
       res.json({ success: true, message: 'Notification deleted successfully' });
     } catch (error) {

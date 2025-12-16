@@ -72,22 +72,10 @@ const UserList: React.FC<UserListProps> = ({ onEditUser, refreshTrigger }) => {
       );
 
       let list = response.data;
-
-      // // 👉 If logged-in user is NOT admin, hide admin users
-      // if (loggedInUser?.role !== "admin") {
-      //   list = list.filter((u) => u.role !== "admin");
-      // }
-      // // 👉 Condition 2: If user not admin or super_admin → hide both roles
-      // if (!["admin", "super_admin"].includes(loggedInUser?.role)) {
-      //   list = list.filter(
-      //     (u) => u.role !== "admin" && u.role !== "super_admin"
-      //   );
-      // }
-
+      
       if (!isAdminOrSuperAdmin) {
         list = list.filter((u) => !["admin", "super_admin"].includes(u.role));
       }
-
 
       setUsers(list);
       setPagination(response.pagination);

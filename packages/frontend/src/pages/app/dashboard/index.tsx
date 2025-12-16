@@ -49,6 +49,11 @@ interface DashboardData {
   paidInvoices: number;
   recentInvoices: Invoice[];
   recentCustomers: Customer[];
+
+  // 👇 Add these 3 new fields (same style as others)
+  todayIncome: number;
+  todayExpense: number;
+  todayDue: number;
 }
 
 const Dashboard: React.FC = () => {
@@ -109,6 +114,9 @@ const Dashboard: React.FC = () => {
     paidInvoices: 0,
     recentInvoices: [],
     recentCustomers: [],
+    todayIncome: 0,
+    todayExpense: 0,
+    todayDue: 0,
   };
 
   // Apply frontend filter for "This Month"
@@ -198,6 +206,32 @@ const Dashboard: React.FC = () => {
             icon={TrendingUp}
             color="blue"
           />
+          <MetricCard
+            title="Today's Earnings"
+            value={dashboardData.todayIncome}
+            // value={`₹${data?.earningsToday?.toLocaleString()}`}
+            change={0}
+            icon={DollarSign}
+            color="green"
+          />
+
+          <MetricCard
+            title="Today's Spend"
+            value={dashboardData.todayExpense}
+            // value={`₹${data?.spendToday?.toLocaleString()}`}
+            change={0}
+            icon={TrendingUp}
+            color="red"
+          />
+
+          <MetricCard
+            title="Today Pending"
+            value={dashboardData.todayDue}
+            // value={`₹${data?.pendingToday?.toLocaleString()}`}
+            change={0}
+            icon={FileText}
+            color="yellow"
+          />
         </div>
 
         {/* Recent Invoices & Customers */}
@@ -232,10 +266,10 @@ const Dashboard: React.FC = () => {
                     <p className="font-semibold">₹{invoice.amount}</p>
                     <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${invoice.status === "paid"
-                          ? "bg-green-100 text-green-800"
-                          : invoice.status === "pending"
-                            ? "bg-yellow-100 text-yellow-800"
-                            : "bg-red-100 text-red-800"
+                        ? "bg-green-100 text-green-800"
+                        : invoice.status === "pending"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : "bg-red-100 text-red-800"
                         }`}
                     >
                       {invoice.status}

@@ -64,4 +64,13 @@ router.post(
   userController.resetPassword.bind(userController)
 );
 
+// ----------------- Change Own Password (JWT) -----------------
+router.post(
+  "/change-password",
+  authMiddleware,
+  tenantMiddleware,
+  userController.changePassword.bind(userController)
+);
+
+
 export default router;

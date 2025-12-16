@@ -32,8 +32,8 @@ class ApplicationServer {
 
     // CORS
     this.app.use(cors({
-      origin: process.env.NODE_ENV === 'production' 
-        ? ['https://yourdomain.com', 'https://www.yourdomain.com'] 
+      origin: process.env.NODE_ENV === 'production'
+        ? ['https://yourdomain.com', 'https://www.yourdomain.com']
         : ['http://192.168.29.12:3000', 'http://192.168.29.12:3001'],
       credentials: true
     }));
@@ -83,10 +83,14 @@ class ApplicationServer {
     this.app.use('/api/settings', require('./routes/settingRoutes').default);
     this.app.use('/api/reports', require('./routes/reportRoutes').default);
     this.app.use('/api/loyalty', require('./routes/loyaltyRoutes').default);
-     this.app.use('/api/users', require('./routes/userRoutes').default);
-     this.app.use('/api/subscriptions', require('./routes/subscriptionRoutes').default);
-     this.app.use('/api/super-admin', require('./routes/super-admin').default);
-     this.app.use('/api/professional-requests', require('./routes/professionalRequestRoutes').default);
+    this.app.use('/api/users', require('./routes/userRoutes').default);
+    this.app.use('/api/subscriptions', require('./routes/subscriptionRoutes').default);
+    this.app.use('/api/super-admin', require('./routes/super-admin').default);
+    this.app.use('/api/professional-requests', require('./routes/professionalRequestRoutes').default);
+    this.app.use(
+      "/api/notification",
+      require("./routes/notificationRoutes").default
+    );
   }
 
   private setupErrorHandling(): void {

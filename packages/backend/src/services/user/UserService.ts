@@ -210,4 +210,34 @@ export class UserService {
     await this.userRepository.save(user);
     return user;
   }
+
+  // ✅ Change own password
+  async changePassword(
+    userId: string,
+    tenantId: string,
+    oldPassword: string,
+    newPassword: string
+  ): Promise<void> {
+
+    // 1️⃣ Find user (tenant-safe)
+    const user = await this.userRepository.findOne({
+      where: { id: userId, tenantId },
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // 2️⃣ Validate old password
+    const isMatch = await user.validatePassword(oldPassword);
+    if (!isMatch) {
+      throw new Error("Old password is incorrect");
+    }
+
+    // 3️⃣ Hash new password
+    user.password = await bcrypt.hash(newPassword, 12);
+
+    // 4️⃣ Save updated password
+    await this.userRepository.save(user);
+  }
 }
