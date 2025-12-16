@@ -223,7 +223,7 @@ const Login: React.FC = () => {
 
             <p className="mt-6 text-center text-sm text-slate-500">
               By signing in you agree to our{" "}
-              <Link href="/terms" className="text-blue-600 hover:underline">Terms</Link>{" "}
+              <Link href="/terms" className="text-blue-600 hover:underline">Terms & Conditions</Link>{" "}
               and{" "}
               <Link href="/privacy" className="text-blue-600 hover:underline">Privacy Policy</Link>.
             </p>

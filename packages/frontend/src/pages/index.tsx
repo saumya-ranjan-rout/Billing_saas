@@ -279,8 +279,8 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="text-sm text-slate-600">© {new Date().getFullYear()} 3SD. All rights reserved.</div>
             <div className="flex gap-4 text-sm">
-              <a href="#" className="hover:underline">Privacy</a>
-              <a href="#" className="hover:underline">Terms</a>
+              <a href="/privacy" className="hover:underline">Privacy</a>
+              <a href="/terms" className="hover:underline">Terms</a>
               <a href="#" className="hover:underline">Status</a>
             </div>
           </div>
