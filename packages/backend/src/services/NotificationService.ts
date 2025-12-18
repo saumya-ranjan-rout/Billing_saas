@@ -36,6 +36,7 @@ export class NotificationService {
     const activeSubscription = await this.subscriptionRepo.findOne({
       where: {
         tenantId,
+        userId,
         startDate: LessThanOrEqual(now),
         endDate: MoreThanOrEqual(now),
       },
@@ -54,6 +55,7 @@ export class NotificationService {
     const futureSubscription = await this.subscriptionRepo.findOne({
       where: {
         tenantId,
+        userId,
         startDate: MoreThanOrEqual(activeSubscription.endDate),
       },
       order: { startDate: "ASC" },
