@@ -39,7 +39,6 @@ export class SubscriptionExpiryService {
         const futureSub = await this.subRepo.findOne({
             where: {
                 tenantId: sub.tenantId,
-                userId: sub.userId,
                 startDate: MoreThanOrEqual(sub.endDate),
             },
         });
