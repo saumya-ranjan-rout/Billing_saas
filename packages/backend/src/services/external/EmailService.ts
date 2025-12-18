@@ -125,6 +125,70 @@ export class EmailService {
     // TODO: Replace with real JWT generation logic
     return "invitation-token";
   }
+
+  async sendSubscriptionExpiryMail({
+    to,
+    daysLeft,
+    endDate,
+  }: {
+    to: string;
+    daysLeft: number;
+    endDate: Date;
+  }): Promise<void> {
+
+    const subject =
+      daysLeft === 0
+        ? "Your subscription expires today"
+        : `Your subscription expires in ${daysLeft} days`;
+
+    const html = `
+    <h2>Subscription Expiry Notice</h2>
+
+    <p>
+      ${daysLeft === 0
+        ? "Your subscription expires <strong>today</strong>."
+        : `Your subscription will expire in <strong>${daysLeft} days</strong>.`
+      }
+    </p>
+
+    <p>
+      <strong>Expiry Date:</strong> ${endDate.toDateString()}
+    </p>
+
+    <p>
+      Please renew your subscription to avoid any interruption in services.
+    </p>
+
+    <a
+      href="${process.env.FRONTEND_URL}/auth/login"
+      style="
+        display:inline-block;
+        padding:10px 16px;
+        background:#2563eb;
+        color:#ffffff;
+        text-decoration:none;
+        border-radius:6px;
+        margin-top:10px;
+      "
+    >
+      Renew Subscription
+    </a>
+
+    <p style="margin-top:20px">
+      Regards,<br />
+      Billing Team
+    </p>
+  `;
+
+    const mailOptions = {
+      from: process.env.EMAIL_FROM,
+      to,
+      subject,
+      html,
+    };
+
+    await this.transporter.sendMail(mailOptions);
+  }
 }
 
 

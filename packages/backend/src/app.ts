@@ -11,6 +11,7 @@ import { initializeDatabase } from './config/database';
 import { errorHandler } from './middleware/error.middleware';
 import { extractTenantFromSubdomain } from './middleware/tenant.middleware';
 import logger, { stream } from './utils/logger';
+import { startSubscriptionExpiryCron } from "./cron/subscriptionExpiry.cron";
 
 dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 
@@ -91,6 +92,10 @@ class ApplicationServer {
       "/api/notification",
       require("./routes/notificationRoutes").default
     );
+    this.app.use(
+      "/api/internal",
+      require("./routes/internalRoutes").default
+    );
   }
 
   private setupErrorHandling(): void {
@@ -116,6 +121,9 @@ class ApplicationServer {
     try {
       await initializeDatabase();
       logger.info('Database connected successfully');
+
+      // 🔥 START CRON
+      startSubscriptionExpiryCron();
 
       this.app.listen(this.port, () => {
         logger.info(`Server running on port ${this.port} in ${process.env.NODE_ENV || 'development'} mode`);
