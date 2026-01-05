@@ -13,9 +13,18 @@ import { toast } from "sonner";
 // 🧩 Match backend entity
 const userSchema = z
   .object({
-     id: z.string().optional(), // ✅ add this line
-    firstName: z.string().min(1, "First name is required"),
-    lastName: z.string().min(1, "Last name is required"),
+    id: z.string().optional(), // ✅ add this line
+    // firstName: z.string().min(1, "First name is required"),
+    // lastName: z.string().min(1, "Last name is required"),
+    firstName: z
+      .string()
+      .min(1, "First name is required")
+      .regex(/^[A-Za-z]+$/, "Only alphabets are allowed"),
+
+    lastName: z
+      .string()
+      .min(1, "Last name is required")
+      .regex(/^[A-Za-z]+$/, "Only alphabets are allowed"),
     email: z.string().email("Invalid email address"),
     password: z.string().min(8, "Password must be at least 8 characters").optional(),
     role: z.enum(
@@ -116,11 +125,17 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSuccess, onCancel, onRefres
     }
   };
 
+  const allowOnlyAlphabets = (e: React.FormEvent<HTMLInputElement>) => {
+    e.currentTarget.value = e.currentTarget.value.replace(/[^A-Za-z]/g, "");
+  };
+
+  const Required = () => <span className="text-red-500">*</span>;
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {/* Basic Info */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Input
+        {/* <Input
           label="First Name"
           {...register("firstName")}
           error={errors.firstName?.message}
@@ -133,26 +148,51 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSuccess, onCancel, onRefres
           error={errors.lastName?.message}
           disabled={isSubmitting}
           required
+        /> */}
+        <Input          
+          label={<span>First Name <Required /></span>}
+          {...register("firstName", {
+            required: "First name is required",
+            pattern: {
+              value: /^[A-Za-z]+$/,
+              message: "Only alphabets are allowed",
+            },
+          })}
+          onInput={allowOnlyAlphabets}
+          error={errors.firstName?.message}
+          disabled={isSubmitting}
+        />
+
+        <Input
+          label={<span>Last Name <Required /></span>}
+          {...register("lastName", {
+            required: "Last name is required",
+            pattern: {
+              value: /^[A-Za-z]+$/,
+              message: "Only alphabets are allowed",
+            },
+          })}
+          onInput={allowOnlyAlphabets}
+          error={errors.lastName?.message}
+          disabled={isSubmitting}
         />
       </div>
 
       <Input
-        label="Email"
+        label={<span>Email <Required /></span>}
         type="email"
         {...register("email")}
         error={errors.email?.message}
         disabled={isSubmitting}
-        required
       />
 
       {!user && (
         <Input
-          label="Password"
+          label={<span>Password <Required /></span>}
           type="password"
           {...register("password")}
           error={errors.password?.message}
           disabled={isSubmitting}
-          required
         />
       )}
 

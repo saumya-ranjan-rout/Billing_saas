@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
     "target": "es2020",
-    "lib": ["es2020"],
+    "lib": [
+      "es2020"
+    ],
     "module": "commonjs",
     "moduleResolution": "node",
     "rootDir": "./src",
@@ -20,22 +22,49 @@
     "baseUrl": "./src",
     "strictPropertyInitialization": false,
     "paths": {
-      "@/*": ["*"],
-      "@shared/*": ["../../shared/*"],
-       "@/utils/*": ["utils/*"],
-      "@/types/*": ["types/*"],
-      "@/entities/*": ["entities/*"],
-      "@/services/*": ["services/*"],
-      "@/controllers/*": ["controllers/*"],
-      "@/middleware/*": ["middleware/*"]
+      "@/*": [
+        "*"
+      ],
+      "@shared/*": [
+        "../../shared/*"
+      ],
+      "@/utils/*": [
+        "utils/*"
+      ],
+      "@/types/*": [
+        "types/*"
+      ],
+      "@/entities/*": [
+        "entities/*"
+      ],
+      "@/services/*": [
+        "services/*"
+      ],
+      "@/controllers/*": [
+        "controllers/*"
+      ],
+      "@/middleware/*": [
+        "middleware/*"
+      ]
     },
     // "typeRoots": ["./node_modules/@types", "./src/types"],
     // "types": ["node", "express"],
-        "typeRoots": ["./src/types", "./node_modules/@types"],
-    "types": ["node", "express"],
-
+    "typeRoots": [
+      "./src/types",
+      "./node_modules/@types"
+    ],
+    "types": [
+      "node",
+      "express"
+    ],
     //  "typeRoots": ["./src/types", "./node_modules/@types"]
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts"]
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.ts"
+  ]
 }

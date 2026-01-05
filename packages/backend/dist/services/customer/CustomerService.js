@@ -158,14 +158,19 @@ class CustomerService {
             if (options.phone) {
                 whereConditions.phone = (0, typeorm_1.ILike)(`%${options.phone}%`);
             }
-            if (options.joinedFrom || options.joinedTo) {
-                whereConditions.createdAt = {};
-                if (options.joinedFrom) {
-                    whereConditions.createdAt = (0, typeorm_1.MoreThanOrEqual)(new Date(options.joinedFrom));
-                }
-                if (options.joinedTo) {
-                    whereConditions.createdAt = (0, typeorm_1.LessThanOrEqual)(new Date(options.joinedTo));
-                }
+            if (joinedFrom && joinedTo) {
+                const from = new Date(joinedFrom);
+                const to = new Date(joinedTo);
+                to.setHours(23, 59, 59, 999);
+                whereConditions.createdAt = (0, typeorm_1.Between)(from, to);
+            }
+            else if (joinedFrom) {
+                whereConditions.createdAt = (0, typeorm_1.MoreThanOrEqual)(new Date(joinedFrom));
+            }
+            else if (joinedTo) {
+                const to = new Date(joinedTo);
+                to.setHours(23, 59, 59, 999);
+                whereConditions.createdAt = (0, typeorm_1.LessThanOrEqual)(to);
             }
             let [customers, total] = await this.customerRepository.findAndCount({
                 where: whereConditions,

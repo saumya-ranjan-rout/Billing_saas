@@ -14,12 +14,16 @@ interface Option {
 }
 
 interface SelectWrapperProps {
-  label?: string;
+  // label?: string;
+  // 09-12-2025(Y)
+  label?: React.ReactNode;
   value?: string;
   onChange?: (value: string) => void;
   options: Option[];
   placeholder?: string;
+  disabled?: boolean; // ⭐ Add this 10-12-2025(Y)
 }
+
 
 export const SelectWrapper: React.FC<SelectWrapperProps> = ({
   label,
@@ -27,14 +31,37 @@ export const SelectWrapper: React.FC<SelectWrapperProps> = ({
   onChange,
   options,
   placeholder = "Select an option",
+  disabled,
 }) => {
+  // return (
+  //   <div className="flex flex-col space-y-1">
+  //     {label && <label className="text-sm font-medium text-gray-700">{label}</label>}
+  //     <Select value={value} onValueChange={(val) => onChange?.(val)}>
+  //       <SelectTrigger>
+  //         <SelectValue placeholder={placeholder} />
+  //       </SelectTrigger>
+  //       <SelectContent>
+  //         {options.map((opt) => (
+  //           <SelectItem key={opt.value} value={opt.value}>
+  //             {opt.label}
+  //           </SelectItem>
+  //         ))}
+  //       </SelectContent>
+  //     </Select>
+  //   </div>
+  // );
   return (
     <div className="flex flex-col space-y-1">
       {label && <label className="text-sm font-medium text-gray-700">{label}</label>}
-      <Select value={value} onValueChange={(val) => onChange?.(val)}>
-        <SelectTrigger>
+
+      <Select value={value} onValueChange={(val) => onChange?.(val)} >
+        <SelectTrigger
+          disabled={disabled}  // <-- IMPORTANT
+          className={disabled ? "opacity-60 cursor-not-allowed" : ""}
+        >
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
+
         <SelectContent>
           {options.map((opt) => (
             <SelectItem key={opt.value} value={opt.value}>

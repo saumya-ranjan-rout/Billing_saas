@@ -11,5 +11,6 @@ export declare class UserController {
     updateUser(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
     deleteUser(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
     resetPassword(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
+    changePassword(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
 }
 //# sourceMappingURL=UserController.d.ts.map

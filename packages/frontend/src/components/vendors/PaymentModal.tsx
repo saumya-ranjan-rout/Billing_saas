@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useApi } from '../../hooks/useApi';
 import { toast } from "sonner";
 
@@ -20,69 +20,72 @@ const PAYMENT_METHODS = [
 ];
 
 const PaymentModal: React.FC<PaymentModalProps> = ({ vendor, onClose, onSuccess }) => {
-  const { post,get } = useApi<any>();
- const [redeemStatus, setRedeemStatus] = useState<"redeem" | "redeemed">("redeem");
+  const { post, get } = useApi<any>();
+  const [redeemStatus, setRedeemStatus] = useState<"redeem" | "redeemed">("redeem");
   const [paymentMethod, setPaymentMethod] = useState<string>("cash");
   const [amount, setAmount] = useState<number>(0);
   const [notes, setNotes] = useState("");
   //    const [loyaltyData, setLoyaltyData] = useState<any>(null);
-const [balance, setBalance] = useState(0);
-useEffect(() => {
-  const fetchBalance = async () => {
-    // alert(customer.id);
-    try {
-      const res = await get(`/api/vendors/${vendor.id}/balance`);
-    //   const data = await res.json();
-    //   alert(res.balance);
-setBalance(parseFloat(Number(res.balance || 0).toFixed(2)));
-setAmount(parseFloat(Number(res.balance || 0).toFixed(2)));
+  const [balance, setBalance] = useState(0);
+  useEffect(() => {
+    const fetchBalance = async () => {
+      // alert(customer.id);
+      try {
+        const res = await get(`/api/vendors/${vendor.id}/balance`);
+        //   const data = await res.json();
+        //   alert(res.balance);
+        setBalance(parseFloat(Number(res.balance || 0).toFixed(2)));
+        setAmount(parseFloat(Number(res.balance || 0).toFixed(2)));
 
-    } catch (err) {
-      console.error(err);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchBalance();
+  }, [vendor]);
+
+  const handleSubmit = async () => {
+    if (!amount || amount <= 0) {
+      toast.error("Please enter a valid amount.");
+      return;
+    }
+
+    if (amount > balance) {
+      toast.error("Payment cannot be more than outstanding balance.");
+      setAmount(0);
+      return;
+    }
+
+    let status = "partial"; // default
+
+    if (amount == balance) {
+      status = "completed";
+    }
+
+    try {
+      const payload = {
+        amount,
+        method: paymentMethod,
+        vendorId: vendor.id,
+        paymentDate: new Date(),
+        notes,
+        status,
+        paymentType: "expense",
+        tenantId: vendor.tenantId
+      };
+
+      // console.log("📦 Payload:", JSON.stringify(payload, null, 2));
+
+      await post("/api/vendors/payments", payload);
+
+      toast.success("Payment recorded successfully 💰");
+      onSuccess();
+    } catch (err: any) {
+      toast.error(err.message || "Payment failed ❌");
     }
   };
-  fetchBalance();
-}, [vendor]);
 
- const handleSubmit = async () => {
-  if (!amount || amount <= 0) {
-    toast.error("Please enter a valid amount.");
-    return;
-  }
-
-  if (amount > balance) {
-    toast.error("Payment cannot be more than outstanding balance.");
-    setAmount(0);
-    return;
-  }
-  
-  let status = "partial"; // default
-
-if (amount == balance) {
-  status = "completed";
-}
-
-  try {
-    const payload = {
-      amount,
-      method: paymentMethod,
-      vendorId: vendor.id,
-      paymentDate: new Date(),
-      notes,
-      status,
-      paymentType: "expense",
-      tenantId: vendor.tenantId
-    };
-
-    await post("/api/vendors/payments", payload);
-
-    toast.success("Payment recorded successfully 💰");
-    onSuccess();
-  } catch (err: any) {
-    toast.error(err.message || "Payment failed ❌");
-  }
-};
-
+  const Required = () => <span className="text-red-500">*</span>;
 
   return (
     <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
@@ -92,8 +95,8 @@ if (amount == balance) {
         <div className="space-y-4">
           {/* Payment Method */}
           <div className="text-sm text-red-600 font-semibold">
-  Outstanding Amount: ₹{balance}
-</div>
+            Outstanding Amount: ₹{balance}
+          </div>
           <div>
             <label className="block mb-1 text-sm font-medium">Payment Method</label>
             <select
@@ -113,21 +116,21 @@ if (amount == balance) {
 
 
           <div>
-            <label className="block mb-1 text-sm font-medium">Amount</label>
-      <input
-  type="number"
-  className="border rounded w-full px-3 py-2"
-  value={amount}
-  onChange={(e) => {
-    const value = Number(e.target.value);
-    if (value > balance) {
-      toast.error("Amount cannot exceed outstanding balance.");
-      setAmount(0);
-      return;
-    }
-    setAmount(value);
-  }}
-/>
+            <label className="block mb-1 text-sm font-medium">Amount <Required /></label>
+            <input
+              type="number"
+              className="border rounded w-full px-3 py-2"
+              value={amount}
+              onChange={(e) => {
+                const value = Number(e.target.value);
+                if (value > balance) {
+                  toast.error("Amount cannot exceed outstanding balance.");
+                  setAmount(0);
+                  return;
+                }
+                setAmount(value);
+              }}
+            />
           </div>
 
           {/* Notes */}

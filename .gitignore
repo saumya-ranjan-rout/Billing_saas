@@ -8,3 +8,9 @@ packages/frontend/.next/
 packages/backend/logs/
 .next
 
+# Redis dump (Y)
+Redis/dump.rdb
+
+# Ignore auto-generated reports (Y)
+packages/backend/reports/generated/
+

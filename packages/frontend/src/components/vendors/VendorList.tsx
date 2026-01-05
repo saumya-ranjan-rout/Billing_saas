@@ -11,13 +11,13 @@ import PaymentHistoryModal from './PaymentHistoryModal';
 
 interface VendorListProps {
   onEditVendor: (vendor: Vendor) => void;
-   refreshTrigger?: number; // new
+  refreshTrigger?: number; // new
 }
 
-const VendorList: React.FC<VendorListProps> = ({ onEditVendor,refreshTrigger }) => {
+const VendorList: React.FC<VendorListProps> = ({ onEditVendor, refreshTrigger }) => {
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [loading, setLoading] = useState(true);
-   const [paymentModal, setPaymentModal] = useState<{ open: boolean; vendor: any | null }>({
+  const [paymentModal, setPaymentModal] = useState<{ open: boolean; vendor: any | null }>({
     open: false,
     vendor: null
   });
@@ -31,37 +31,37 @@ const VendorList: React.FC<VendorListProps> = ({ onEditVendor,refreshTrigger }) 
     total: 0,
     pages: 0,
   });
-const [filters, setFilters] = useState({
-  name: "",
-  email: "",
-  phone: "",
-  status: "",
-  joinedFrom: "",
-  joinedTo: ""
-});
+  const [filters, setFilters] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    status: "",
+    joinedFrom: "",
+    joinedTo: ""
+  });
 
   const { get, del } = useApi<PaginatedResponse<Vendor>>();
 
   // Reusable fetch function
-  const fetchVendors  = async () => {
+  const fetchVendors = async () => {
     try {
       // const response = await get(
       //   `/api/vendors?page=${pagination.page}&limit=${pagination.limit}`
       // );
-        const query = new URLSearchParams({
-      page: String(pagination.page),
-      limit: String(pagination.limit),
-      name: filters.name || "",
-      email: filters.email || "",
-      phone: filters.phone || "",
-      status: filters.status || "",
-      joinedFrom: filters.joinedFrom || "",
-      joinedTo: filters.joinedTo || "",
-    }).toString();
- const response = await get(`/api/vendors?${query}`);
+      const query = new URLSearchParams({
+        page: String(pagination.page),
+        limit: String(pagination.limit),
+        name: filters.name || "",
+        email: filters.email || "",
+        phone: filters.phone || "",
+        status: filters.status || "",
+        joinedFrom: filters.joinedFrom || "",
+        joinedTo: filters.joinedTo || "",
+      }).toString();
+      const response = await get(`/api/vendors?${query}`);
       setVendors(response.data);
       setPagination(response.pagination);
-    } catch ( error: any) {
+    } catch (error: any) {
       console.error('Failed to fetch vendors:', error);
       toast.error(error?.message || 'Failed to load vendors ❌');
     } finally {
@@ -110,31 +110,31 @@ const [filters, setFilters] = useState({
     //     </div>
     //   ),
     // },  
-     {
-          key: 'name',
-          header: 'Name',
-          render: (value: string, row: Vendor) => (
-      <div className="flex items-center cursor-pointer"
-           onClick={() => setHistoryModal({ open: true, vendor: row })}>
-        <div className="flex-shrink-0 h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
-          {value.charAt(0)}
-        </div>
-        <div className="ml-4">
-          <div className="relative group">
-          <div className="font-bold text-gray-900 hover:text-blue-600 cursor-pointer">
-      {value}
-    </div>
-     <span className="absolute left-0 top-full mt-1 w-max 
+    {
+      key: 'name',
+      header: 'Name',
+      render: (value: string, row: Vendor) => (
+        <div className="flex items-center cursor-pointer"
+          onClick={() => setHistoryModal({ open: true, vendor: row })}>
+          <div className="flex-shrink-0 h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+            {value.charAt(0)}
+          </div>
+          <div className="ml-4">
+            <div className="relative group">
+              <div className="font-bold text-gray-900 hover:text-blue-600 cursor-pointer">
+                {value}
+              </div>
+              <span className="absolute left-0 top-full mt-1 w-max 
                              px-2 py-1 text-xs bg-gray-800 text-white rounded 
                              opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-              View payment history
-            </span>
-    </div>
-          <div className="text-sm text-gray-500">{row.type?.replace('_', ' ')}</div>
+                View payment history
+              </span>
+            </div>
+            <div className="text-sm text-gray-500">{row.type?.replace('_', ' ')}</div>
+          </div>
         </div>
-      </div>
-    )
-        },
+      )
+    },
     {
       key: 'email',
       header: 'Email',
@@ -156,30 +156,30 @@ const [filters, setFilters] = useState({
     //     </span>
     //   ),
     // },
-         { key: 'totalDue', header: 'Total Due' },
-      { key: 'totalPaid', header: 'Total Paid' },
-       { key: 'balance', header: 'Balance' },
-       { 
-  key: 'paymentStatus',
-  header: 'Status',
-  render: (value: string) => {
-    let color =
-      value === "completed" ? "bg-green-100 text-green-800" :
-      value === "partial" ? "bg-yellow-100 text-yellow-800" :
-      "bg-red-100 text-red-800";
+    { key: 'totalDue', header: 'Total Due' },
+    { key: 'totalPaid', header: 'Total Paid' },
+    { key: 'balance', header: 'Balance' },
+    {
+      key: 'paymentStatus',
+      header: 'Status',
+      render: (value: string) => {
+        let color =
+          value === "completed" ? "bg-green-100 text-green-800" :
+            value === "partial" ? "bg-yellow-100 text-yellow-800" :
+              "bg-red-100 text-red-800";
 
         let label =
-      value === "completed" ? "Paid" :
-      value === "partial" ? "Partial" :
-      "Unpaid";
+          value === "completed" ? "Paid" :
+            value === "partial" ? "Partial" :
+              "Unpaid";
 
-    return (
-      <span className={`px-2 py-1 rounded text-xs font-semibold ${color}`}>
-        {label}
-      </span>
-    );
-  }
-},
+        return (
+          <span className={`px-2 py-1 rounded text-xs font-semibold ${color}`}>
+            {label}
+          </span>
+        );
+      }
+    },
     {
       key: 'createdAt',
       header: 'Added On',
@@ -202,12 +202,12 @@ const [filters, setFilters] = useState({
           >
             Delete
           </button>
-                  <button
-  onClick={() => setPaymentModal({ open: true, vendor: row })}
-  className="bg-purple-500 text-white px-3 py-1 rounded text-sm hover:bg-purple-600"
->
-  Pay
-</button>
+          <button
+            onClick={() => setPaymentModal({ open: true, vendor: row })}
+            className="bg-purple-500 text-white px-3 py-1 rounded text-sm hover:bg-purple-600"
+          >
+            Pay
+          </button>
         </div>
       ),
     },
@@ -220,58 +220,58 @@ const [filters, setFilters] = useState({
   return (
     <div>
 
-       <div className="grid grid-cols-1 md:grid-cols-6 gap-3 mb-6 p-2 bg-gray-50 rounded-lg">
-     
-  <input
-    type="text"
-    placeholder="Name"
-    className="border p-2 rounded"
-    value={filters.name}
-    onChange={(e) => setFilters({ ...filters, name: e.target.value })}
-  />
+      <div className="grid grid-cols-1 md:grid-cols-6 gap-3 mb-6 p-2 bg-gray-50 rounded-lg">
 
-  <input
-    type="text"
-    placeholder="Email"
-    className="border p-2 rounded"
-    value={filters.email}
-    onChange={(e) => setFilters({ ...filters, email: e.target.value })}
-  />
+        <input
+          type="text"
+          placeholder="Name"
+          className="border p-2 rounded"
+          value={filters.name}
+          onChange={(e) => setFilters({ ...filters, name: e.target.value })}
+        />
 
-  <input
-    type="text"
-    placeholder="Phone"
-    className="border p-2 rounded"
-    value={filters.phone}
-    onChange={(e) => setFilters({ ...filters, phone: e.target.value })}
-  />
+        <input
+          type="text"
+          placeholder="Email"
+          className="border p-2 rounded"
+          value={filters.email}
+          onChange={(e) => setFilters({ ...filters, email: e.target.value })}
+        />
 
-  <select
-    className="border p-2 rounded"
-    value={filters.status}
-    onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-  >
-    <option value="">All Status</option>
-    <option value="completed">Paid</option>
-    <option value="partial">Partial</option>
-    <option value="pending">Unpaid</option>
-  </select>
+        <input
+          type="text"
+          placeholder="Phone"
+          className="border p-2 rounded"
+          value={filters.phone}
+          onChange={(e) => setFilters({ ...filters, phone: e.target.value })}
+        />
 
-  <input
-    type="date"
-    className="border p-2 rounded"
-    value={filters.joinedFrom}
-    onChange={(e) => setFilters({ ...filters, joinedFrom: e.target.value })}
-  />
+        <select
+          className="border p-2 rounded"
+          value={filters.status}
+          onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+        >
+          <option value="">All Status</option>
+          <option value="completed">Paid</option>
+          <option value="partial">Partial</option>
+          <option value="pending">Unpaid</option>
+        </select>
 
-  <input
-    type="date"
-    className="border p-2 rounded"
-    value={filters.joinedTo}
-    onChange={(e) => setFilters({ ...filters, joinedTo: e.target.value })}
-  />
+        <input
+          type="date"
+          className="border p-2 rounded"
+          value={filters.joinedFrom}
+          onChange={(e) => setFilters({ ...filters, joinedFrom: e.target.value })}
+        />
 
-</div>
+        <input
+          type="date"
+          className="border p-2 rounded"
+          value={filters.joinedTo}
+          onChange={(e) => setFilters({ ...filters, joinedTo: e.target.value })}
+        />
+
+      </div>
       <Table
         columns={columns}
         data={vendors}
@@ -286,17 +286,17 @@ const [filters, setFilters] = useState({
         />
       )}
 
-            {paymentModal.open && (
+      {paymentModal.open && (
         <PaymentModal
           vendor={paymentModal.vendor}
           onClose={() => setPaymentModal({ open: false, vendor: null })}
-          onSuccess={() => { 
-            fetchVendors(); 
+          onSuccess={() => {
+            fetchVendors();
             setPaymentModal({ open: false, vendor: null });
           }}
         />
       )}
-      
+
       {historyModal.open && (
         <PaymentHistoryModal
           vendor={historyModal.vendor}

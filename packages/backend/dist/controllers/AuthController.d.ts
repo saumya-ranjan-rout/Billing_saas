@@ -15,5 +15,7 @@ export declare class AuthController {
     enableBiometric: (req: Request, res: Response) => Promise<void>;
     getTenantsForUser: (req: Request, res: Response) => Promise<void>;
     getTenants: (req: Request, res: Response) => Promise<void>;
+    forgotPassword(req: Request, res: Response): Promise<Response<any, Record<string, any>>>;
+    resetPassword(req: Request, res: Response): Promise<Response<any, Record<string, any>>>;
 }
 //# sourceMappingURL=AuthController.d.ts.map

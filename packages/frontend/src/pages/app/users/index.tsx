@@ -7,11 +7,28 @@ import UserForm from '../../../components/users/UserForm';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { User } from '../../../types';
+import { useAuth } from "../../../hooks/useAuth";
 
 const Users: React.FC = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [refreshList, setRefreshList] = useState(0);
+
+  const { user: loggedInUser } = useAuth();
+  console.log("Loggeninuser Data", loggedInUser);
+
+  const restrictedRoles = [
+    "finance",
+    "sales",
+    "support",
+    "member",
+    "user",
+  ];
+
+  const adminRoles = ["admin", "super_admin"];
+
+  const isRestrictedRole = restrictedRoles.includes(loggedInUser?.role ?? "");
+  const isAdminRole = adminRoles.includes(loggedInUser?.role ?? "");
 
   const triggerRefresh = () => {
     setRefreshList(prev => prev + 1);
@@ -37,7 +54,9 @@ const Users: React.FC = () => {
       <div className="users-container mx-auto px-4 py-6">
         <div className="flex justify-between items-center mb-6">
           <h1 className="users-page-title">Users</h1>
-          <Button onClick={() => setIsFormOpen(true)}>Add User</Button>
+          {!isRestrictedRole && (
+            <Button onClick={() => setIsFormOpen(true)}>Add User</Button>
+          )}
         </div>
 
         <UserList onEditUser={handleEditUser} refreshTrigger={refreshList} />

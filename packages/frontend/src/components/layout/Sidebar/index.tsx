@@ -11,7 +11,7 @@ import {
   BadgePercent,
   LineChart,
   Settings,
- X,
+  X,
   CreditCard,
   BarChart3,
   Package,
@@ -65,14 +65,14 @@ const navigation: NavItem[] = [
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const router = useRouter();
   const [openMenus, setOpenMenus] = useState<string[]>([]);
-   const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
-const { get, patch } = useApi<any>();
+  const { get, patch } = useApi<any>();
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const res = await get("/api/auth/me");
-       // console.log("user", res);
+        // console.log("user", res);
         setUser(res.user);
 
       } catch (err) {
@@ -85,12 +85,12 @@ const { get, patch } = useApi<any>();
 
 
 
-const filteredNavigation = navigation.filter((item) => {
-  if (user?.role === "professional_user") {
-    return item.name !== "Billing" && item.name !== "Request";
-  }
-  return true;
-});
+  const filteredNavigation = navigation.filter((item) => {
+    if (user?.role === "professional_user") {
+      return item.name !== "Billing" && item.name !== "Request";
+    }
+    return true;
+  });
   const toggleMenu = (menu: string) => {
     setOpenMenus((prev) =>
       prev.includes(menu) ? prev.filter((m) => m !== menu) : [...prev, menu]
@@ -101,7 +101,7 @@ const filteredNavigation = navigation.filter((item) => {
     <>
       {/* Overlay */}
       {isOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-gray-600 bg-opacity-75 z-20 lg:hidden"
           onClick={onClose}
         />
@@ -135,102 +135,102 @@ const filteredNavigation = navigation.filter((item) => {
         {/* <nav className="mt-8">
           <div className="px-4 space-y-2">
             {navigation.map((item) => { */}
-            <nav className="mt-8">
-  <div className="px-4 space-y-2">
-    {!user ? (
-      <div className="text-gray-400 text-sm px-2">Loading...</div>
-    ) : (
-      filteredNavigation.map((item) => {
-              const isActive = item.href && router.pathname === item.href;
+        <nav className="mt-8">
+          <div className="px-4 space-y-2">
+            {!user ? (
+              <div className="text-gray-400 text-sm px-2">Loading...</div>
+            ) : (
+              filteredNavigation.map((item) => {
+                const isActive = item.href && router.pathname === item.href;
 
-              if (item.children) {
-                const isOpen = openMenus.includes(item.name);
+                if (item.children) {
+                  const isOpen = openMenus.includes(item.name);
+
+                  return (
+                    <div key={item.name}>
+                      <button
+                        onClick={() => toggleMenu(item.name)}
+                        className={cn(
+                          "w-full flex items-center px-2 py-2 text-base font-medium rounded-md text-left",
+                          isOpen ? "bg-gray-800 text-white" : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                        )}
+                      >
+                        <item.icon
+                          className={cn(
+                            "mr-4 h-6 w-6",
+                            isOpen ? "text-white" : "text-gray-400 group-hover:text-white"
+                          )}
+                        />
+                        {/* {item.name} */}
+                        {item.name === "Request" ? (
+                          user?.role === "admin" ? (
+                            "Request Professional"
+                          ) : (
+                            "Request Business"
+                          )
+                        ) : (
+                          item.name
+                        )}
+                      </button>
+
+                      {isOpen && (
+                        <div className="ml-8 mt-2 space-y-1">
+                          {item.children.map((child) => {
+                            const isChildActive = router.pathname === child.href;
+                            return (
+                              <Link
+                                key={child.name}
+                                href={child.href}
+                                className={cn(
+                                  "block px-2 py-1 text-sm rounded-md",
+                                  isChildActive
+                                    ? "bg-gray-800 text-white"
+                                    : "text-gray-400 hover:bg-gray-800 hover:text-white"
+                                )}
+                              >
+                                {child.name}
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
 
                 return (
-                  <div key={item.name}>
-                    <button
-                      onClick={() => toggleMenu(item.name)}
-                      className={cn(
-                        "w-full flex items-center px-2 py-2 text-base font-medium rounded-md text-left",
-                        isOpen ? "bg-gray-800 text-white" : "text-gray-300 hover:bg-gray-800 hover:text-white"
-                      )}
-                    >
-                      <item.icon
-                        className={cn(
-                          "mr-4 h-6 w-6",
-                          isOpen ? "text-white" : "text-gray-400 group-hover:text-white"
-                        )}
-                      />
-                      {/* {item.name} */}
-                        {item.name === "Request" ? (
-    user?.role === "admin" ? (
-      "Request Professional"
-    ) : (
-      "Request Business"
-    )
-  ) : (
-    item.name
-  )}
-                    </button>
-
-                    {isOpen && (
-                      <div className="ml-8 mt-2 space-y-1">
-                        {item.children.map((child) => {
-                          const isChildActive = router.pathname === child.href;
-                          return (
-                            <Link
-                              key={child.name}
-                              href={child.href}
-                              className={cn(
-                                "block px-2 py-1 text-sm rounded-md",
-                                isChildActive
-                                  ? "bg-gray-800 text-white"
-                                  : "text-gray-400 hover:bg-gray-800 hover:text-white"
-                              )}
-                            >
-                              {child.name}
-                            </Link>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                );
-              }
-
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href!}
-                  className={cn(
-                    "group flex items-center px-2 py-2 text-base font-medium rounded-md",
-                    isActive
-                      ? "bg-gray-800 text-white"
-                      : "text-gray-300 hover:bg-gray-800 hover:text-white"
-                  )}
-                >
-                  <item.icon
+                  <Link
+                    key={item.name}
+                    href={item.href!}
                     className={cn(
-                      "mr-4 h-6 w-6",
-                      isActive ? "text-white" : "text-gray-400 group-hover:text-white"
+                      "group flex items-center px-2 py-2 text-base font-medium rounded-md",
+                      isActive
+                        ? "bg-gray-800 text-white"
+                        : "text-gray-300 hover:bg-gray-800 hover:text-white"
                     )}
-                  />
-                  {/* {item.name} */}
-  {item.name === "Request" ? (
-    user?.role === "admin" ? (
-      "Request Professional"
-    ) : (
-      "Request Business"
-    )
-  ) : (
-    item.name
-  )}
-                </Link>
-              );
+                  >
+                    <item.icon
+                      className={cn(
+                        "mr-4 h-6 w-6",
+                        isActive ? "text-white" : "text-gray-400 group-hover:text-white"
+                      )}
+                    />
+                    {/* {item.name} */}
+                    {item.name === "Request" ? (
+                      user?.role === "admin" ? (
+                        "Request Professional"
+                      ) : (
+                        "Request Business"
+                      )
+                    ) : (
+                      item.name
+                    )}
+                  </Link>
+                );
               })
-    )}
-  </div>
-</nav>
+            )}
+          </div>
+        </nav>
       </div>
     </>
   );

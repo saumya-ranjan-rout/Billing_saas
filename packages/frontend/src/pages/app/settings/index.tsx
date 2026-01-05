@@ -12,12 +12,30 @@ import { toast } from 'sonner';
 
 // ---------------- Schema ----------------
 const settingSchema = z.object({
-  companyName: z.string().min(1, 'Company Name is required'),
-  subdomain: z.string().min(1, 'Subdomain is required'),
-  contactEmail: z.string().email('Invalid email').optional(),
-  contactPhone: z.string().optional(),
-  address: z.string().optional(),
-  gstNumber: z.string().optional(),
+  companyName: z.string().min(1, "Company Name is required"),
+
+  subdomain: z.string().min(1, "Subdomain is required"),
+
+  contactEmail: z
+    .string()
+    .email("Invalid email")
+    .min(1, "Email is required"),
+
+  contactPhone: z
+    .string()
+    .min(1, "Phone number is required")
+    .refine((value) => /^[0-9]{10}$/.test(value), "Phone number must be 10 digits"),
+
+  address: z.string().min(1, "Address is required"),
+
+  gstNumber: z
+    .string()
+    .min(1, "GST Number is required")
+    .refine(
+      (value) =>
+        /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(value),
+      "Invalid GST number"
+    ),
 });
 
 type SettingFormData = z.infer<typeof settingSchema>;
@@ -64,9 +82,17 @@ export default function Settings() {
       toast.success('Settings updated successfully');
     } catch (err: any) {
       console.error('Failed to save settings:', err);
-      toast.error(err.message || 'Failed to save settings');
+      // toast.error(err.message || 'Failed to save settings');
+      const message =
+        err.response?.data?.error ||    // our backend error
+        err.message ||                  // fallback
+        'Failed to save settings';
+
+      toast.error(message);
     }
   };
+
+  const Required = () => <span className="text-red-500">*</span>;
 
   return (
     <DashboardLayout>
@@ -82,38 +108,38 @@ export default function Settings() {
           className="bg-white shadow rounded-lg p-6 space-y-4"
         >
           <Input
-            label="Company Name"
+            label={<span>Company Name <Required /></span>}
             {...register('companyName')}
             error={errors.companyName?.message}
             disabled={isSubmitting}
           />
           <Input
-            label="Subdomain"
+            label={<span>Subdomain <Required /></span>}
             {...register('subdomain')}
             error={errors.subdomain?.message}
             disabled={isSubmitting}
           />
           <Input
-            label="Contact Email"
+            label={<span>Contact Email <Required /></span>}
             {...register('contactEmail')}
             error={errors.contactEmail?.message}
             disabled={isSubmitting}
           />
           <Input
-            label="Contact Phone"
+            label={<span>Contact Phone <Required /></span>}
             {...register('contactPhone')}
             error={errors.contactPhone?.message}
             disabled={isSubmitting}
           />
           <Input
-            label="Address"
+            label={<span>Address <Required /></span>}
             {...register('address')}
             error={errors.address?.message}
             disabled={isSubmitting}
-            // multiline
+          // multiline
           />
           <Input
-            label="GST Number"
+            label={<span>GST Number <Required /></span>}
             {...register('gstNumber')}
             error={errors.gstNumber?.message}
             disabled={isSubmitting}

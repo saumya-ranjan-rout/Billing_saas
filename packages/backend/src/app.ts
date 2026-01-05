@@ -11,6 +11,7 @@ import { initializeDatabase } from './config/database';
 import { errorHandler } from './middleware/error.middleware';
 import { extractTenantFromSubdomain } from './middleware/tenant.middleware';
 import logger, { stream } from './utils/logger';
+import { startSubscriptionExpiryCron } from "./cron/subscriptionExpiry.cron";
 
 dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 
@@ -32,9 +33,11 @@ class ApplicationServer {
 
     // CORS
     this.app.use(cors({
+
       origin: process.env.NODE_ENV === 'production' 
         ? ['https://yourdomain.com', 'https://www.yourdomain.com'] 
         : ['http://192.168.29.179:3000', 'http://192.168.29.179:3001'],
+
       credentials: true
     }));
 
@@ -83,10 +86,18 @@ class ApplicationServer {
     this.app.use('/api/settings', require('./routes/settingRoutes').default);
     this.app.use('/api/reports', require('./routes/reportRoutes').default);
     this.app.use('/api/loyalty', require('./routes/loyaltyRoutes').default);
-     this.app.use('/api/users', require('./routes/userRoutes').default);
-     this.app.use('/api/subscriptions', require('./routes/subscriptionRoutes').default);
-     this.app.use('/api/super-admin', require('./routes/super-admin').default);
-     this.app.use('/api/professional-requests', require('./routes/professionalRequestRoutes').default);
+    this.app.use('/api/users', require('./routes/userRoutes').default);
+    this.app.use('/api/subscriptions', require('./routes/subscriptionRoutes').default);
+    this.app.use('/api/super-admin', require('./routes/super-admin').default);
+    this.app.use('/api/professional-requests', require('./routes/professionalRequestRoutes').default);
+    this.app.use(
+      "/api/notification",
+      require("./routes/notificationRoutes").default
+    );
+    this.app.use(
+      "/api/internal",
+      require("./routes/internalRoutes").default
+    );
   }
 
   private setupErrorHandling(): void {
@@ -112,6 +123,9 @@ class ApplicationServer {
     try {
       await initializeDatabase();
       logger.info('Database connected successfully');
+
+      // 🔥 START CRON
+      startSubscriptionExpiryCron();
 
       this.app.listen(this.port, () => {
         logger.info(`Server running on port ${this.port} in ${process.env.NODE_ENV || 'development'} mode`);

@@ -15,6 +15,7 @@ export declare class AuthService extends BaseService<User> {
     private tenantRepository;
     private subscriptionRepository;
     private refreshTokens;
+    private userRepository;
     constructor();
     registerWithTenant(data: {
         businessName?: string;
@@ -60,6 +61,8 @@ export declare class AuthService extends BaseService<User> {
     enableBiometric(userId: string): Promise<void>;
     getTenantsForUser(email: string): Promise<Tenant[]>;
     getTenants(): Promise<Tenant[]>;
+    forgotPassword(email: string): Promise<void>;
+    resetPasswordConfirm(token: string, newPassword: string): Promise<void>;
 }
 export declare const hashPassword: (plain: string) => Promise<string>;
 //# sourceMappingURL=AuthService.d.ts.map

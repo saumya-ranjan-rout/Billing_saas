@@ -97,6 +97,8 @@ const Login: React.FC = () => {
     );
   }
 
+  const Required = () => <span className="text-red-500">*</span>;
+
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-[#f2f4ff] px-4">
 
@@ -179,8 +181,8 @@ const Login: React.FC = () => {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   <FormInput
                     id="email"
-                    type="email"
-                    label="Email address"
+                    type="email"                   
+                    label={<span>Email Address <Required /></span>}
                     autoComplete="email"
                     required
                     error={errors.email?.message}
@@ -189,8 +191,8 @@ const Login: React.FC = () => {
 
                   <FormInput
                     id="password"
-                    type="password"
-                    label="Password"
+                    type="password"                   
+                    label={<span>Password <Required /></span>}
                     autoComplete="current-password"
                     required
                     error={errors.password?.message}
@@ -221,7 +223,7 @@ const Login: React.FC = () => {
 
             <p className="mt-6 text-center text-sm text-slate-500">
               By signing in you agree to our{" "}
-              <Link href="/terms" className="text-blue-600 hover:underline">Terms</Link>{" "}
+              <Link href="/terms" className="text-blue-600 hover:underline">Terms & Conditions</Link>{" "}
               and{" "}
               <Link href="/privacy" className="text-blue-600 hover:underline">Privacy Policy</Link>.
             </p>

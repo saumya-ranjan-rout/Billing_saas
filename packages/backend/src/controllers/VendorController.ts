@@ -12,7 +12,7 @@ function getErrorMessage(error: unknown): string {
 }
 
 export class VendorController {
-  constructor(private vendorService: VendorService,private cacheService: CacheService) {}
+  constructor(private vendorService: VendorService, private cacheService: CacheService) { }
 
   async createVendor(req: Request, res: Response) {
     try {
@@ -27,16 +27,16 @@ export class VendorController {
 
       const tenantId = req.user.tenantId;
       // const vendorData = req.body;
-       const vendorData = {
-      ...req.body,
-      billingAddress: req.body.address,
-       shippingAddress: req.body.address,
-    };
-     delete (vendorData as any).address;
+      const vendorData = {
+        ...req.body,
+        billingAddress: req.body.address,
+        shippingAddress: req.body.address,
+      };
+      delete (vendorData as any).address;
 
       const vendor = await this.vendorService.createVendor(tenantId, vendorData);
 
-       await this.cacheService.invalidatePattern(`vendors:${tenantId}:*`);       // manual cache
+      await this.cacheService.invalidatePattern(`vendors:${tenantId}:*`);       // manual cache
       await this.cacheService.invalidatePattern(`cache:${tenantId}:/api/vendors*`); // middleware cache
 
 
@@ -76,18 +76,18 @@ export class VendorController {
       //   limit: parseInt(limit as string) || 10,
       //   search: search as string
       // };
-       const { page = 1, limit = 10, name, email, phone, status, joinedFrom, joinedTo } = req.query;
+      const { page = 1, limit = 10, name, email, phone, status, joinedFrom, joinedTo } = req.query;
 
-const options = {
-  page: Number(page),
-  limit: Number(limit),
-  name: name as string,
-  email: email as string,
-  phone: phone as string,
-  status: status as string,
-  joinedFrom: joinedFrom as string,
-  joinedTo: joinedTo as string,
-};
+      const options = {
+        page: Number(page),
+        limit: Number(limit),
+        name: name as string,
+        email: email as string,
+        phone: phone as string,
+        status: status as string,
+        joinedFrom: joinedFrom as string,
+        joinedTo: joinedTo as string,
+      };
       const vendors = await this.vendorService.getVendors(tenantId, options);
       res.json(vendors);
     } catch (error) {
@@ -113,11 +113,11 @@ const options = {
       const updates = {
         ...req.body,
         billingAddress: req.body.address,
-        shippingAddress: req.body.address, 
+        shippingAddress: req.body.address,
       }
       const vendor = await this.vendorService.updateVendor(tenantId, id, updates);
 
-            await this.cacheService.del(`vendor:${id}:${tenantId}`);
+      await this.cacheService.del(`vendor:${id}:${tenantId}`);
       await this.cacheService.invalidatePattern(`vendors:${tenantId}:*`);
       await this.cacheService.invalidatePattern(`cache:${tenantId}:/api/vendors*`);
 
@@ -139,11 +139,11 @@ const options = {
       const tenantId = req.user.tenantId;
       await this.vendorService.deleteVendor(tenantId, id);
 
-           await this.cacheService.del(`vendor:${id}:${tenantId}`);
+      await this.cacheService.del(`vendor:${id}:${tenantId}`);
       await this.cacheService.invalidatePattern(`vendors:${tenantId}:*`);
       await this.cacheService.invalidatePattern(`cache:${tenantId}:/api/vendors*`);
 
-      
+
       res.status(204).send();
     } catch (error) {
       logger.error('Error deleting vendor:', error);
@@ -173,66 +173,65 @@ const options = {
       if (!req.user) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-  
+
       const { id } = req.params;
       const tenantId = req.user.tenantId;
-  
+
       const balance = await this.vendorService.getVendorBalance(tenantId, id);
-  //console.log(balance);
-     return res.json(balance);
+      //console.log(balance);
+      return res.json(balance);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
   }
-  
+
   async createPayment(req: Request, res: Response) {
     try {
-      if (!req.user) return res.status(401).json({ error: "Unauthorized" });
-  
+      if (!req.user) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
       const tenantId = req.user.tenantId;
       const { amount, vendorId } = req.body;
-  
-      const balance = await this.vendorService.getVendorBalance(tenantId, vendorId);
- 
 
-//       console.log("amount",amount);
-//       console.log("balance.balance",balance.balance);
-//   console.log(typeof amount);
-// console.log(typeof balance.balance);
+      // Fetch vendor balance
+      const balanceResult = await this.vendorService.getVendorBalance(tenantId, vendorId);
+      const balance = parseFloat(Number(balanceResult.balance || 0).toFixed(2));
 
-      if (amount > balance.balance) {
+      // Validate amount
+      if (amount > balance) {
         return res.status(400).json({
-          error: `Payment exceeds outstanding balance. Remaining balance: ${balance.balance}`
+          error: `Payment exceeds outstanding balance. Remaining balance: ${balance}`,
         });
       }
-  
+
+      // Create payment
       const payment = await this.vendorService.recordPayment(req.body);
 
-
-         await this.cacheService.del(`vendor:${vendorId}:${tenantId}`);
+      // Invalidate related caches
+      await this.cacheService.del(`vendor:${vendorId}:${tenantId}`);
       await this.cacheService.invalidatePattern(`vendors:${tenantId}:*`);
       await this.cacheService.invalidatePattern(`cache:${tenantId}:/api/vendors*`);
 
-      res.json(payment);
-  
+      return res.json(payment);
+
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      return res.status(500).json({ error: error.message });
     }
   }
-  
-  
+
   async getPaymentHistory(req: Request, res: Response) {
     try {
       if (!req.user) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-  
+
       const { id } = req.params;
       const tenantId = req.user.tenantId;
-  
+
       const history = await this.vendorService.getVendorPaymentHistory(tenantId, id);
-  //console.log(balance);
-     return res.json(history);
+      //console.log(balance);
+      return res.json(history);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }

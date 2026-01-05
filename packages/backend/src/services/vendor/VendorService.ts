@@ -1,4 +1,4 @@
-import { Repository, ILike, IsNull,LessThanOrEqual,MoreThanOrEqual  } from 'typeorm';
+import { Repository, ILike, IsNull, LessThanOrEqual, MoreThanOrEqual, Between } from 'typeorm';
 import { AppDataSource } from '../../config/database';
 import { Vendor } from '../../entities/Vendor';
 import { validateGSTIN, validatePAN } from '../../utils/validators';
@@ -17,75 +17,75 @@ export class VendorService {
     this.paymentRepository = AppDataSource.getRepository(PaymentInvoice);
     this.purchaseRepository = AppDataSource.getRepository(PurchaseOrder);
   }
-async getVendorBalance(tenantId: string, vendorId: string) {
+  async getVendorBalance(tenantId: string, vendorId: string) {
 
-  // Sum of outstanding dues from invoice table
+    // Sum of outstanding dues from invoice table
 
-  // console.log("vendorId",vendorId);
-  // console.log("tenantId",tenantId);
-  const totalDueResult = await  this.purchaseRepository
-    .createQueryBuilder("purchase_orders")
-    .select("SUM(purchase_orders.totalAmount)", "totalDue")
-    .where("purchase_orders.tenantId = :tenantId", { tenantId })
-    .andWhere("purchase_orders.vendorId = :vendorId", { vendorId })
-    .getRawOne();
+    // console.log("vendorId",vendorId);
+    // console.log("tenantId",tenantId);
+    const totalDueResult = await this.purchaseRepository
+      .createQueryBuilder("purchase_orders")
+      .select("SUM(purchase_orders.totalAmount)", "totalDue")
+      .where("purchase_orders.tenantId = :tenantId", { tenantId })
+      .andWhere("purchase_orders.vendorId = :vendorId", { vendorId })
+      .getRawOne();
 
-  // Sum of total paid entries from payment table
-  const totalPaidResult = await this.paymentRepository
-    .createQueryBuilder("payment_invoice")
-    .select("SUM(payment_invoice.amount)", "totalPaid")
-    .where("payment_invoice.tenantId = :tenantId", { tenantId })
-    .andWhere("payment_invoice.vendorId = :vendorId", { vendorId })
-    .getRawOne();
+    // Sum of total paid entries from payment table
+    const totalPaidResult = await this.paymentRepository
+      .createQueryBuilder("payment_invoice")
+      .select("SUM(payment_invoice.amount)", "totalPaid")
+      .where("payment_invoice.tenantId = :tenantId", { tenantId })
+      .andWhere("payment_invoice.vendorId = :vendorId", { vendorId })
+      .getRawOne();
 
-   // console.log(" totalDueResult, totalPaidResult",totalDueResult, totalPaidResult);
+    // console.log(" totalDueResult, totalPaidResult",totalDueResult, totalPaidResult);
 
-  const totalDue = Number(totalDueResult?.totalDue ?? 0);
-  const totalPaid = Number(totalPaidResult?.totalPaid ?? 0);
+    const totalDue = Number(totalDueResult?.totalDue ?? 0);
+    const totalPaid = Number(totalPaidResult?.totalPaid ?? 0);
 
-  const balance= totalDue - totalPaid
-  //console.log(" totalDue, totalPaid",totalDue, totalPaid ,balance);
-  return {
-    vendorId,
-    totalDue,
-    totalPaid,
-    balance: totalDue - totalPaid
-  };
-}
-
-
-async recordPayment(data: any) {
-  const { amount, method, vendorId, paymentDate, notes, status, paymentType, tenantId } = data;
-
-  // -------- Payment Processing Logic -------- //
-  const payment = this.paymentRepository.create({
-    amount,
-    method,
-    vendorId,
-    paymentDate,
-    notes,
-    status,
-    paymentType,
-    tenantId,
-    createdAt: new Date(),
-  });
-
-  return await this.paymentRepository.save(payment);
-}
+    const balance = totalDue - totalPaid
+    //console.log(" totalDue, totalPaid",totalDue, totalPaid ,balance);
+    return {
+      vendorId,
+      totalDue,
+      totalPaid,
+      balance: totalDue - totalPaid
+    };
+  }
 
 
- async getVendorPaymentHistory(tenantId: string, vendorId: string) {
-  // console.log("customerId",customerId);
-  // console.log("tenantId",tenantId);
- const PaymentHistory = await this.paymentRepository.find({
-    where: { tenantId, vendorId, deletedAt: IsNull() },
-    order: { createdAt: 'DESC' },
-  });
-//console.log("PaymentHistory",PaymentHistory);
-  return {PaymentHistory};
-}
+  async recordPayment(data: any) {
+    const { amount, method, vendorId, paymentDate, notes, status, paymentType, tenantId } = data;
 
- 
+    // -------- Payment Processing Logic -------- //
+    const payment = this.paymentRepository.create({
+      amount,
+      method,
+      vendorId,
+      paymentDate,
+      notes,
+      status,
+      paymentType,
+      tenantId,
+      createdAt: new Date(),
+    });
+
+    return await this.paymentRepository.save(payment);
+  }
+
+
+  async getVendorPaymentHistory(tenantId: string, vendorId: string) {
+    // console.log("customerId",customerId);
+    // console.log("tenantId",tenantId);
+    const PaymentHistory = await this.paymentRepository.find({
+      where: { tenantId, vendorId, deletedAt: IsNull() },
+      order: { createdAt: 'DESC' },
+    });
+    //console.log("PaymentHistory",PaymentHistory);
+    return { PaymentHistory };
+  }
+
+
   async createVendor(tenantId: string, vendorData: Partial<Vendor>): Promise<Vendor> {
     try {
       // Validate GSTIN if provided
@@ -96,6 +96,48 @@ async recordPayment(data: any) {
       // Validate PAN if provided
       if (vendorData.pan && !validatePAN(vendorData.pan)) {
         throw new Error('Invalid PAN format');
+      }
+
+      // =============== DUPLICATE CHECKS ==================
+
+      // Email Duplicate
+      if (vendorData.email) {
+        const existingEmail = await this.vendorRepository.findOne({
+          where: { email: vendorData.email, tenantId, deletedAt: IsNull() }
+        });
+        if (existingEmail) {
+          throw new Error("Email already exists");
+        }
+      }
+
+      // Phone Duplicate
+      if (vendorData.phone) {
+        const existingPhone = await this.vendorRepository.findOne({
+          where: { phone: vendorData.phone, tenantId, deletedAt: IsNull() }
+        });
+        if (existingPhone) {
+          throw new Error("Phone number already exists");
+        }
+      }
+
+      // GST Duplicate
+      if (vendorData.gstin) {
+        const existingGST = await this.vendorRepository.findOne({
+          where: { gstin: vendorData.gstin, tenantId, deletedAt: IsNull() }
+        });
+        if (existingGST) {
+          throw new Error("GST number already exists");
+        }
+      }
+
+      // PAN Duplicate
+      if (vendorData.pan) {
+        const existingPAN = await this.vendorRepository.findOne({
+          where: { pan: vendorData.pan, tenantId, deletedAt: IsNull() }
+        });
+        if (existingPAN) {
+          throw new Error("PAN number already exists");
+        }
       }
 
       // Check if vendor with same name already exists for this tenant
@@ -141,19 +183,19 @@ async recordPayment(data: any) {
 
   async getVendors(
     tenantId: string,
-  options: {
-    page: number;
-    limit: number;
-   name?: string;
-    email?: string;
-    phone?: string;
-    status?: string;
-    joinedFrom?: string;
-    joinedTo?: string;
-  }
+    options: {
+      page: number;
+      limit: number;
+      name?: string;
+      email?: string;
+      phone?: string;
+      status?: string;
+      joinedFrom?: string;
+      joinedTo?: string;
+    }
   ): Promise<PaginatedResponse<Vendor>> {
     try {
-   const { page, limit, name, email, phone, status, joinedFrom, joinedTo } = options;
+      const { page, limit, name, email, phone, status, joinedFrom, joinedTo } = options;
       const skip = (page - 1) * limit;
 
       let whereConditions: any = { tenantId, deletedAt: IsNull() };
@@ -165,34 +207,53 @@ async recordPayment(data: any) {
       //     { tenantId, phone: ILike(`%${search}%`), deletedAt: IsNull() }
       //   ];
       // }
-       if (options.name) {
+      if (options.name) {
         whereConditions.name = ILike(`%${options.name}%`);
       }
-      
+
       if (options.email) {
         whereConditions.email = ILike(`%${options.email}%`);
       }
-      
+
       if (options.phone) {
         whereConditions.phone = ILike(`%${options.phone}%`);
       }
-      
+
       // if (options.status) {
       //   whereConditions.paymentStatus = options.status;
       // }
-      
-      // Date filter: joinedFrom - joinedTo
-      if (options.joinedFrom || options.joinedTo) {
-        whereConditions.createdAt = {};
-      
-        if (options.joinedFrom) {
-          whereConditions.createdAt = MoreThanOrEqual(new Date(options.joinedFrom));
-        }
-      
-        if (options.joinedTo) {
-          whereConditions.createdAt = LessThanOrEqual(new Date(options.joinedTo));
-        }
-       }
+
+      // // Date filter: joinedFrom - joinedTo
+      // if (options.joinedFrom || options.joinedTo) {
+      //   whereConditions.createdAt = {};
+
+      //   if (options.joinedFrom) {
+      //     whereConditions.createdAt = MoreThanOrEqual(new Date(options.joinedFrom));
+      //   }
+
+      //   if (options.joinedTo) {
+      //     whereConditions.createdAt = LessThanOrEqual(new Date(options.joinedTo));
+      //   }
+      // }
+
+      // 10-12-2025(Y)
+      if (joinedFrom && joinedTo) {
+        const from = new Date(joinedFrom);
+        const to = new Date(joinedTo);
+
+        // Set end date to end of day
+        to.setHours(23, 59, 59, 999);
+
+        whereConditions.createdAt = Between(from, to);
+
+      } else if (joinedFrom) {
+        whereConditions.createdAt = MoreThanOrEqual(new Date(joinedFrom));
+
+      } else if (joinedTo) {
+        const to = new Date(joinedTo);
+        to.setHours(23, 59, 59, 999);
+        whereConditions.createdAt = LessThanOrEqual(to);
+      }
 
       let [vendors, total] = await this.vendorRepository.findAndCount({
         where: whereConditions,
@@ -202,33 +263,33 @@ async recordPayment(data: any) {
       });
 
 
-for (const vendor of vendors) {
+      for (const vendor of vendors) {
         const balance = await this.getVendorBalance(tenantId, vendor.id);
 
-       //  console.log("balance",balance);
-      
-      const totalDueNum = Number(balance.totalDue ?? 0);
-      const totalPaidNum = Number(balance.totalPaid ?? 0);
-      const balanceNum = Number(balance.balance ?? 0);
-      
-      vendor.totalDue = Number(totalDueNum.toFixed(2));
-      vendor.totalPaid = Number(totalPaidNum.toFixed(2));
-      vendor.balance = Number(balanceNum.toFixed(2));
-      
-      
-      if (balanceNum === 0 && totalDueNum > 0) {
-        vendor.paymentStatus = PaymentStatus.COMPLETED;
-      } else if (totalPaidNum > 0 && balanceNum > 0) {
-        vendor.paymentStatus = PaymentStatus.PARTIAL;;
-      } else {
-        vendor.paymentStatus = PaymentStatus.PENDING;
+        //  console.log("balance",balance);
+
+        const totalDueNum = Number(balance.totalDue ?? 0);
+        const totalPaidNum = Number(balance.totalPaid ?? 0);
+        const balanceNum = Number(balance.balance ?? 0);
+
+        vendor.totalDue = Number(totalDueNum.toFixed(2));
+        vendor.totalPaid = Number(totalPaidNum.toFixed(2));
+        vendor.balance = Number(balanceNum.toFixed(2));
+
+
+        if (balanceNum === 0 && totalDueNum > 0) {
+          vendor.paymentStatus = PaymentStatus.COMPLETED;
+        } else if (totalPaidNum > 0 && balanceNum > 0) {
+          vendor.paymentStatus = PaymentStatus.PARTIAL;;
+        } else {
+          vendor.paymentStatus = PaymentStatus.PENDING;
+        }
+
       }
-      
-}
-if (options.status) {
-  vendors = vendors.filter(v => v.paymentStatus === options.status);
-  total = vendors.length;
-}
+      if (options.status) {
+        vendors = vendors.filter(v => v.paymentStatus === options.status);
+        total = vendors.length;
+      }
 
 
       return {
@@ -283,7 +344,7 @@ if (options.status) {
   async deleteVendor(tenantId: string, vendorId: string): Promise<void> {
     try {
       const vendor = await this.getVendor(tenantId, vendorId);
-      
+
       // Soft delete: set deletedAt timestamp
       vendor.deletedAt = new Date();
       await this.vendorRepository.save(vendor);

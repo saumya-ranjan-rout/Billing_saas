@@ -37,6 +37,7 @@ const database_1 = require("./config/database");
 const error_middleware_1 = require("./middleware/error.middleware");
 const tenant_middleware_1 = require("./middleware/tenant.middleware");
 const logger_1 = __importStar(require("./utils/logger"));
+const subscriptionExpiry_cron_1 = require("./cron/subscriptionExpiry.cron");
 dotenv_1.default.config({ path: path_1.default.resolve(__dirname, '../../../.env') });
 class ApplicationServer {
     constructor() {
@@ -52,6 +53,7 @@ class ApplicationServer {
             origin: process.env.NODE_ENV === 'production'
                 ? ['https://yourdomain.com', 'https://www.yourdomain.com']
                 : ['http://192.168.29.179:3000', 'http://192.168.29.179:3001'],
+
             credentials: true
         }));
         this.app.use(express_1.default.json({ limit: '10mb' }));
@@ -92,6 +94,8 @@ class ApplicationServer {
         this.app.use('/api/subscriptions', require('./routes/subscriptionRoutes').default);
         this.app.use('/api/super-admin', require('./routes/super-admin').default);
         this.app.use('/api/professional-requests', require('./routes/professionalRequestRoutes').default);
+        this.app.use("/api/notification", require("./routes/notificationRoutes").default);
+        this.app.use("/api/internal", require("./routes/internalRoutes").default);
     }
     setupErrorHandling() {
         this.app.use('*', (req, res) => {
@@ -111,6 +115,7 @@ class ApplicationServer {
         try {
             await (0, database_1.initializeDatabase)();
             logger_1.default.info('Database connected successfully');
+            (0, subscriptionExpiry_cron_1.startSubscriptionExpiryCron)();
             this.app.listen(this.port, () => {
                 logger_1.default.info(`Server running on port ${this.port} in ${process.env.NODE_ENV || 'development'} mode`);
             });

@@ -18,6 +18,7 @@ interface ProfessionalRequest {
   name: string;
   email: string;
   status: string;
+  deletedAt?: string | null;
   requestedBy: {
     id: string;
     firstName: string;
@@ -45,7 +46,7 @@ interface User {
 const ProfessionalRequestList: React.FC = () => {
   const [requests, setRequests] = useState<ProfessionalRequest[]>([]);
   const [loading, setLoading] = useState(true);
-   const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [filters, setFilters] = useState({
     status: "",
   });
@@ -56,7 +57,7 @@ const ProfessionalRequestList: React.FC = () => {
     pages: 0,
   });
 
-  const { get, patch,del } = useApi<any>();
+  const { get, patch, del } = useApi<any>();
 
   // ✅ Fetch requests
   const fetchRequests = useCallback(async () => {
@@ -68,7 +69,7 @@ const ProfessionalRequestList: React.FC = () => {
       });
 
       const res = await get(`/api/professional-requests?${queryParams}`);
-     // console.log("res", res);
+      // console.log("res", res);
       setRequests(res || []);
       if (res.pagination) setPagination(res.pagination);
     } catch (error: any) {
@@ -86,7 +87,7 @@ const ProfessionalRequestList: React.FC = () => {
     const fetchUser = async () => {
       try {
         const res = await get("/api/auth/me");
-       // console.log("user", res);
+        // console.log("user", res);
         setUser(res.user);
 
       } catch (err) {
@@ -98,8 +99,8 @@ const ProfessionalRequestList: React.FC = () => {
   }, []);
 
   useEffect(() => {
-  fetchRequests();
-}, [filters.status, pagination.page, pagination.limit]);
+    fetchRequests();
+  }, [filters.status, pagination.page, pagination.limit]);
 
   // ✅ Update status (Approve/Reject)
   const updateStatus = async (id: string, status: string) => {
@@ -120,7 +121,7 @@ const ProfessionalRequestList: React.FC = () => {
     setFilters((prev) => ({ ...prev, [key]: newValue }));
     setPagination((prev) => ({ ...prev, page: 1 }));
   };
-const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this access?')) return;
 
     try {
@@ -129,7 +130,7 @@ const handleDelete = async (id: string) => {
       fetchRequests(); // refresh list
     } catch (error: any) {
       console.error('Delete failed:', error);
-      toast.error(error?.message ||'Failed to delete customer ❌');
+      toast.error(error?.message || 'Failed to delete customer ❌');
     }
   };
   // ✅ Badge component for status
@@ -156,89 +157,98 @@ const handleDelete = async (id: string) => {
         </div>
       ),
     },
-{
-  key: "requestedBy",
-  header: "Requested By",
-  render: (value: string, row: ProfessionalRequest) => (
-    <div>
-      <div className="font-medium text-gray-900">
-        {row.requestedBy?.firstName} {row.requestedBy?.lastName}
-      </div>
-      <div className="text-sm text-gray-500">
-  {row.requestedBy?.role === "admin"
-    ? "business user"
-    : `${row.requestedBy?.role} user`}
-</div>
-    </div>
-  ),
-},
-{
-  key: "requestedTo",
-  header: "Requested To",
-  render: (value: string, row: ProfessionalRequest) => (
-    <div>
-      <div className="font-medium text-gray-900">
-        {row.requestedTo?.firstName} {row.requestedTo?.lastName}
-      </div>
-<div className="text-sm text-gray-500">
-  {row.requestedTo?.role === "admin"
-    ? "business user"
-    : `${row.requestedTo?.role} user`}
-</div>
-    </div>
-  ),
-},
+    {
+      key: "requestedBy",
+      header: "Requested By",
+      render: (value: string, row: ProfessionalRequest) => (
+        <div>
+          <div className="font-medium text-gray-900">
+            {row.requestedBy?.firstName} {row.requestedBy?.lastName}
+          </div>
+          <div className="text-sm text-gray-500">
+            {row.requestedBy?.role === "admin"
+              ? "business user"
+              : `${row.requestedBy?.role} user`}
+          </div>
+        </div>
+      ),
+    },
+    {
+      key: "requestedTo",
+      header: "Requested To",
+      render: (value: string, row: ProfessionalRequest) => (
+        <div>
+          <div className="font-medium text-gray-900">
+            {row.requestedTo?.firstName} {row.requestedTo?.lastName}
+          </div>
+          <div className="text-sm text-gray-500">
+            {row.requestedTo?.role === "admin"
+              ? "business user"
+              : `${row.requestedTo?.role} user`}
+          </div>
+        </div>
+      ),
+    },
     {
       key: "status",
       header: "Status",
       render: (value: string) => getStatusBadge(value || "Pending"),
     },
- {
-  key: "actions",
-  header: "Actions",
-  render: (value: any, row: ProfessionalRequest) => {
-    // Hide actions if status is "Rejected"
-    if (row.status === "Rejected") {
-      return null;
+    {
+      key: "actions",
+      header: "Actions",
+      render: (value: any, row: ProfessionalRequest) => {
+
+        // Hide actions if status is Rejected
+        if (row.status === "Rejected") {
+          return null;
+        }
+
+        // If Approved AND deletedAt is not null → show "Access Deleted"
+        if (row.status === "Approved" && row.deletedAt !== null) {
+          return (
+            <span className="text-red-500 font-semibold text-sm">
+              Access Deleted
+            </span>
+          );
+        }
+
+        return (
+          <div className="flex gap-2">
+
+            {/* For non-approved requests */}
+            {row.status !== "Approved" ? (
+              <>
+                {/* Approve button only if logged-in user is NOT the requester */}
+                {user?.id !== row.requestedBy?.id && (
+                  <button
+                    onClick={() => updateStatus(row.id, "Approved")}
+                    className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
+                  >
+                    Approve
+                  </button>
+                )}
+
+                <button
+                  onClick={() => updateStatus(row.id, "Rejected")}
+                  className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+                >
+                  Reject
+                </button>
+              </>
+            ) : (
+              // For approved requests (only show Delete Access if not deleted)
+              <button
+                onClick={() => handleDelete(row.id)}
+                className="bg-yellow-500 text-white px-3 py-1 rounded text-sm hover:bg-yellow-600"
+              >
+                Delete Access
+              </button>
+            )}
+          </div>
+        );
+      },
     }
-
-    return (
-      <div className="flex gap-2">
-        {/* Show Approve button only if logged-in user is NOT the requester */}
-
-      {row?.status !== "Approved" ? (
-  <>
-    {user?.id !== row.requestedBy?.id && (
-      <button
-        onClick={() => updateStatus(row.id, "Approved")}
-        className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
-      >
-        Approve
-      </button>
-    )}
-
-    <button
-      onClick={() => updateStatus(row.id, "Rejected")}
-      className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
-    >
-      Reject
-    </button>
-  </>
-) : (
-  <button
-    onClick={() => handleDelete(row.id)}
-    className="bg-yellow-500 text-white px-3 py-1 rounded text-sm hover:bg-yellow-600"
-  >
-    Delete Access
-  </button>
-)}
-
-        
-      </div>
-    );
-  },
-}
-
   ];
 
   if (loading) {

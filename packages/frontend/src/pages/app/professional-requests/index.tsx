@@ -13,13 +13,13 @@ const ProfessionalRequestsPage = () => {
 
         {/* Form Card */}
         <div className="bg-white shadow rounded-lg p-6 mb-6">
-      <ProfessionalRequestForm />
+          <ProfessionalRequestForm />
         </div>
 
         {/* List Card */}
         <div className="bg-white shadow rounded-lg p-6">
-      <ProfessionalRequestList />
-    </div>
+          <ProfessionalRequestList />
+        </div>
 
       </div>
     </DashboardLayout>

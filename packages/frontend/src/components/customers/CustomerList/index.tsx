@@ -26,31 +26,31 @@ interface User {
 const CustomerList: React.FC<CustomerListProps> = ({ onEditCustomer, refreshTrigger }) => {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [paymentModal, setPaymentModal] = useState<{ open: boolean; customer: any | null }>({
-  open: false,
-  customer: null
-});
-const [historyModal, setHistoryModal] = useState<{ open: boolean; customer: any | null }>({
-  open: false,
-  customer: null
-});
+    open: false,
+    customer: null
+  });
+  const [historyModal, setHistoryModal] = useState<{ open: boolean; customer: any | null }>({
+    open: false,
+    customer: null
+  });
   const [loading, setLoading] = useState(true);
-   const [user, setUser] = useState<User | null>(null);
-     const dispatch = useAppDispatch();
-     const router = useRouter();
+  const [user, setUser] = useState<User | null>(null);
+  const dispatch = useAppDispatch();
+  const router = useRouter();
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 10,
     total: 0,
     pages: 0,
   });
-const [filters, setFilters] = useState({
-  name: "",
-  email: "",
-  phone: "",
-  status: "",
-  joinedFrom: "",
-  joinedTo: ""
-});
+  const [filters, setFilters] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    status: "",
+    joinedFrom: "",
+    joinedTo: ""
+  });
 
   // ✅ include del here
   const { get, del } = useApi<PaginatedResponse<Customer>>();
@@ -60,22 +60,22 @@ const [filters, setFilters] = useState({
   const fetchCustomers = async () => {
     try {
 
-          const query = new URLSearchParams({
-      page: String(pagination.page),
-      limit: String(pagination.limit),
-      name: filters.name || "",
-      email: filters.email || "",
-      phone: filters.phone || "",
-      status: filters.status || "",
-      joinedFrom: filters.joinedFrom || "",
-      joinedTo: filters.joinedTo || "",
-    }).toString();
- const response = await get(`/api/customers?${query}`);
+      const query = new URLSearchParams({
+        page: String(pagination.page),
+        limit: String(pagination.limit),
+        name: filters.name || "",
+        email: filters.email || "",
+        phone: filters.phone || "",
+        status: filters.status || "",
+        joinedFrom: filters.joinedFrom || "",
+        joinedTo: filters.joinedTo || "",
+      }).toString();
+      const response = await get(`/api/customers?${query}`);
       // const response = await get(
       //   `/api/customers?page=${pagination.page}&limit=${pagination.limit}`
       // );
 
-    //  console.log("customers",response.data);
+      //  console.log("customers",response.data);
       setCustomers(response.data);
       setPagination(response.pagination);
     } catch (error: any) {
@@ -89,7 +89,7 @@ const [filters, setFilters] = useState({
     const fetchUser = async () => {
       try {
         const res = await gett("/api/auth/me");
-       // console.log("user", res);
+        // console.log("user", res);
         setUser(res.user);
 
       } catch (err) {
@@ -105,8 +105,8 @@ const [filters, setFilters] = useState({
   // }, [pagination.page, pagination.limit, refreshTrigger]);
 
   useEffect(() => {
-  fetchCustomers();
-}, [filters, pagination.page, pagination.limit, refreshTrigger]);
+    fetchCustomers();
+  }, [filters, pagination.page, pagination.limit, refreshTrigger]);
 
   // ✅ delete handler
   const handleDelete = async (id: string) => {
@@ -118,47 +118,47 @@ const [filters, setFilters] = useState({
       fetchCustomers(); // refresh list
     } catch (error: any) {
       console.error('Delete failed:', error);
-      toast.error(error?.message ||'Failed to delete customer ❌');
+      toast.error(error?.message || 'Failed to delete customer ❌');
     }
   };
-// const handleViewBusiness = async (tenantId: string | null) => {
-// alert(tenantId);
-//       if (!tenantId) {
-//         toast.error("Invalid tenant selected");
-//         return;
-//       }
-//       try {
-//         const response = await put('/api/customers/switch-tenant', {
-//           method: 'POST',
-//           headers: {
-//             'Content-Type': 'application/json',
-//           },
-//           body: JSON.stringify({ tenantId }),
-//         });
-  
-//         const data = await response.json();
-//   console.log("jiku",data);
-//         if (response.ok) {
-//           // Set tokens first
-//           authService.setTokens(data.token, data.refreshToken);
-          
-//           // Set user context
-//           setUser(data.user);
-          
-//           // Force a hard navigation to dashboard to avoid stale state
-//           window.location.href = '/app/dashboard';
-//         } else {
-//           authService.clearTokens();
-//         }
-//       } catch (error) {
-//         console.error('Login error:', error);
-//         authService.clearTokens();
-//       } finally {
-//       }
-//     };
+  // const handleViewBusiness = async (tenantId: string | null) => {
+  // alert(tenantId);
+  //       if (!tenantId) {
+  //         toast.error("Invalid tenant selected");
+  //         return;
+  //       }
+  //       try {
+  //         const response = await put('/api/customers/switch-tenant', {
+  //           method: 'POST',
+  //           headers: {
+  //             'Content-Type': 'application/json',
+  //           },
+  //           body: JSON.stringify({ tenantId }),
+  //         });
+
+  //         const data = await response.json();
+  //   console.log("jiku",data);
+  //         if (response.ok) {
+  //           // Set tokens first
+  //           authService.setTokens(data.token, data.refreshToken);
+
+  //           // Set user context
+  //           setUser(data.user);
+
+  //           // Force a hard navigation to dashboard to avoid stale state
+  //           window.location.href = '/app/dashboard';
+  //         } else {
+  //           authService.clearTokens();
+  //         }
+  //       } catch (error) {
+  //         console.error('Login error:', error);
+  //         authService.clearTokens();
+  //       } finally {
+  //       }
+  //     };
 
 
-     const viewBusiness = async (id: string, role: string) => {
+  const viewBusiness = async (id: string, role: string) => {
 
     if (!confirm('Are you sure you want to switch tenant?')) return;
 
@@ -168,54 +168,54 @@ const [filters, setFilters] = useState({
 
       const response = await gett(`/api/customers/switchTenant/${id}/${role}`);
 
-     // console.log("jiku",response);
+      // console.log("jiku",response);
 
-       dispatch(setCredentials({ user: response.user, token: response.accessToken }));
+      dispatch(setCredentials({ user: response.user, token: response.accessToken }));
 
-            localStorage.setItem("token", response.accessToken);
+      localStorage.setItem("token", response.accessToken);
 
-            localStorage.setItem("user", JSON.stringify(response.user));
+      localStorage.setItem("user", JSON.stringify(response.user));
 
       toast.success('Tenant switched successfully 🗑️');
 
-     router.replace("/app/dashboard");
+      router.replace("/app/dashboard");
 
     } catch (error: any) {
 
       console.error('Tenant switching failed:', error);
 
-      toast.error(error?.message ||'Failed to switch tenant ❌');
+      toast.error(error?.message || 'Failed to switch tenant ❌');
 
     }
 
   };
-// const handleViewBusiness = async (tenantId: string | null) => {
-//   alert(tenantId);
-//   if (!tenantId) {
-//     toast.error("Invalid tenant selected");
-//     return;
-//   }
+  // const handleViewBusiness = async (tenantId: string | null) => {
+  //   alert(tenantId);
+  //   if (!tenantId) {
+  //     toast.error("Invalid tenant selected");
+  //     return;
+  //   }
 
-//   try {
-//     const data = await put(
-//       `/api/customers/switch-tenant/${tenantId}`,
-//       {}  // Important fix
-//     );
-//     localStorage.setItem("token", data.token);
+  //   try {
+  //     const data = await put(
+  //       `/api/customers/switch-tenant/${tenantId}`,
+  //       {}  // Important fix
+  //     );
+  //     localStorage.setItem("token", data.token);
 
-// console.log(data);
-//     if (data) {
-//       toast.success(data.message);
-//       window.location.href = "/app/dashboard";
-//     } else {
-//       toast.error(data.message);
-//     }
+  // console.log(data);
+  //     if (data) {
+  //       toast.success(data.message);
+  //       window.location.href = "/app/dashboard";
+  //     } else {
+  //       toast.error(data.message);
+  //     }
 
-//   } catch (error: any) {
-//     console.error("Failed to switch tenant:", error);
-//     toast.error(error?.message || "Failed to load customers");
-//   }
-// };
+  //   } catch (error: any) {
+  //     console.error("Failed to switch tenant:", error);
+  //     toast.error(error?.message || "Failed to load customers");
+  //   }
+  // };
 
 
 
@@ -240,26 +240,26 @@ const [filters, setFilters] = useState({
       //   </div>
       // )
       render: (value: string, row: Customer) => (
-  <div className="flex items-center cursor-pointer"
-       onClick={() => setHistoryModal({ open: true, customer: row })}>
-    <div className="flex-shrink-0 h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
-      {value.charAt(0)}
-    </div>
-    <div className="ml-4">
-      <div className="relative group">
-      <div className="font-bold text-gray-900 hover:text-blue-600 cursor-pointer">
-  {value}
-</div>
- <span className="absolute left-0 top-full mt-1 w-max 
+        <div className="flex items-center cursor-pointer"
+          onClick={() => setHistoryModal({ open: true, customer: row })}>
+          <div className="flex-shrink-0 h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+            {value.charAt(0)}
+          </div>
+          <div className="ml-4">
+            <div className="relative group">
+              <div className="font-bold text-gray-900 hover:text-blue-600 cursor-pointer">
+                {value}
+              </div>
+              <span className="absolute left-0 top-full mt-1 w-max 
                          px-2 py-1 text-xs bg-gray-800 text-white rounded 
                          opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          View payment history
-        </span>
-</div>
-      <div className="text-sm text-gray-500">{row.email}</div>
-    </div>
-  </div>
-)
+                View payment history
+              </span>
+            </div>
+            <div className="text-sm text-gray-500">{row.email}</div>
+          </div>
+        </div>
+      )
     },
     { key: 'phone', header: 'Phone' },
     {
@@ -267,89 +267,89 @@ const [filters, setFilters] = useState({
       header: 'Joined',
       render: (value: string) => new Date(value).toLocaleDateString()
     },
-     { key: 'totalDue', header: 'Total Due' },
-      { key: 'totalPaid', header: 'Total Paid' },
-       { key: 'balance', header: 'Balance' },
-       { 
-  key: 'paymentStatus',
-  header: 'Status',
-  render: (value: string) => {
-    let color =
-      value === "completed" ? "bg-green-100 text-green-800" :
-      value === "partial" ? "bg-yellow-100 text-yellow-800" :
-      "bg-red-100 text-red-800";
+    { key: 'totalDue', header: 'Total Due' },
+    { key: 'totalPaid', header: 'Total Paid' },
+    { key: 'balance', header: 'Balance' },
+    {
+      key: 'paymentStatus',
+      header: 'Status',
+      render: (value: string) => {
+        let color =
+          value === "completed" ? "bg-green-100 text-green-800" :
+            value === "partial" ? "bg-yellow-100 text-yellow-800" :
+              "bg-red-100 text-red-800";
 
         let label =
-      value === "completed" ? "Paid" :
-      value === "partial" ? "Partial" :
-      "Unpaid";
+          value === "completed" ? "Paid" :
+            value === "partial" ? "Partial" :
+              "Unpaid";
 
-    return (
-      <span className={`px-2 py-1 rounded text-xs font-semibold ${color}`}>
-        {label}
-      </span>
-    );
-  }
-},
+        return (
+          <span className={`px-2 py-1 rounded text-xs font-semibold ${color}`}>
+            {label}
+          </span>
+        );
+      }
+    },
 
 
-  {
-  key: 'actions',
-  header: 'Actions',
-  render: (value: any, row: Customer) => {
+    {
+      key: 'actions',
+      header: 'Actions',
+      render: (value: any, row: Customer) => {
 
-    let tenantIdToCheck = null;
+        let tenantIdToCheck = null;
 
-    // requestedBy admin/user (not professional)
-    if (row.requestedBy && row.requestedBy.role !== "professional") {
-      tenantIdToCheck = row.requestedBy.tenantId ?? null;
+        // requestedBy admin/user (not professional)
+        if (row.requestedBy && row.requestedBy.role !== "professional") {
+          tenantIdToCheck = row.requestedBy.tenantId ?? null;
+        }
+
+        // requestedTo admin/user (not professional)
+        if (row.requestedTo && row.requestedTo.role !== "professional") {
+          tenantIdToCheck = row.requestedTo.tenantId ?? null;
+        }
+
+        return (
+          <div className="flex space-x-3">
+            <button
+              onClick={() => onEditCustomer(row)}
+              className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
+            >
+              Edit
+            </button>
+
+            <button
+              onClick={() => handleDelete(row.id)}
+              className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+            >
+              Delete
+              {/* {user?.role} */}
+            </button>
+            <button
+              onClick={() => setPaymentModal({ open: true, customer: row })}
+              className="bg-purple-500 text-white px-3 py-1 rounded text-sm hover:bg-purple-600"
+            >
+              Pay
+            </button>
+
+            {/* ONLY SHOW FOR PROFESSIONAL */}
+            {user?.role === "professional" &&
+              row?.checkSubscription === "active" &&
+              tenantIdToCheck && ( // ensure we have tenantId
+                // <button
+                //   onClick={() => handleViewBusiness(tenantIdToCheck)}
+                //   className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
+                // >
+                //   View Business
+                // </button>
+
+                <button onClick={() => viewBusiness(tenantIdToCheck, "professional_user")} className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"> View Business </button>
+              )}
+          </div>
+        );
+      }
     }
-
-    // requestedTo admin/user (not professional)
-    if (row.requestedTo && row.requestedTo.role !== "professional") {
-      tenantIdToCheck = row.requestedTo.tenantId ?? null;
-    }
-
-    return (
-      <div className="flex space-x-3">
-        <button
-          onClick={() => onEditCustomer(row)}
-          className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
-        >
-          Edit
-        </button>
-
-        <button
-          onClick={() => handleDelete(row.id)}
-          className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
-        >
-          Delete 
-          {/* {user?.role} */}
-        </button>
-        <button
-  onClick={() => setPaymentModal({ open: true, customer: row })}
-  className="bg-purple-500 text-white px-3 py-1 rounded text-sm hover:bg-purple-600"
->
-  Pay
-</button>
-
-        {/* ONLY SHOW FOR PROFESSIONAL */}
-        {user?.role === "professional" &&
-          row?.checkSubscription === "active" &&
-          tenantIdToCheck && ( // ensure we have tenantId
-            // <button
-            //   onClick={() => handleViewBusiness(tenantIdToCheck)}
-            //   className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
-            // >
-            //   View Business
-            // </button>
-
-             <button onClick={() => viewBusiness(tenantIdToCheck,"professional_user")} className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"> View Business </button>
-          )}
-      </div>
-    );
-  }
-}
 
   ];
 
@@ -358,59 +358,59 @@ const [filters, setFilters] = useState({
   }
 
   return (
-     <div>
+    <div>
       <div className="grid grid-cols-1 md:grid-cols-6 gap-3 mb-6 p-2 bg-gray-50 rounded-lg">
-     
-  <input
-    type="text"
-    placeholder="Name"
-    className="border p-2 rounded"
-    value={filters.name}
-    onChange={(e) => setFilters({ ...filters, name: e.target.value })}
-  />
 
-  <input
-    type="text"
-    placeholder="Email"
-    className="border p-2 rounded"
-    value={filters.email}
-    onChange={(e) => setFilters({ ...filters, email: e.target.value })}
-  />
+        <input
+          type="text"
+          placeholder="Name"
+          className="border p-2 rounded"
+          value={filters.name}
+          onChange={(e) => setFilters({ ...filters, name: e.target.value })}
+        />
 
-  <input
-    type="text"
-    placeholder="Phone"
-    className="border p-2 rounded"
-    value={filters.phone}
-    onChange={(e) => setFilters({ ...filters, phone: e.target.value })}
-  />
+        <input
+          type="text"
+          placeholder="Email"
+          className="border p-2 rounded"
+          value={filters.email}
+          onChange={(e) => setFilters({ ...filters, email: e.target.value })}
+        />
 
-  <select
-    className="border p-2 rounded"
-    value={filters.status}
-    onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-  >
-    <option value="">All Status</option>
-    <option value="completed">Paid</option>
-    <option value="partial">Partial</option>
-    <option value="pending">Unpaid</option>
-  </select>
+        <input
+          type="text"
+          placeholder="Phone"
+          className="border p-2 rounded"
+          value={filters.phone}
+          onChange={(e) => setFilters({ ...filters, phone: e.target.value })}
+        />
 
-  <input
-    type="date"
-    className="border p-2 rounded"
-    value={filters.joinedFrom}
-    onChange={(e) => setFilters({ ...filters, joinedFrom: e.target.value })}
-  />
+        <select
+          className="border p-2 rounded"
+          value={filters.status}
+          onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+        >
+          <option value="">All Status</option>
+          <option value="completed">Paid</option>
+          <option value="partial">Partial</option>
+          <option value="pending">Unpaid</option>
+        </select>
 
-  <input
-    type="date"
-    className="border p-2 rounded"
-    value={filters.joinedTo}
-    onChange={(e) => setFilters({ ...filters, joinedTo: e.target.value })}
-  />
+        <input
+          type="date"
+          className="border p-2 rounded"
+          value={filters.joinedFrom}
+          onChange={(e) => setFilters({ ...filters, joinedFrom: e.target.value })}
+        />
 
-</div>
+        <input
+          type="date"
+          className="border p-2 rounded"
+          value={filters.joinedTo}
+          onChange={(e) => setFilters({ ...filters, joinedTo: e.target.value })}
+        />
+
+      </div>
       <Table
         columns={columns}
         data={customers}
@@ -425,22 +425,22 @@ const [filters, setFilters] = useState({
         />
       )}
       {paymentModal.open && (
-  <PaymentModal
-    customer={paymentModal.customer}
-    onClose={() => setPaymentModal({ open: false, customer: null })}
-    onSuccess={() => { 
-      fetchCustomers(); 
-      setPaymentModal({ open: false, customer: null });
-    }}
-  />
-)}
+        <PaymentModal
+          customer={paymentModal.customer}
+          onClose={() => setPaymentModal({ open: false, customer: null })}
+          onSuccess={() => {
+            fetchCustomers();
+            setPaymentModal({ open: false, customer: null });
+          }}
+        />
+      )}
 
-{historyModal.open && (
-  <PaymentHistoryModal
-    customer={historyModal.customer}
-    onClose={() => setHistoryModal({ open: false, customer: null })}
-  />
-)}
+      {historyModal.open && (
+        <PaymentHistoryModal
+          customer={historyModal.customer}
+          onClose={() => setHistoryModal({ open: false, customer: null })}
+        />
+      )}
     </div>
   );
 };

@@ -3,10 +3,10 @@ import { AuthService } from '../services/auth/AuthService';
 import { Tenant } from "../entities/Tenant";
 import { AppDataSource } from "../config/database";
 export class AuthController {
-  constructor(private authService: AuthService , private tenantRepo = AppDataSource.getRepository(Tenant)) {}
+  constructor(private authService: AuthService, private tenantRepo = AppDataSource.getRepository(Tenant)) { }
 
 
-   async registerWithTenant(req: Request, res: Response): Promise<void> {
+  async registerWithTenant(req: Request, res: Response): Promise<void> {
     try {
       const {
         // tenantName,
@@ -47,39 +47,49 @@ export class AuthController {
         message: "Tenant and user created successfully",
         user: newUser, // ✅ newUser is a User entity
       });
+      // } catch (error: any) {
+      //   console.error("Error in register controller:", error);
+      //   res.status(500).json({
+      //     success: false,
+      //     message: error.message || "Registration failed",
+      //   });
+      // }
     } catch (error: any) {
       console.error("Error in register controller:", error);
-      res.status(500).json({
+
+      const status = error.status || 400;
+
+      res.status(status).json({
         success: false,
-        message: error.message || "Registration failed",
+        error: error.message || "Registration failed"
       });
     }
   }
-async meWithTenant(req: Request, res: Response) {
-  try {
-    const userData = req.user;
-    //console.log('meWithTenant userData:', userData);
-    if (!userData) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
+  async meWithTenant(req: Request, res: Response) {
+    try {
+      const userData = req.user;
+      //console.log('meWithTenant userData:', userData);
+      if (!userData) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
 
-    const tenant = await this.tenantRepo.findOne({
-      where: { id: userData.tenantId }
-    });
+      const tenant = await this.tenantRepo.findOne({
+        where: { id: userData.tenantId }
+      });
 
-    if (!tenant) {
-      return res.status(404).json({ message: "Tenant not found" });
-    }
+      if (!tenant) {
+        return res.status(404).json({ message: "Tenant not found" });
+      }
 
-    // const professionals = await this.service.getProfessionals(user);
-   //  res.json(user);
+      // const professionals = await this.service.getProfessionals(user);
+      //  res.json(user);
       res.json({ success: true, user: userData, tenant });
-  } catch (error: any) {
-    res.status(400).json({ message: error.message });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
   }
-}
   async login(req: Request, res: Response) {
-   // console.log('Login request body:', req.body);
+    // console.log('Login request body:', req.body);
 
     try {
       const { email, password } = req.body; //
@@ -90,21 +100,21 @@ async meWithTenant(req: Request, res: Response) {
         user: result.user,
         //token: result.token,
         accessToken: result.accessToken,
-  refreshToken: result.refreshToken,
-  check_subscription: result.check_subscription
+        refreshToken: result.refreshToken,
+        check_subscription: result.check_subscription
       });
 
-     // console.log('Login successful for user:', result.user);
+      // console.log('Login successful for user:', result.user);
     } catch (error: unknown) {
       console.error('Login error:', (error as Error).message);
       res.status(401).json({ error: (error as Error).message });
     }
   }
-    async superUserlogin(req: Request, res: Response) {
+  async superUserlogin(req: Request, res: Response) {
     //console.log('Login request body:', req.body);
 
     try {
-      const { tenant, email, password } = req.body; 
+      const { tenant, email, password } = req.body;
       //console.log('Login attempt for email:', email, 'tenantId:', tenant, 'password:', password);
       const result = await this.authService.superUserlogin(tenant, email, password); //, tenantId
 
@@ -113,10 +123,10 @@ async meWithTenant(req: Request, res: Response) {
         user: result.user,
         //token: result.token,
         accessToken: result.accessToken,
-  refreshToken: result.refreshToken,
+        refreshToken: result.refreshToken,
       });
 
-     // console.log('Login successful for user:', result.user);
+      // console.log('Login successful for user:', result.user);
     } catch (error: unknown) {
       console.error('Login error:', (error as Error).message);
       res.status(401).json({ error: (error as Error).message });
@@ -125,7 +135,7 @@ async meWithTenant(req: Request, res: Response) {
 
   async register(req: Request, res: Response) {
     try {
-      const { email, password,  tenantId } = req.body; //name,
+      const { email, password, tenantId } = req.body; //name,
       const user = await this.authService.register(
         { email, password }, //, name
         tenantId
@@ -182,18 +192,59 @@ async meWithTenant(req: Request, res: Response) {
     }
   };
 
-getTenants = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const tenants = await this.authService.getTenants(); // Fetch all tenants from the service
-    //console.log('Fetched tenants controller:', tenants.length);
-    res.json(tenants);  // Send the tenants data in the response
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch tenants',
-    });
+  getTenants = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const tenants = await this.authService.getTenants(); // Fetch all tenants from the service
+      //console.log('Fetched tenants controller:', tenants.length);
+      res.json(tenants);  // Send the tenants data in the response
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: 'Failed to fetch tenants',
+      });
+    }
   }
-}
+
+  async forgotPassword(req: Request, res: Response) {
+    try {
+      const { email } = req.body;
+
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+
+      await this.authService.forgotPassword(email);
+
+      // return res.json({
+      //   message: "Password reset link sent to your email",
+      // });
+      return res.status(200).json({
+        success: true,
+        message: "Password reset email sent",
+      });
+    } catch (error) {
+      return res.status(400).json({
+        message: (error as Error).message,
+      });
+    }
+  }
+
+  async resetPassword(req: Request, res: Response) {
+    try {
+      const { token, password } = req.body;
+
+      await this.authService.resetPasswordConfirm(token, password);
+
+      return res.status(200).json({
+        success: true,
+        message: "Password reset successful",
+      });
+    } catch (error) {
+      return res.status(400).json({
+        message: (error as Error).message,
+      });
+    }
+  }
 }
 
 
@@ -265,9 +316,9 @@ getTenants = async (req: Request, res: Response): Promise<void> => {
 //       await this.authService.enableBiometric(userId);
 //       res.json({ success: true, message: 'Biometric authentication enabled' });
 //     } catch (error) {
-//       res.status(500).json({ 
-//         success: false, 
-//         message: 'Failed to enable biometric authentication' 
+//       res.status(500).json({
+//         success: false,
+//         message: 'Failed to enable biometric authentication'
 //       });
 //     }
 //   };
@@ -278,9 +329,9 @@ getTenants = async (req: Request, res: Response): Promise<void> => {
 //       const tenants = await this.authService.getTenantsForUser(email);
 //       res.json({ success: true, tenants });
 //     } catch (error) {
-//       res.status(500).json({ 
-//         success: false, 
-//         message: 'Failed to fetch tenants' 
+//       res.status(500).json({
+//         success: false,
+//         message: 'Failed to fetch tenants'
 //       });
 //     }
 //   };

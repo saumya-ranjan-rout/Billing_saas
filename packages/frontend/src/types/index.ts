@@ -8,7 +8,7 @@ export interface User {
   role: 'admin' | 'user' | 'superadmin';
   createdAt: string;
   updatedAt: string;
-    tenantId?: string;
+  tenantId?: string;
 }
 
 export interface Tenant {
@@ -53,9 +53,9 @@ export interface Customer {
     country: string;
     pincode: string;
   };
-    requestedBy: {
-      id: string;
-      tenantId: string;
+  requestedBy: {
+    id: string;
+    tenantId: string;
     firstName: string;
     lastName: string;
     role: string;
@@ -64,7 +64,7 @@ export interface Customer {
   };
   requestedTo: {
     id: string;
-   tenantId: string;
+    tenantId: string;
     firstName: string;
     lastName: string;
     role: string;
@@ -77,7 +77,7 @@ export interface Customer {
   createdAt: string;
   updatedAt: string;
   deletedAt?: string;
-   checkSubscription?: "active" | "inactive";
+  checkSubscription?: "active" | "inactive";
 
 }
 
@@ -166,7 +166,7 @@ export interface InvoiceItem {
   taxAmount: number;
   has_cess: boolean;     // true/false
   cess_value: number;
-    cessAmount: number;
+  cessAmount: number;
   lineTotal: number;
   product?: Product;
 }
@@ -436,7 +436,7 @@ export interface PurchaseOrder {
   createdAt: string;
   updatedAt: string;
   deletedAt?: string;
- paymentMethod?:  'cash' | 'bank_transfer' | 'upi' | 'cheque' | 'credit_card' | 'debit_card' | 'wallet' | 'other';
+  paymentMethod?: 'cash' | 'bank_transfer' | 'upi' | 'cheque' | 'credit_card' | 'debit_card' | 'wallet' | 'other';
 
 }
 

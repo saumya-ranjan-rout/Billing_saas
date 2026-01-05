@@ -22,5 +22,6 @@ router.get("/:id", (0, rbac_1.rbacMiddleware)(["read:users"]), (0, cache_1.cache
 router.put("/:id", (0, rbac_1.rbacMiddleware)(["update:users"]), (0, validation_1.validationMiddleware)(validators_1.updateUserSchema), userController.updateUser.bind(userController));
 router.delete("/:id", (0, rbac_1.rbacMiddleware)(["delete:users"]), userController.deleteUser.bind(userController));
 router.post("/:id/reset-password", (0, rbac_1.rbacMiddleware)(["admin:users"]), userController.resetPassword.bind(userController));
+router.post("/change-password", auth_1.authMiddleware, tenant_1.tenantMiddleware, userController.changePassword.bind(userController));
 exports.default = router;
 //# sourceMappingURL=userRoutes.js.map

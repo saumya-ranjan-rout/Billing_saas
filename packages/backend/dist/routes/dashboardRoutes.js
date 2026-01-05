@@ -6,6 +6,9 @@ const CustomerService_1 = require("../services/customer/CustomerService");
 const rbac_1 = require("../middleware/rbac");
 const auth_1 = require("../middleware/auth");
 const cache_1 = require("../middleware/cache");
+const Invoice_1 = require("../entities/Invoice");
+const database_1 = require("../config/database");
+const PaymentInvoice_1 = require("../entities/PaymentInvoice");
 const router = (0, express_1.Router)();
 const invoiceService = new InvoiceService_1.InvoiceService();
 const customerService = new CustomerService_1.CustomerService();
@@ -66,6 +69,47 @@ router.get("/", auth_1.authMiddleware, (0, rbac_1.rbacMiddleware)(["read:invoice
             thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
             return joinedDate >= thirtyDaysAgo;
         }).length;
+        const paymentRepo = database_1.AppDataSource.getRepository(PaymentInvoice_1.PaymentInvoice);
+        const todayStart = new Date();
+        todayStart.setHours(0, 0, 0, 0);
+        const todayEnd = new Date();
+        todayEnd.setHours(23, 59, 59, 999);
+        const incomeTodayRaw = await paymentRepo
+            .createQueryBuilder("p")
+            .select("SUM(p.amount)", "total")
+            .where("p.tenantId = :tenantId", { tenantId })
+            .andWhere("p.status != :pending", { pending: PaymentInvoice_1.PaymentStatus.PENDING })
+            .andWhere("p.paymentType = :type", { type: PaymentInvoice_1.PaymentType.INCOME })
+            .andWhere("p.paymentDate BETWEEN :start AND :end", {
+            start: todayStart,
+            end: todayEnd,
+        })
+            .getRawOne();
+        const todayIncome = Number(incomeTodayRaw?.total ?? 0);
+        const expenseTodayRaw = await paymentRepo
+            .createQueryBuilder("p")
+            .select("SUM(p.amount)", "total")
+            .where("p.tenantId = :tenantId", { tenantId })
+            .andWhere("p.status != :pending", { pending: PaymentInvoice_1.PaymentStatus.PENDING })
+            .andWhere("p.paymentType = :type", { type: PaymentInvoice_1.PaymentType.EXPENSE })
+            .andWhere("p.paymentDate BETWEEN :start AND :end", {
+            start: todayStart,
+            end: todayEnd,
+        })
+            .getRawOne();
+        const todayExpense = Number(expenseTodayRaw?.total ?? 0);
+        const invoiceRepo = database_1.AppDataSource.getRepository(Invoice_1.Invoice);
+        const todayInvoiceTotalRaw = await invoiceRepo
+            .createQueryBuilder("inv")
+            .select("SUM(inv.totalAmount)", "total")
+            .where("inv.tenantId = :tenantId", { tenantId })
+            .andWhere("inv.createdAt BETWEEN :start AND :end", {
+            start: todayStart,
+            end: todayEnd,
+        })
+            .getRawOne();
+        const todayInvoiceTotalAmount = Number(todayInvoiceTotalRaw?.total ?? 0);
+        const todayDue = todayInvoiceTotalAmount - todayIncome;
         res.json({
             totalRevenue,
             totalCustomers,
@@ -75,6 +119,9 @@ router.get("/", auth_1.authMiddleware, (0, rbac_1.rbacMiddleware)(["read:invoice
             newCustomers,
             recentInvoices,
             recentCustomers,
+            todayIncome,
+            todayExpense,
+            todayDue,
         });
     }
     catch (err) {

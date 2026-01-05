@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { ReportService } from '../services/report/ReportService';
 import { QueueService } from '../services/queue/QueueService';
 import { CacheService } from '../services/cache/CacheService';
-import { ReportType,ReportStatus  } from '../entities/Report';
+import { ReportType, ReportStatus } from '../entities/Report';
 import logger from '../utils/logger';
 import { ReadStream } from 'fs';
 
@@ -12,11 +12,11 @@ export function getErrorMessage(error: unknown): string {
 }
 
 export class ReportController {
-   constructor(
+  constructor(
     private reportService: ReportService,
     private queueService: QueueService,
     private cacheService: CacheService
-  ) {}
+  ) { }
 
   async generateReport(req: Request, res: Response) {
     try {
@@ -26,40 +26,40 @@ export class ReportController {
 
       const { type, format, filters } = req.body;
       const tenantId = req.user.tenantId;
-      
-//  const userId = req.user.id;
 
-//       // Validate date range to prevent excessive data processing
-//       const fromDate = new Date(filters.fromDate);
-//       const toDate = new Date(filters.toDate);
-//       const daysDiff = Math.ceil((toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24));
-      
-//       if (daysDiff > 365) {
-//         return res.status(400).json({ error: 'Date range cannot exceed 1 year' });
-//       }
+      //  const userId = req.user.id;
 
-//       // Create initial report record
-//       const report = await this.reportService.createReportRecord({
-//         name: `Report - ${new Date().toLocaleDateString()}`,
-//         type,
-//         format,
-//         parameters: filters,
-//         filters,
-//         tenantId,
-//         status: ReportStatus.PENDING
-//       });
+      //       // Validate date range to prevent excessive data processing
+      //       const fromDate = new Date(filters.fromDate);
+      //       const toDate = new Date(filters.toDate);
+      //       const daysDiff = Math.ceil((toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24));
 
-//       // Queue report generation for background processing
-//       await this.queueService.queueReportGeneration(tenantId, type, format, filters, report.id);
+      //       if (daysDiff > 365) {
+      //         return res.status(400).json({ error: 'Date range cannot exceed 1 year' });
+      //       }
 
-//       // Invalidate relevant caches
-//       await this.cacheService.invalidatePattern(`reports:${tenantId}:*`);
+      //       // Create initial report record
+      //       const report = await this.reportService.createReportRecord({
+      //         name: `Report - ${new Date().toLocaleDateString()}`,
+      //         type,
+      //         format,
+      //         parameters: filters,
+      //         filters,
+      //         tenantId,
+      //         status: ReportStatus.PENDING
+      //       });
 
-//    res.json({
-//         id: report.id,
-//         status: 'queued',
-//         message: 'Report generation has been queued and will be processed shortly'
-//       });
+      //       // Queue report generation for background processing
+      //       await this.queueService.queueReportGeneration(tenantId, type, format, filters, report.id);
+
+      //       // Invalidate relevant caches
+      //       await this.cacheService.invalidatePattern(`reports:${tenantId}:*`);
+
+      //    res.json({
+      //         id: report.id,
+      //         status: 'queued',
+      //         message: 'Report generation has been queued and will be processed shortly'
+      //       });
 
 
       const report = await this.reportService.generateReport(tenantId, type, format, filters);
@@ -70,7 +70,7 @@ export class ReportController {
     }
   }
 
-    async getReportStatus(req: Request, res: Response) {
+  async getReportStatus(req: Request, res: Response) {
     try {
       if (!req.user) {
         return res.status(401).json({ error: 'Unauthorized' });
@@ -82,13 +82,13 @@ export class ReportController {
       // Check cache first
       const cacheKey = `report:status:${id}`;
       const cachedStatus = await this.cacheService.get(cacheKey);
-      
+
       if (cachedStatus) {
         return res.json(cachedStatus);
       }
 
       const report = await this.reportService.getReportById(tenantId, id);
-      
+
       if (!report) {
         return res.status(404).json({ error: 'Report not found' });
       }
@@ -97,7 +97,7 @@ export class ReportController {
         id: report.id,
         status: report.status,
         progress: report.status === ReportStatus.GENERATING ? '50%' : '100%',
-        downloadUrl: report.status === ReportStatus.COMPLETED ? 
+        downloadUrl: report.status === ReportStatus.COMPLETED ?
           `/api/reports/${id}/download` : null,
         error: report.errorMessage,
         generatedAt: report.generatedAt
@@ -138,13 +138,13 @@ export class ReportController {
       //     res.status(500).json({ error: 'Failed to download report' });
       //   }
       // });
-        res.setHeader('Content-Type', this.getContentType(report.format));
+      res.setHeader('Content-Type', this.getContentType(report.format));
       res.setHeader('Content-Disposition', `attachment; filename="${report.name}.${report.format}"`);
-      
+
       // Stream file directly without loading into memory
       const fs = require('fs');
       const fileStream = fs.createReadStream(report.filePath);
-      
+
       fileStream.pipe(res);
 
       // fileStream.on('error', (error) => {
@@ -160,15 +160,15 @@ export class ReportController {
   }
 
 
-    private getContentType(format: string): string {
-      const contentTypes: Record<'pdf' | 'excel' | 'csv' | 'json', string> = {
-  pdf: 'application/pdf',
-  excel: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  csv: 'text/csv',
-  json: 'application/json'
-};
+  private getContentType(format: string): string {
+    const contentTypes: Record<'pdf' | 'excel' | 'csv' | 'json', string> = {
+      pdf: 'application/pdf',
+      excel: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      csv: 'text/csv',
+      json: 'application/json'
+    };
 
-return contentTypes[format as keyof typeof contentTypes] || 'application/octet-stream';
+    return contentTypes[format as keyof typeof contentTypes] || 'application/octet-stream';
 
     // const contentTypes = {
     //   'pdf': 'application/pdf',
@@ -176,7 +176,7 @@ return contentTypes[format as keyof typeof contentTypes] || 'application/octet-s
     //   'csv': 'text/csv',
     //   'json': 'application/json'
     // };
-    
+
     // return contentTypes[format] || 'application/octet-stream';
   }
 
@@ -195,13 +195,13 @@ return contentTypes[format as keyof typeof contentTypes] || 'application/octet-s
       //   parseInt(limit as string) || 10
       // );
 
-            const { page = 1, limit = 10 } = req.query;
+      const { page = 1, limit = 10 } = req.query;
 
       const cacheKey = `reports:history:${tenantId}:${page}:${limit}`;
-            const history = await this.cacheService.getOrSet(cacheKey, async () => {
+      const history = await this.cacheService.getOrSet(cacheKey, async () => {
         return await this.reportService.getReportHistory(
-          tenantId, 
-          parseInt(page as string), 
+          tenantId,
+          parseInt(page as string),
           parseInt(limit as string)
         );
       }, 60);
@@ -271,7 +271,7 @@ return contentTypes[format as keyof typeof contentTypes] || 'application/octet-s
       const tenantId = req.user.tenantId;
 
       await this.reportService.deleteReport(tenantId, id);
-      
+
       res.json({
         message: 'Report deleted successfully',
         reportId: id

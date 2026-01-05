@@ -175,7 +175,8 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({
           unit: item.unit ?? 'pcs',
           unitPrice: Number(item.unitPrice) || 0,
           discount: Number(item.discount) || 0,
-          taxType: item.taxType ?? "CGST_SGST",
+          // taxType: item.taxType ?? "CGST_SGST",
+          taxType: (item.taxType ?? "CGST_SGST") as "CGST_SGST" | "IGST",
           taxRate: Number(item.taxRate) || 0,
           cess: item.cess ?? false,
           cessRate: Number(item.cessRate) || 0,
@@ -239,10 +240,10 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({
     const { totalAmount } = calculateOrderTotals(items);
 
     // --- FINAL VALIDATION CHECK BEFORE SUBMIT ---
-    if (data.amountPaid <= 0) {
-      toast.error("Amount cannot be less than 0");
-      return; // 
-    }
+    // if (data.amountPaid < 0) {
+    //   toast.error("Amount cannot be less than 0");
+    //   return; // 
+    // }
 
     if (data.amountPaid > totalAmount) {
       toast.error("Amount cannot be greater than Total Amount");
@@ -281,6 +282,8 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({
 
   const totals = calculateOrderTotals(items);
 
+  const Required = () => <span className="text-red-500">*</span>;
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {/* Vendor + Type */}
@@ -288,10 +291,11 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({
         {/* Vendor */}
         <div className="flex flex-col">
           <Select
-            label="Vendor"
+            label={<span>Vendor <Required /></span>}
             value={watch('vendorId')}
             onChange={(value: string) => setValue('vendorId', value)}
             options={vendors.map(v => ({ value: v.id, label: v.name }))}
+            disabled={isEdit}
           />
           {errors.vendorId && (
             <p className="text-red-500 text-sm mt-1">{errors.vendorId.message}</p>
@@ -301,7 +305,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({
         {/* Type */}
         <div className="flex flex-col">
           <Select
-            label="Type"
+            label={<span>Type <Required /></span>}
             value={watch('type')}
             onChange={(value: string) => setValue('type', value as 'product' | 'service' | 'expense')}
             options={[
@@ -320,7 +324,8 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="flex flex-col">
           <Input
-            label="Order Date"
+            // label="Order Date"
+            label={<span>Order Date <Required /></span>}
             type="date"
             {...register('orderDate')}
             error={errors.orderDate?.message}
@@ -344,7 +349,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
               <div className="md:col-span-4 flex flex-col">
                 <Select
-                  label="Product"
+                  label={<span>Product <Required /></span>}
                   value={watch(`items.${index}.productId`)}
                   onChange={(value) => {
                     setValue(`items.${index}.productId`, value);
@@ -361,7 +366,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({
 
               <div className="md:col-span-4">
                 <Input
-                  label="Description"
+                  label={<span>Description <Required /></span>}
                   {...register(`items.${index}.description`)}
                   error={errors.items?.[index]?.description?.message}
                   disabled={isSubmitting}
@@ -370,7 +375,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({
 
               <div className="md:col-span-2">
                 <Input
-                  label="Quantity"
+                  label={<span>Quantity <Required /></span>}
                   type="number"
                   step="0.01"
                   {...register(`items.${index}.quantity`, { valueAsNumber: true })}
@@ -381,7 +386,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({
 
               <div className="md:col-span-2">
                 <Input
-                  label="Unit"
+                  label={<span>Unit <Required /></span>}
                   {...register(`items.${index}.unit`)}
                   error={errors.items?.[index]?.unit?.message}
                   disabled={isSubmitting}
@@ -392,7 +397,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-4">
               <div className="md:col-span-2">
                 <Input
-                  label="Unit Price (₹)"
+                  label={<span>Unit Price (₹) <Required /></span>}
                   type="number"
                   step="0.01"
                   {...register(`items.${index}.unitPrice`, { valueAsNumber: true })}
@@ -412,18 +417,16 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({
               </div>
               <div className="md:col-span-2 flex flex-col">
                 <Select
-                label="Tax Type"
-  value={watch(`items.${index}.taxType`)}
-  onChange={(value) => {
-    setValue(`items.${index}.taxType`, value as "CGST_SGST" | "IGST");
-  }}
-  options={[
-    { value: "CGST_SGST", label: "CGST & SGST" },
-    { value: "IGST", label: "IGST" },
-  ]}
-/>
-
-
+                  label="Tax Type"
+                  value={watch(`items.${index}.taxType`)}
+                  onChange={(value) => {
+                    setValue(`items.${index}.taxType`, value as "CGST_SGST" | "IGST");
+                  }}
+                  options={[
+                    { value: "CGST_SGST", label: "CGST & SGST" },
+                    { value: "IGST", label: "IGST" },
+                  ]}
+                />
                 {errors.items?.[index]?.taxType && (
                   <p className="text-red-500 text-sm mt-1">
                     {errors.items[index]?.taxType?.message}
@@ -453,7 +456,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({
               {watch(`items.${index}.cess`) && (
                 <div className="md:col-span-3">
                   <Input
-                    label="CESS Rate (%)"
+                    label={<span>CESS Rate (%) <Required /></span>}
                     type="number"
                     step="0.01"
                     {...register(`items.${index}.cessRate`, { valueAsNumber: true })}
@@ -540,6 +543,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({
                   { value: 'wallet', label: 'Wallet' },
                   { value: 'other', label: 'Other' }
                 ]}
+                disabled={isEdit}
               />
               {errors.paymentMethod && (
                 <p className="text-red-500 text-sm mt-1">{errors.paymentMethod.message}</p>

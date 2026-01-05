@@ -1,4 +1,4 @@
-import { Repository, ILike, IsNull,MoreThanOrEqual,LessThanOrEqual,In } from 'typeorm';
+import { Repository, ILike, IsNull, MoreThanOrEqual, LessThanOrEqual, In, Between } from 'typeorm';
 import { AppDataSource } from '../../config/database';
 import { Customer } from '../../entities/Customer';
 import { User ,UserRole ,UserStatus} from '../../entities/User';
@@ -221,17 +221,37 @@ if (options.phone) {
 // }
 
 // Date filter: joinedFrom - joinedTo
-if (options.joinedFrom || options.joinedTo) {
-  whereConditions.createdAt = {};
+// if (options.joinedFrom || options.joinedTo) {
+//   whereConditions.createdAt = {};
 
-  if (options.joinedFrom) {
-    whereConditions.createdAt = MoreThanOrEqual(new Date(options.joinedFrom));
-  }
+//   if (options.joinedFrom) {
+//     whereConditions.createdAt = MoreThanOrEqual(new Date(options.joinedFrom));
+//   }
 
-  if (options.joinedTo) {
-    whereConditions.createdAt = LessThanOrEqual(new Date(options.joinedTo));
-  }
- }
+//   if (options.joinedTo) {
+//     whereConditions.createdAt = LessThanOrEqual(new Date(options.joinedTo));
+//   }
+//  }
+
+// 09-12-2025(Y)
+if (joinedFrom && joinedTo) {
+  const from = new Date(joinedFrom);
+  const to = new Date(joinedTo);
+
+  // Set end date to end of day
+  to.setHours(23, 59, 59, 999);
+
+  whereConditions.createdAt = Between(from, to);
+
+} else if (joinedFrom) {
+  whereConditions.createdAt = MoreThanOrEqual(new Date(joinedFrom));
+
+} else if (joinedTo) {
+  const to = new Date(joinedTo);
+  to.setHours(23, 59, 59, 999);
+  whereConditions.createdAt = LessThanOrEqual(to);
+}
+
 
 let [customers, total] = await this.customerRepository.findAndCount({
   where: whereConditions,

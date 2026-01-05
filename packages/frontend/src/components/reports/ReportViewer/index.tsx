@@ -4,6 +4,9 @@ import { useReportService } from '../../../hooks/useReportService';
 import { Download, Printer, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { toast } from 'sonner';
+import { useReactToPrint } from "react-to-print";
+import { useRef } from "react";
+import ReportPrint from "./ReportPrint";
 
 interface ReportViewerProps {
   report: Report;
@@ -53,9 +56,15 @@ const ReportViewer: React.FC<ReportViewerProps> = ({ report, onClose }) => {
     }
   };
 
-  const handlePrint = () => {
-    window.print();
-  };
+  // const handlePrint = () => {
+  //   window.print();
+  // };
+  const printRef = useRef<HTMLDivElement>(null);
+
+  const handlePrint = useReactToPrint({
+    contentRef: printRef,
+    documentTitle: report.name, // optional
+  });
 
   // Generic Summary Component
   const renderSummary = (data: any) => {
@@ -69,6 +78,7 @@ const ReportViewer: React.FC<ReportViewerProps> = ({ report, onClose }) => {
     if (summaryItems.length === 0) return null;
 
     return (
+      // <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 print:grid-cols-2 gap-4 mb-6">     
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
         {summaryItems.map(([key, value], index) => {
           let displayValue: string;
@@ -115,11 +125,47 @@ const ReportViewer: React.FC<ReportViewerProps> = ({ report, onClose }) => {
       !key.toLowerCase().includes('metadata')
     );
 
+    // const rowsToRender =
+    //   typeof window !== 'undefined' && window.matchMedia('print').matches
+    //     ? data
+    //     : data.slice(0, 50);
+    // const isPrint = typeof window !== 'undefined'
+    //   ? window.matchMedia('print').matches
+    //   : false;
+
+    // const rowsToRender = isPrint ? data : data.slice(0, 50);
+    const rowsToRender = data;
+
+    // const columnWidths: Record<string, string> = {
+    //   date: '70px',
+    //   invoiceNo: '120px',
+    //   customer: '100px',
+    //   customerGSTIN: '110px',
+    //   taxableValue: '80px',
+    //   cgst: '60px',
+    //   sgst: '60px',
+    //   igst: '60px',
+    //   cess: '60px',
+    //   totalAmount: '90px',
+    //   paymentStatus: '70px',
+    //   placeOfSupply: '90px',
+    // };
+
+    // use the below code for applying above code
+    // style={{ width: columnWidths[column] || 'auto' }}
+
     return (
       <div className="mt-6">
         <h3 className="text-lg font-semibold mb-4">{title} ({data.length})</h3>
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
+        {/* <div className="overflow-x-auto"> */}
+        {/* its working  */}
+        <div className="overflow-x-auto print:overflow-visible">
+          {/* <div className="print-table-wrapper"> */}
+          {/* <div className="overflow-x-auto print:overflow-visible"> */}
+          {/* <div className="print:overflow-visible"> */}
+          {/* <table className="min-w-full divide-y divide-gray-200"> */}
+          <table className="w-full divide-y divide-gray-200">
+            {/* <table className="w-full print:w-full border-collapse table-fixed"> */}
             <thead className="bg-gray-50">
               <tr>
                 {columns.map((column, index) => (
@@ -130,10 +176,13 @@ const ReportViewer: React.FC<ReportViewerProps> = ({ report, onClose }) => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {data.slice(0, 50).map((row, rowIndex) => (
+              {/* {data.slice(0, 50).map((row, rowIndex) => ( */}
+              {rowsToRender.map((row, rowIndex) => (
                 <tr key={rowIndex}>
                   {columns.map((column, colIndex) => (
-                    <td key={colIndex} className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                    // <td key={colIndex} className="px-2 py-1 text-xs print:text-[10px] break-words">
+                    // <td key={colIndex} className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                    <td key={colIndex} className="px-2 py-1 text-xs break-words">
                       {typeof row[column] === 'number'
                         ? (column.toLowerCase().includes('amount') || column.toLowerCase().includes('value') || column.toLowerCase().includes('rate'))
                           ? `₹${row[column].toLocaleString()}`
@@ -370,44 +419,61 @@ const ReportViewer: React.FC<ReportViewerProps> = ({ report, onClose }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="px-6 py-4 border-b flex justify-between items-center">
-        <div>
-          <h2 className="text-xl font-semibold text-gray-900">{report.name}</h2>
-          <p className="text-sm text-gray-600">
-            Generated on {new Date(report.generatedAt || report.createdAt).toLocaleDateString()}
-            {report.recordCount && ` • ${report.recordCount.toLocaleString()} records`}
-            {report.status && ` • Status: ${report.status}`}
-          </p>
+    <>
+      <div className="bg-white rounded-lg shadow-lg max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="px-6 py-4 border-b flex justify-between items-center print-hide">
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900">{report.name}</h2>
+            <p className="text-sm text-gray-600">
+              Generated on {new Date(report.generatedAt || report.createdAt).toLocaleDateString()}
+              {report.recordCount && ` • ${report.recordCount.toLocaleString()} records`}
+              {report.status && ` • Status: ${report.status}`}
+            </p>
+          </div>
+          <div className="flex space-x-2">
+            {/* <Button variant="outline" onClick={handlePrint} className="print-hide">
+              <Printer size={16} />
+              Print
+            </Button> */}
+            <Button variant="outline" onClick={handlePrint}>
+              <Printer size={16} />
+              Print
+            </Button>
+            <Button onClick={handleDownload} disabled={report.status !== ReportStatus.COMPLETED}>
+              <Download size={16} />
+              Download
+            </Button>
+          </div>
         </div>
-        <div className="flex space-x-2">
-          <Button variant="outline" onClick={handlePrint}>
-            <Printer size={16} />
-            Print
-          </Button>
-          <Button onClick={handleDownload} disabled={report.status !== ReportStatus.COMPLETED}>
-            <Download size={16} />
-            Download
+
+        {/* Content */}
+        <div className="p-6 max-h-screen-80 overflow-y-auto print-area">
+          {renderReportContent()}
+        </div>
+        {/* <div className="p-6 max-h-screen-80 overflow-y-auto print-area print-source">
+          {renderReportContent()}
+        </div> */}
+
+        {/* Footer */}
+        <div className="px-6 py-4 border-t bg-gray-50 flex justify-between items-center print-hide">
+          <div className="text-sm text-gray-600">
+            Report ID: {report.id} • Type: {report.type}
+          </div>
+          <Button variant="outline" onClick={onClose}>
+            Close
           </Button>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="p-6 max-h-screen-80 overflow-y-auto">
+      {/* ===== PRINT ONLY CONTENT (NO MODAL, NO SCROLL) ===== */}
+      {/* <div className="print-only">
         {renderReportContent()}
-      </div>
-
-      {/* Footer */}
-      <div className="px-6 py-4 border-t bg-gray-50 flex justify-between items-center">
-        <div className="text-sm text-gray-600">
-          Report ID: {report.id} • Type: {report.type}
-        </div>
-        <Button variant="outline" onClick={onClose}>
-          Close
-        </Button>
-      </div>
-    </div>
+      </div> */}
+      <ReportPrint ref={printRef}>
+        {renderReportContent()}
+      </ReportPrint>
+    </>
   );
 };
 

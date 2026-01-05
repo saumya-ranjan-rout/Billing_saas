@@ -24,6 +24,7 @@ export const useApi = <T>(): UseApiReturn<T> => {
 
   const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://192.168.29.179:3001";
 
+
   // console.log("API_BASE", API_BASE);
 
   const request = useCallback(async (url: string, options?: RequestInit) => {

@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express'; 
+import { Router, Request, Response } from 'express';
 import { TenantController } from '../controllers/TenantController';
 import { AuthController } from '../controllers/AuthController';
 import { authMiddleware } from '../middleware/auth';
@@ -57,7 +57,7 @@ router.get(
 // Public routes
 router.get('/me', authMiddleware, (req: Request, res: Response) => {
   if (!req.user) {
-  
+
     return res.status(401).json({ success: false, message: 'Not authenticated' });
   }
   //  console.log('auth routes:',req.user);
@@ -91,6 +91,16 @@ router.put(
   tenantMiddleware,
   validationMiddleware(updateTenantSchema),
   tenantController.updateTenant.bind(tenantController)
+);
+
+router.post(
+  "/forgot-password",
+  authController.forgotPassword.bind(authController)
+);
+
+router.post(
+  "/reset-password",
+  authController.resetPassword.bind(authController)
 );
 
 export default router;

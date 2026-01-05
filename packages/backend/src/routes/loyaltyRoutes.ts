@@ -4,8 +4,8 @@ import { LoyaltyService } from '../services/loyalty/LoyaltyService';
 import { authMiddleware } from '../middleware/auth';
 import { tenantMiddleware } from '../middleware/tenant';
 import { validationMiddleware } from '../middleware/validation';
-import { 
-  redeemCashbackSchema, 
+import {
+  redeemCashbackSchema,
   updateProgramSchema,
   calculateCashbackSchema
 } from '../utils/validators';
@@ -18,11 +18,6 @@ const loyaltyController = new LoyaltyController(loyaltyService);
 
 // All routes require authentication and tenant context
 router.use(authMiddleware, tenantMiddleware, checkSubscription);
-
-
-
-
-
 
 router.put(
   '/program/:programId',
@@ -76,8 +71,8 @@ export default router;
 // import { authMiddleware } from '../middleware/auth';
 // import { tenantMiddleware } from '../middleware/tenant';
 // import { validationMiddleware } from '../middleware/validation';
-// import { 
-//   redeemCashbackSchema, 
+// import {
+//   redeemCashbackSchema,
 //   updateProgramSchema,
 //   calculateCashbackSchema
 // } from '../utils/validators';
