@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top IT Consulting & Software Development in India | 3SD Solutions</title>
+    <meta name="description" content="Empower your business with AI-driven IT solutions from 3SD Solutions. Custom software development, AI/ML, IoT, and digital marketing services in Bhubaneswar, Odisha – serving global clients affordably.">
+    <!-- Primary Keywords: IT consulting India, software development Bhubaneswar, AI solutions Odisha -->
+    <!-- Schema Markup for Organization -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "3SD Solutions",
+        "url": "https://www.3sdsolutions.com",
+        "logo": "https://www.3sdsolutions.com/logo.png",
+        "description": "Leading IT consulting firm specializing in AI, software development, and digital marketing.",
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Bhubaneswar",
+            "addressRegion": "Odisha",
+            "addressCountry": "India"
+        },
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+91-9556600999",
+            "contactType": "Customer Service"
+        },
+        "sameAs": ["https://www.linkedin.com/company/3sdsolutions"]
+    }
+    </script>
+    <!-- Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN for rapid styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1E3A8A',
+                        accent: '#10B981',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lottie for Micro-Animations (CDN) -->
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <!-- AOS for Parallax & Animations -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .dark body { background-color: #0f172a; color: #f1f5f9; }
+        /* Parallax Hero */
+        .hero-bg { background-attachment: fixed; background-position: center; background-repeat: no-repeat; background-size: cover; }
+        /* Hover Animations */
+        .card-hover { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        /* Dark Mode Toggle */
+        .dark-toggle { transition: all 0.3s; }
+    </style>
+</head>
+<body class="bg-white text-gray-900 dark:bg-slate-900 dark:text-white">
+    <!-- Dark Mode Toggle -->
+    <button id="darkToggle" class="fixed top-4 right-4 z-50 p-2 rounded-full bg-primary text-white dark-toggle" onclick="toggleDarkMode()">
+        <span id="toggleIcon">🌙</span>
+    </button>
+    <script>
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const icon = document.getElementById('toggleIcon');
+            icon.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
+        }
+        // Load saved preference
+        if (localStorage.theme === 'dark' || (!localStorage.theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            document.getElementById('toggleIcon').textContent = '☀️';
+        }
+    </script>
+
+    <!-- Header/Navigation -->
+    <nav class="bg-white shadow-lg dark:bg-slate-800 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-2xl font-bold text-primary">3SD Solutions</a>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#services" class="text-gray-700 hover:text-primary dark:text-gray-300">Services</a>
+                    <a href="#products" class="text-gray-700 hover:text-primary dark:text-gray-300">Products</a>
+                    <a href="/about" class="text-gray-700 hover:text-primary dark:text-gray-300">About</a>
+                    <a href="/blog" class="text-gray-700 hover:text-primary dark:text-gray-300">Blog</a>
+                    <a href="/contact" class="bg-accent text-white px-4 py-2 rounded-lg hover:bg-green-600">Contact Us</a>
+                </div>
+                <div class="md:hidden">
+                    <button class="hamburger">☰</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section: Video Background Placeholder (Abstract AI Animations via Lottie) -->
+    <section class="hero-bg relative h-screen flex items-center justify-center text-center text-white overflow-hidden" style="background: linear-gradient(rgba(30,58,138,0.8), rgba(30,58,138,0.8)), url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 1000 1000\"><defs><pattern id=\"grid\" width=\"100\" height=\"100\" patternUnits=\"userSpaceOnUse\"><path d=\"M 100 0 L 0 0 0 100\" fill=\"none\" stroke=\"rgba(255,255,255,0.1)\" stroke-width=\"1\"/></pattern></defs><rect width=\"100%\" height=\"100%\" fill=\"url(%23grid)\"/></svg>');" data-aos="fade-in">
+        <div class="absolute inset-0">
+            <!-- Lottie Animation for AI Particles -->
+            <lottie-player src="https://assets4.lottiefiles.com/packages/lf20_oeh9yqdv.json" background="transparent" speed="1" style="width: 100%; height: 100%;" loop autoplay></lottie-player>
+        </div>
+        <div class="relative z-10 max-w-4xl mx-auto px-4">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6" data-aos="zoom-in" data-aos-delay="200">Empower Your Business with AI-Driven IT Solutions</h1>
+            <p class="text-xl md:text-2xl mb-8 opacity-90">From Odisha to Global – Innovative Software, Digital Growth, and Tech Partnerships</p>
+            <div class="space-x-4">
+                <a href="#services" class="bg-accent text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-green-600 transition">Explore Services</a>
+                <a href="/contact" class="border-2 border-white text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-white hover:text-primary transition">Get a Free Quote</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Signals Section -->
+    <section class="py-16 bg-gray-50 dark:bg-slate-800" data-aos="fade-up">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-12">Why Choose 3SD Solutions?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="bg-white dark:bg-slate-700 p-6 rounded-lg shadow-md">
+                    <div class="text-4xl mb-4">🎯</div>
+                    <h3 class="text-xl font-semibold mb-2">10+ Years in Tech Innovation</h3>
+                    <p>Delivering cutting-edge solutions since 2014.</p>
+                </div>
+                <div class="bg-white dark:bg-slate-700 p-6 rounded-lg shadow-md">
+                    <div class="text-4xl mb-4">📊</div>
+                    <h3 class="text-xl font-semibold mb-2">500+ Projects Delivered</h3>
+                    <p>Trusted by SMEs and enterprises worldwide.</p>
+                </div>
+                <div class="bg-white dark:bg-slate-700 p-6 rounded-lg shadow-md">
+                    <div class="text-4xl mb-4">🌍</div>
+                    <h3 class="text-xl font-semibold mb-2">Global Reach</h3>
+                    <p>From Bhubaneswar to USA – seamless collaboration.</p>
+                </div>
+                <div class="bg-white dark:bg-slate-700 p-6 rounded-lg shadow-md">
+                    <div class="text-4xl mb-4">💰</div>
+                    <h3 class="text-xl font-semibold mb-2">Affordable Excellence</h3>
+                    <p>High-impact tech without the premium price tag.</p>
+                </div>
+            </div>
+            <!-- Client Logos Carousel (Placeholder) -->
+            <div class="mt-12 flex justify-center space-x-8 opacity-70">
+                <img src="https://via.placeholder.com/100x50?text=Client+1" alt="Client Logo 1" class="h-10">
+                <img src="https://via.placeholder.com/100x50?text=Client+2" alt="Client Logo 2" class="h-10">
+                <img src="https://via.placeholder.com/100x50?text=Client+3" alt="Client Logo 3" class="h-10">
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Teasers: 3-Column -->
+    <section id="services" class="py-16" data-aos="fade-up">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Our Core Services</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- AI/ML Card -->
+                <div class="bg-white dark:bg-slate-700 p-8 rounded-lg shadow-lg card-hover text-center">
+                    <div class="text-5xl mb-4">🤖</div>
+                    <h3 class="text-2xl font-semibold mb-4">AI/ML Solutions</h3>
+                    <p class="mb-6">Predict trends and cut costs by 30% with intelligent automation tailored for your industry.</p>
+                    <a href="/services/ai-ml" class="text-accent font-semibold hover:underline">Learn More →</a>
+                </div>
+                <!-- Custom Dev Card -->
+                <div class="bg-white dark:bg-slate-700 p-8 rounded-lg shadow-lg card-hover text-center">
+                    <div class="text-5xl mb-4">💻</div>
+                    <h3 class="text-2xl font-semibold mb-4">Custom Software Development</h3>
+                    <p class="mb-6">Build scalable apps in Android, React, Java – from idea to launch in weeks.</p>
+                    <a href="/services/software-development" class="text-accent font-semibold hover:underline">Learn More →</a>
+                </div>
+                <!-- Digital Marketing Card -->
+                <div class="bg-white dark:bg-slate-700 p-8 rounded-lg shadow-lg card-hover text-center">
+                    <div class="text-5xl mb-4">📈</div>
+                    <h3 class="text-2xl font-semibold mb-4">Digital Marketing</h3>
+                    <p class="mb-6">Drive ROI with PPC, SEO, and reputation management – targeted for tech firms.</p>
+                    <a href="/services/digital-marketing" class="text-accent font-semibold hover:underline">Learn More →</a>
+                </div>
+            </div>
+            <!-- Interactive Slider Placeholder (for Emerging Tech) -->
+            <div class="mt-12 bg-gray-100 dark:bg-slate-800 p-8 rounded-lg">
+                <h4 class="text-xl font-semibold mb-4">Explore Emerging Tech: IoT & Data Analytics</h4>
+                <div class="flex space-x-4 overflow-x-auto">
+                    <div class="min-w-max p-4 bg-white dark:bg-slate-700 rounded">IoT: Connect devices for real-time insights.</div>
+                    <div class="min-w-max p-4 bg-white dark:bg-slate-700 rounded">Data Analytics: Unlock hidden patterns in your data.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Spotlight -->
+    <section id="products" class="py-16 bg-primary text-white" data-aos="fade-up">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-8">Featured Product: My Banc</h2>
+            <p class="text-xl mb-12 opacity-90">Revolutionary banking software for seamless financial management.</p>
+            <!-- Interactive Demo: Embed Video or Figma -->
+            <div class="relative w-full h-64 bg-black rounded-lg overflow-hidden">
+                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" class="w-full h-full" title="My Banc Demo" allowfullscreen></iframe> <!-- Placeholder Video -->
+            </div>
+            <a href="/products/my-banc" class="mt-8 inline-block bg-accent text-primary px-8 py-4 rounded-full font-semibold hover:bg-green-600 transition">Request Demo</a>
+        </div>
+    </section>
+
+    <!-- CTA Section with FAQ -->
+    <section class="py-16 bg-gray-50 dark:bg-slate-800" data-aos="fade-up">
+        <div class="max-w-4xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Ready to Transform Your Business?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">How does 3SD ensure data security in IoT projects?</h3>
+                    <p>With end-to-end encryption and compliance to GDPR/ISO standards.</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">What's our approach to custom ERP for SMEs?</h3>
+                    <p>Modular, scalable solutions starting at ₹5 lakhs – ROI in 6 months.</p>
+                </div>
+            </div>
+            <div class="text-center">
+                <a href="/contact" class="bg-primary text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-blue-800 transition">Start Your Project Today</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <h3 class="text-xl font-bold mb-4">3SD Solutions</h3>
+                <p>Bhubaneswar, Odisha | USA Office</p>
+                <p class="mt-2">+91 9556600999 | +1 (267) 678 0099</p>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Quick Links</h4>
+                <ul class="space-y-2">
+                    <li><a href="/services" class="hover:text-accent">Services</a></li>
+                    <li><a href="/products" class="hover:text-accent">Products</a></li>
+                    <li><a href="/blog" class="hover:text-accent">Blog</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Social</h4>
+                <div class="space-y-2">
+                    <a href="https://linkedin.com/company/3sdsolutions" class="hover:text-accent">LinkedIn</a>
+                    <!-- Add more -->
+                </div>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Newsletter</h4>
+                <form class="space-y-2">
+                    <input type="email" placeholder="Your email" class="w-full p-2 rounded dark:bg-slate-700">
+                    <button type="submit" class="w-full bg-accent p-2 rounded">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <div class="border-t border-slate-700 mt-8 pt-8 text-center">
+            <p>&copy; 2025 3SD Solutions. All rights reserved. | <a href="/privacy" class="hover:text-accent">Privacy Policy</a></p>
+        </div>
+    </footer>
+
+    <!-- Chat Widget Placeholder (Intercom-like) -->
+    <div id="chatWidget" class="fixed bottom-4 right-4 bg-accent text-white p-4 rounded-full cursor-pointer hover:scale-110 transition" onclick="openChat()">
+        💬 Chat with Us
+    </div>
+    <script>
+        function openChat() { alert('Chat opened! Integrate Intercom here.'); }
+    </script>
+
+    <!-- Initialize AOS -->
+    <script>
+        AOS.init({ duration: 1000, once: true });
+    </script>
+
+    <!-- Performance: Lazy Load Images (if added) -->
+    <script>
+        if ('IntersectionObserver' in window) {
+            const images = document.querySelectorAll('img[loading="lazy"]');
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src;
+                        img.classList.remove('opacity-0');
+                        imageObserver.unobserve(img);
+                    }
+                });
+            });
+            images.forEach(img => imageObserver.observe(img));
+        }
+    </script>
+</body>
+</html>

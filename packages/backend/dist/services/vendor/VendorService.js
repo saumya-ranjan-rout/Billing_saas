@@ -22,7 +22,7 @@ class VendorService {
     async getVendorBalance(tenantId, vendorId) {
         const totalDueResult = await this.purchaseRepository
             .createQueryBuilder("purchase_orders")
-            .select("SUM(purchase_orders.balanceDue)", "totalDue")
+            .select("SUM(purchase_orders.totalAmount)", "totalDue")
             .where("purchase_orders.tenantId = :tenantId", { tenantId })
             .andWhere("purchase_orders.vendorId = :vendorId", { vendorId })
             .getRawOne();

@@ -55,7 +55,7 @@ class CustomerService {
     async getCustomerBalance(tenantId, customerId) {
         const totalDueResult = await this.invoiceRepository
             .createQueryBuilder("invoices")
-            .select("SUM(invoices.balanceDue)", "totalDue")
+            .select("SUM(invoices.totalAmount)", "totalDue")
             .where("invoices.tenantId = :tenantId", { tenantId })
             .andWhere("invoices.customerId = :customerId", { customerId })
             .getRawOne();

@@ -52,7 +52,7 @@ const initializeFirebase = async (): Promise<boolean> => {
 app.use(cors({
   origin: process.env.NODE_ENV === 'production'
     ? ['https://yourdomain.com', 'https://www.yourdomain.com']
-    : ['http://192.168.29.17:3000', 'http://192.168.29.17:3001', 'http://192.168.29.17:3002'],
+    : ['http://192.168.29.179:3000', 'http://192.168.29.179:3001', 'http://192.168.29.179:3002'],
   credentials: true
 }));
  
