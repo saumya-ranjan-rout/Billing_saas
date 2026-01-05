@@ -71,9 +71,10 @@ class AuthController {
         }
         catch (error) {
             console.error("Error in register controller:", error);
-            res.status(500).json({
+            const status = error.status || 400;
+            res.status(status).json({
                 success: false,
-                message: error.message || "Registration failed",
+                error: error.message || "Registration failed"
             });
         }
     }
@@ -156,6 +157,39 @@ class AuthController {
         }
         catch (error) {
             res.status(400).json({ error: error.message });
+        }
+    }
+    async forgotPassword(req, res) {
+        try {
+            const { email } = req.body;
+            if (!email) {
+                return res.status(400).json({ message: "Email is required" });
+            }
+            await this.authService.forgotPassword(email);
+            return res.status(200).json({
+                success: true,
+                message: "Password reset email sent",
+            });
+        }
+        catch (error) {
+            return res.status(400).json({
+                message: error.message,
+            });
+        }
+    }
+    async resetPassword(req, res) {
+        try {
+            const { token, password } = req.body;
+            await this.authService.resetPasswordConfirm(token, password);
+            return res.status(200).json({
+                success: true,
+                message: "Password reset successful",
+            });
+        }
+        catch (error) {
+            return res.status(400).json({
+                message: error.message,
+            });
         }
     }
 }

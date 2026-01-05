@@ -129,6 +129,26 @@ class UserController {
             res.status(400).json({ error: getErrorMessage(error) });
         }
     }
+    async changePassword(req, res) {
+        try {
+            const { oldPassword, newPassword } = req.body;
+            if (!req.user) {
+                return res.status(401).json({ message: "Unauthorized" });
+            }
+            if (!oldPassword || !newPassword) {
+                return res.status(400).json({ message: "Old and new password are required" });
+            }
+            const userId = req.user.id;
+            const tenantId = req.user.tenantId;
+            await this.userService.changePassword(userId, tenantId, oldPassword, newPassword);
+            await this.cacheService.invalidatePattern(`users:${tenantId}:*`);
+            res.json({ message: "Password updated successfully" });
+        }
+        catch (error) {
+            logger_1.default.error("Change password error:", error);
+            res.status(400).json({ message: getErrorMessage(error) });
+        }
+    }
 }
 exports.UserController = UserController;
 //# sourceMappingURL=UserController.js.map

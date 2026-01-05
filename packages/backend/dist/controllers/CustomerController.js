@@ -270,10 +270,11 @@ class CustomerController {
                 return res.status(401).json({ error: "Unauthorized" });
             const tenantId = req.user.tenantId;
             const { amount, customerId } = req.body;
-            const balance = await this.customerService.getCustomerBalance(tenantId, customerId);
-            if (amount > balance.balance) {
+            const balanceResult = await this.customerService.getCustomerBalance(tenantId, customerId);
+            const balance = parseFloat(Number(balanceResult.balance || 0).toFixed(2));
+            if (amount > balance) {
                 return res.status(400).json({
-                    error: `Payment exceeds outstanding balance. Remaining balance: ${balance.balance}`
+                    error: `Payment exceeds outstanding balance. Remaining balance: ${balance}`
                 });
             }
             const payment = await this.customerService.recordPayment(req.body);

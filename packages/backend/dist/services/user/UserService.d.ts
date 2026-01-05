@@ -2,6 +2,8 @@ import { User } from "../../entities/User";
 import { PaginatedResponse } from "../../types/customTypes";
 export declare class UserService {
     private userRepository;
+    private subscriptionRepository;
+    private subscriptionPlanRepository;
     constructor();
     createUser(tenantId: string, userData: Partial<User>): Promise<User>;
     getUser(tenantId: string, userId: string): Promise<User>;
@@ -13,5 +15,6 @@ export declare class UserService {
     updateUser(tenantId: string, userId: string, updates: Partial<User>): Promise<User>;
     deleteUser(tenantId: string, userId: string): Promise<void>;
     resetPassword(tenantId: string, userId: string, newPassword: string): Promise<User>;
+    changePassword(userId: string, tenantId: string, oldPassword: string, newPassword: string): Promise<void>;
 }
 //# sourceMappingURL=UserService.d.ts.map

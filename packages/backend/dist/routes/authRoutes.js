@@ -41,5 +41,7 @@ router.get('/mewithtenant', auth_1.authMiddleware, authController.meWithTenant.b
 router.post('/', (0, validation_1.validationMiddleware)(validators_1.createTenantSchema), tenantController.createTenant.bind(tenantController));
 router.get('/', auth_1.authMiddleware, tenant_1.tenantMiddleware, (0, cache_1.cacheMiddleware)('3m'), tenantController.getTenantDetails.bind(tenantController));
 router.put('/', auth_1.authMiddleware, tenant_1.tenantMiddleware, (0, validation_1.validationMiddleware)(validators_1.updateTenantSchema), tenantController.updateTenant.bind(tenantController));
+router.post("/forgot-password", authController.forgotPassword.bind(authController));
+router.post("/reset-password", authController.resetPassword.bind(authController));
 exports.default = router;
 //# sourceMappingURL=authRoutes.js.map

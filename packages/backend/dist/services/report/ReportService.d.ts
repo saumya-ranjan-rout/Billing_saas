@@ -11,6 +11,7 @@ export declare class ReportService {
     private userRepository;
     private expenseRepository;
     private taxDetailRepository;
+    private purchaseOrderRepository;
     private cacheService;
     constructor();
     generateReport(tenantId: string, reportType: ReportType, format: ReportFormat, filters: any): Promise<Report>;

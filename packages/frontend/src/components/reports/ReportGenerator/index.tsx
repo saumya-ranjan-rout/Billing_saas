@@ -27,7 +27,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ onReportGenerated }) 
     { value: ReportType.PURCHASE_REGISTER, label: 'Purchase Register' },
     { value: ReportType.HSN_SUMMARY, label: 'HSN Summary' },
     { value: ReportType.TDS_REPORT, label: 'TDS Report' },
-    { value: ReportType.AUDIT_TRAIL, label: 'Audit Trail' },
+    // { value: ReportType.AUDIT_TRAIL, label: 'Audit Trail' },
   ];
 
   const formatOptions = [
@@ -47,7 +47,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ onReportGenerated }) 
 
       toast.success(`Report "${report.name}" is being generated`);
       onReportGenerated?.(report.id);
-    } catch (error:any) {
+    } catch (error: any) {
       toast.error(error?.message || 'Failed to generate report');
       // Error handled in the service hook
     }
@@ -60,41 +60,41 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ onReportGenerated }) 
   return (
     <div className="bg-white rounded-lg shadow-sm border p-6">
       <h2 className="text-xl font-semibold text-gray-900 mb-6">Generate New Report</h2>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-4">
-    <div className="flex flex-col space-y-1">
-  <label className="text-sm font-medium text-gray-700">Report Type</label>
-  <Select value={selectedReport} onValueChange={(value) => setSelectedReport(value as ReportType)}>
-    <SelectTrigger>
-      <SelectValue placeholder="Select report type" />
-    </SelectTrigger>
-    <SelectContent>
-      {reportTypes.map((r) => (
-        <SelectItem key={r.value} value={r.value}>
-          {r.label}
-        </SelectItem>
-      ))}
-    </SelectContent>
-  </Select>
-</div>
-          
-<div className="flex flex-col space-y-1">
-  <label className="text-sm font-medium text-gray-700">Output Format</label>
-  <Select value={selectedFormat} onValueChange={(value) => setSelectedFormat(value as ReportFormat)}>
-    <SelectTrigger>
-      <SelectValue placeholder="Select format" />
-    </SelectTrigger>
-    <SelectContent>
-      {formatOptions.map((opt) => (
-        <SelectItem key={opt.value} value={opt.value}>
-          {opt.label}
-        </SelectItem>
-      ))}
-    </SelectContent>
-  </Select>
-</div>
-          
+          <div className="flex flex-col space-y-1">
+            <label className="text-sm font-medium text-gray-700">Report Type</label>
+            <Select value={selectedReport} onValueChange={(value) => setSelectedReport(value as ReportType)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select report type" />
+              </SelectTrigger>
+              <SelectContent>
+                {reportTypes.map((r) => (
+                  <SelectItem key={r.value} value={r.value}>
+                    {r.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex flex-col space-y-1">
+            <label className="text-sm font-medium text-gray-700">Output Format</label>
+            <Select value={selectedFormat} onValueChange={(value) => setSelectedFormat(value as ReportFormat)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select format" />
+              </SelectTrigger>
+              <SelectContent>
+                {formatOptions.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <Input
               label="From Date"
@@ -103,7 +103,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ onReportGenerated }) 
               onChange={(e) => setFilters(prev => ({ ...prev, fromDate: e.target.value }))}
               required
             />
-            
+
             <Input
               label="To Date"
               type="date"
@@ -113,7 +113,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ onReportGenerated }) 
             />
           </div>
         </div>
-        
+
         <div className="space-y-4">
           <div className="bg-gray-50 rounded-lg p-4">
             <h4 className="font-medium text-gray-900 mb-2">Report Description</h4>
@@ -121,7 +121,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ onReportGenerated }) 
               {getReportDescription(selectedReport)}
             </p>
           </div>
-          
+
           <div className="bg-blue-50 rounded-lg p-4">
             <h4 className="font-medium text-blue-900 mb-2">Usage Tips</h4>
             <ul className="text-sm text-blue-700 list-disc list-inside space-y-1">
@@ -133,7 +133,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ onReportGenerated }) 
           </div>
         </div>
       </div>
-      
+
       <div className="flex justify-end space-x-3 mt-6 pt-4 border-t">
         <Button
           variant="outline"
@@ -146,7 +146,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ onReportGenerated }) 
         >
           Reset Filters
         </Button>
-        
+
         <Button
           onClick={handleGenerate}
           isLoading={loading}
@@ -160,16 +160,16 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ onReportGenerated }) 
 };
 
 const getReportDescription = (reportType: ReportType): string => {
-const descriptions: Partial<Record<ReportType, string>> = {
-  [ReportType.GSTR1_OUTWARD_SUPPLIES]: 'Detailed report of all outward supplies for GST return filing. Includes B2B, B2C transactions and HSN summary.',
-  [ReportType.GSTR3B_SUMMARY]: 'Monthly return summary showing tax liability, input tax credit, and net payable amount.',
-  [ReportType.SALES_REGISTER]: 'Comprehensive sales transaction register with GST breakdown and customer details.',
-  [ReportType.PURCHASE_REGISTER]: 'Complete purchase records with vendor information and input tax credit details.',
-  [ReportType.HSN_SUMMARY]: 'HSN/SAC code wise summary of goods and services for GST reporting.',
-  [ReportType.TDS_REPORT]: 'Tax deducted at source report with section-wise breakdown and vendor details.',
-  [ReportType.AUDIT_TRAIL]: 'Complete audit trail of all system activities and modifications.',
-};
-  
+  const descriptions: Partial<Record<ReportType, string>> = {
+    [ReportType.GSTR1_OUTWARD_SUPPLIES]: 'Detailed report of all outward supplies for GST return filing. Includes B2B, B2C transactions and HSN summary.',
+    [ReportType.GSTR3B_SUMMARY]: 'Monthly return summary showing tax liability, input tax credit, and net payable amount.',
+    [ReportType.SALES_REGISTER]: 'Comprehensive sales transaction register with GST breakdown and customer details.',
+    [ReportType.PURCHASE_REGISTER]: 'Complete purchase records with vendor information and input tax credit details.',
+    [ReportType.HSN_SUMMARY]: 'HSN/SAC code wise summary of goods and services for GST reporting.',
+    [ReportType.TDS_REPORT]: 'Tax deducted at source report with section-wise breakdown and vendor details.',
+    [ReportType.AUDIT_TRAIL]: 'Complete audit trail of all system activities and modifications.',
+  };
+
   return descriptions[reportType] || 'Generate detailed compliance report for the selected period.';
 };
 

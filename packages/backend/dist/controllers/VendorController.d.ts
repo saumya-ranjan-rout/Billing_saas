@@ -12,7 +12,7 @@ export declare class VendorController {
     deleteVendor(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
     searchVendors(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
     getVendorBalance(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
-    createPayment(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
+    createPayment(req: Request, res: Response): Promise<Response<any, Record<string, any>>>;
     getPaymentHistory(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
 }
 //# sourceMappingURL=VendorController.d.ts.map

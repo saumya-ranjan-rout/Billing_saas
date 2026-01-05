@@ -43,6 +43,7 @@ class AuthService extends BaseService_1.BaseService {
         this.emailService = new EmailService_1.EmailService();
         this.tenantRepository = database_1.AppDataSource.getRepository(Tenant_1.Tenant);
         this.subscriptionRepository = database_1.AppDataSource.getRepository(Subscription_1.Subscription);
+        this.userRepository = database_1.AppDataSource.getRepository(User_1.User);
         this.refreshTokens = new Set();
     }
     async registerWithTenant(data) {
@@ -52,6 +53,24 @@ class AuthService extends BaseService_1.BaseService {
         try {
             const tenantRepo = queryRunner.manager.getRepository(Tenant_1.Tenant);
             const userRepo = queryRunner.manager.getRepository(User_1.User);
+            if (data.email) {
+                const existingUser = await userRepo.findOne({ where: { email: data.email } });
+                if (existingUser) {
+                    throw { status: 400, message: "This email is already registered" };
+                }
+            }
+            if (data.gst) {
+                const existingGst = await tenantRepo.findOne({ where: { gst: data.gst } });
+                if (existingGst) {
+                    throw { status: 400, message: "This GST number is already registered" };
+                }
+            }
+            if (data.licenseNo) {
+                const existingLicense = await tenantRepo.findOne({ where: { licenseNo: data.licenseNo } });
+                if (existingLicense) {
+                    throw { status: 400, message: "This License No is already registered" };
+                }
+            }
             const tenant = tenantRepo.create({
                 name: `${data.firstName} ${data.lastName}`,
                 businessName: data.businessName ?? '',
@@ -89,8 +108,10 @@ class AuthService extends BaseService_1.BaseService {
         }
         catch (error) {
             await queryRunner.rollbackTransaction();
-            console.error('Error during registerWithTenant:', error);
-            throw error;
+            throw {
+                status: error.status || 400,
+                message: error.error || error.message || "Registration failed"
+            };
         }
         finally {
             await queryRunner.release();
@@ -322,6 +343,30 @@ class AuthService extends BaseService_1.BaseService {
         catch (error) {
             throw new Error('Failed to fetch tenants');
         }
+    }
+    async forgotPassword(email) {
+        const user = await this.userRepository.findOne({
+            where: { email },
+        });
+        if (!user) {
+            throw new Error("Email not registered");
+        }
+        const token = jwt.sign({
+            userId: user.id,
+            email: user.email,
+        }, process.env.JWT_SECRET, { expiresIn: "1h" });
+        const resetLink = `${process.env.FRONTEND_URL}/auth/reset-password?token=${token}`;
+        await this.emailService.sendPasswordResetEmail(user.email, token);
+    }
+    async resetPasswordConfirm(token, newPassword) {
+        const payload = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await this.userRepository.findOne({
+            where: { id: payload.userId },
+        });
+        if (!user)
+            throw new errors_1.UnauthorizedError("Invalid or expired reset token");
+        user.password = await bcryptjs_1.default.hash(newPassword, 10);
+        await this.userRepository.save(user);
     }
 }
 exports.AuthService = AuthService;

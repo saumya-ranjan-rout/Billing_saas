@@ -40,11 +40,13 @@ body {
   background: #a5a5a5;
 }
 
-[data-radix-popper-content-wrapper] > div {
+[data-radix-popper-content-wrapper]>div {
   background-color: white !important;
-  border: 1px solid #e5e7eb !important; /* Tailwind gray-200 */
-  border-radius: 0.375rem !important;   /* rounded-md */
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
+  border: 1px solid #e5e7eb !important;
+  /* Tailwind gray-200 */
+  border-radius: 0.375rem !important;
+  /* rounded-md */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
 }
 
 /* MODERN DASHBOARD UI ------------------------------------------------ */
@@ -53,7 +55,8 @@ body {
 .dashboard-title {
   font-size: 26px;
   font-weight: 700;
-  color: #0f172a; /* slate-900 */
+  color: #0f172a;
+  /* slate-900 */
 }
 
 .dashboard-subtitle {
@@ -82,7 +85,7 @@ body {
   background: #ffffff;
   border-radius: 14px;
   padding: 26px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
   transition: 0.25s ease;
 }
 
@@ -127,15 +130,18 @@ body {
 .users-page-title {
   font-size: 30px;
   font-weight: 800;
-  color: #0f172a; /* slate-900 */
+  color: #0f172a;
+  /* slate-900 */
   letter-spacing: -0.5px;
 }
 
 .users-container {
-  background: #f8fafc; /* slate-50 */
+  background: #f8fafc;
+  /* slate-50 */
   padding: 24px;
   border-radius: 12px;
-  border: 1px solid #e2e8f0; /* slate-200 */
+  border: 1px solid #e2e8f0;
+  /* slate-200 */
 }
 
 
@@ -146,15 +152,18 @@ body {
 .customers-page-title {
   font-size: 30px;
   font-weight: 800;
-  color: #0f172a; /* slate-900 */
+  color: #0f172a;
+  /* slate-900 */
   letter-spacing: -0.5px;
 }
 
 .customers-container {
-  background: #f8fafc; /* slate-50 */
+  background: #f8fafc;
+  /* slate-50 */
   padding: 24px;
   border-radius: 12px;
-  border: 1px solid #e2e8f0; /* slate-200 */
+  border: 1px solid #e2e8f0;
+  /* slate-200 */
 }
 
 /* ============================
@@ -164,15 +173,18 @@ body {
 .vendors-page-title {
   font-size: 30px;
   font-weight: 800;
-  color: #0f172a; /* slate-900 */
+  color: #0f172a;
+  /* slate-900 */
   letter-spacing: -0.5px;
 }
 
 .vendors-container {
-  background: #f8fafc; /* slate-50 */
+  background: #f8fafc;
+  /* slate-50 */
   padding: 24px;
   border-radius: 12px;
-  border: 1px solid #e2e8f0; /* slate-200 */
+  border: 1px solid #e2e8f0;
+  /* slate-200 */
 }
 
 
@@ -183,15 +195,18 @@ body {
 .products-page-title {
   font-size: 30px;
   font-weight: 800;
-  color: #0f172a; /* slate-900 */
+  color: #0f172a;
+  /* slate-900 */
   letter-spacing: -0.5px;
 }
 
 .products-container {
-  background: #f8fafc; /* slate-50 */
+  background: #f8fafc;
+  /* slate-50 */
   padding: 24px;
   border-radius: 12px;
-  border: 1px solid #e2e8f0; /* slate-200 */
+  border: 1px solid #e2e8f0;
+  /* slate-200 */
 }
 
 
@@ -202,15 +217,18 @@ body {
 .purchases-page-title {
   font-size: 30px;
   font-weight: 800;
-  color: #0f172a; /* slate-900 */
+  color: #0f172a;
+  /* slate-900 */
   letter-spacing: -0.5px;
 }
 
 .purchases-container {
-  background: #f8fafc; /* slate-50 */
+  background: #f8fafc;
+  /* slate-50 */
   padding: 24px;
   border-radius: 12px;
-  border: 1px solid #e2e8f0; /* slate-200 */
+  border: 1px solid #e2e8f0;
+  /* slate-200 */
 }
 
 
@@ -221,15 +239,18 @@ body {
 .invoices-page-title {
   font-size: 30px;
   font-weight: 800;
-  color: #0f172a; /* slate-900 */
+  color: #0f172a;
+  /* slate-900 */
   letter-spacing: -0.5px;
 }
 
 .invoices-container {
-  background: #f8fafc; /* slate-50 */
+  background: #f8fafc;
+  /* slate-50 */
   padding: 24px;
   border-radius: 12px;
-  border: 1px solid #e2e8f0; /* slate-200 */
+  border: 1px solid #e2e8f0;
+  /* slate-200 */
 }
 
 
@@ -240,15 +261,18 @@ body {
 .loyalty-page-title {
   font-size: 30px;
   font-weight: 800;
-  color: #0f172a; /* slate-900 */
+  color: #0f172a;
+  /* slate-900 */
   letter-spacing: -0.5px;
 }
 
 .loyalty-container {
-  background: #f8fafc; /* slate-50 */
+  background: #f8fafc;
+  /* slate-50 */
   padding: 24px;
   border-radius: 12px;
-  border: 1px solid #e2e8f0; /* slate-200 */
+  border: 1px solid #e2e8f0;
+  /* slate-200 */
 }
 
 
@@ -257,10 +281,12 @@ body {
    ============================ */
 
 .reports-container {
-  background: #f8fafc; /* slate-50 */
+  background: #f8fafc;
+  /* slate-50 */
   padding: 24px;
   border-radius: 12px;
-  border: 1px solid #e2e8f0; /* slate-200 */
+  border: 1px solid #e2e8f0;
+  /* slate-200 */
 }
 
 .reports-page-title {
@@ -272,7 +298,8 @@ body {
 
 .reports-subtitle {
   font-size: 15px;
-  color: #475569; /* slate-600 */
+  color: #475569;
+  /* slate-600 */
 }
 
 .reports-tab-btn {
@@ -283,18 +310,23 @@ body {
 }
 
 .reports-tab-active {
-  border-color: #3b82f6; /* blue-500 */
-  color: #2563eb; /* blue-600 */
+  border-color: #3b82f6;
+  /* blue-500 */
+  color: #2563eb;
+  /* blue-600 */
 }
 
 .reports-tab-inactive {
   border-color: transparent;
-  color: #64748b; /* slate-500 */
+  color: #64748b;
+  /* slate-500 */
 }
 
 .reports-tab-inactive:hover {
-  color: #1e293b; /* slate-800 */
-  border-color: #cbd5e1; /* slate-300 */
+  color: #1e293b;
+  /* slate-800 */
+  border-color: #cbd5e1;
+  /* slate-300 */
 }
 
 /* ============================
@@ -302,10 +334,12 @@ body {
    ============================ */
 
 .settings-container {
-  background: #f8fafc; /* slate-50 */
+  background: #f8fafc;
+  /* slate-50 */
   padding: 24px;
   border-radius: 12px;
-  border: 1px solid #e2e8f0; /* slate-200 */
+  border: 1px solid #e2e8f0;
+  /* slate-200 */
 }
 
 .settings-title {
@@ -327,15 +361,370 @@ body {
 .prof-page-title {
   font-size: 30px;
   font-weight: 800;
-  color: #0f172a; /* slate-900 */
+  color: #0f172a;
+  /* slate-900 */
   letter-spacing: -0.5px;
 }
 
 .prof-container {
-  background: #f8fafc; /* slate-50 */
+  background: #f8fafc;
+  /* slate-50 */
   padding: 24px;
   border-radius: 12px;
-  border: 1px solid #e2e8f0; /* slate-200 */
+  border: 1px solid #e2e8f0;
+  /* slate-200 */
 }
 
+/* ================= PRINT STYLES ================= */
+/* PRINT FIX */
+/* @media print {
 
+  html,
+  body {
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .report-content,
+  .print-area {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  table {
+    width: 100% !important;
+    table-layout: fixed;
+    border-collapse: collapse;
+  }
+
+  thead {
+    display: table-header-group; */
+/* repeat header */
+/* }
+
+  tfoot {
+    display: table-footer-group;
+  }
+
+  tr {
+    page-break-inside: avoid;
+  }
+
+  th,
+  td {
+    font-size: 10px;
+    word-break: break-word;
+    white-space: normal;
+  }
+
+  .print-hide {
+    display: none !important;
+  }
+} */
+
+/* Default: hide print-only content */
+/* .print-only {
+  display: none;
+}
+
+@media print { */
+
+/* Hide entire UI */
+/* body * {
+    visibility: hidden;
+  } */
+
+/* Show print-only content */
+/* .print-only,
+  .print-only * {
+    visibility: visible;
+  }
+
+  .print-only {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  @page {
+    size: A4 landscape;
+    margin: 10mm;
+  }
+
+  table {
+    width: 100%;
+    page-break-inside: auto;
+  }
+
+  tr {
+    page-break-inside: avoid;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+} */
+
+
+/* working */
+/* Hide nothing by default */
+/* .print-only {
+  display: none;
+}
+
+@media print { */
+
+/* Hide UI chrome */
+/* .print-hide {
+    display: none !important;
+  } */
+
+/* Hide everything visually */
+/* body * {
+    visibility: hidden;
+  } */
+
+/* Show printable content */
+/* .print-source,
+  .print-source * {
+    visibility: visible;
+  }
+
+  .print-source {
+    position: static;
+    width: 100%;
+    padding: 10mm;
+  }
+
+  @page {
+    size: A4 landscape;
+    margin: 10mm;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tr {
+    page-break-inside: avoid;
+  }
+
+  th,
+  td {
+    font-size: 10px;
+    padding: 4px;
+    word-break: break-word;
+    white-space: normal;
+  }
+
+  .print-area {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+} */
+
+/* working code */
+/* .print-only {
+  display: none;
+}
+
+@media print {
+
+  .print-hide {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+    width: 100%;
+    padding: 8mm;
+    transform: scale(0.95);
+    transform-origin: top left;
+  }
+
+  @page {
+    size: A4 landscape;
+    margin: 8mm;
+  }
+
+  table {
+    width: 100% !important;
+    border-collapse: collapse;
+    page-break-inside: auto;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tr {
+    page-break-inside: avoid;
+  }
+
+  th,
+  td {
+    font-size: 9px !important;
+    padding: 3px !important;
+    line-height: 1.2 !important;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  h3 {
+    page-break-after: avoid;
+  }
+
+} */
+
+/* working code */
+/* @media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  html,
+  body {
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .print-only,
+  .print-only * {
+    visibility: visible;
+  }
+
+  .print-only {
+    position: static;
+    width: 100%;
+  }
+
+  .print-hide {
+    display: none !important;
+  }
+
+  .print-section {
+    font-size: 12px;
+    line-height: 1.6;
+    page-break-inside: auto;
+  }
+
+  .page-break {
+    break-after: page;
+    page-break-after: always;
+  }
+
+  * {
+    overflow: visible !important;
+    max-height: none !important;
+  }
+} */
+ 
+/* working code for landscape view*/
+/* @media print {
+
+  @page {
+    size: A4 landscape;
+    margin: 10mm;
+  }
+
+  body {
+    margin: 0;
+  }
+
+  .print-wrapper {
+    padding: 10mm;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tr {
+    page-break-inside: avoid;
+  }
+
+  th,
+  td {
+    font-size: 10px;
+    padding: 4px;
+    word-break: break-word;
+    white-space: normal;
+  }
+}
+
+.print-wrapper {
+  display: none;
+}
+
+@media print {
+  .print-wrapper {
+    display: block;
+  }
+} */
+
+.print-wrapper {
+  display: none;
+}
+
+@media print {
+
+  @page {
+    /* size: A4 landscape; */
+    size: A4;
+    /* ✅ Portrait */
+    margin: 10mm;
+  }
+
+  body {
+    margin: 0;
+  }
+
+  .print-wrapper {
+    display: block;
+    padding: 10mm;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    page-break-inside: auto;
+  }
+
+  thead {
+    display: table-header-group;
+    /* ✅ repeat header */
+  }
+
+  tr {
+    page-break-inside: auto;
+    /* ✅ allow row flow */
+  }
+
+  th,
+  td {
+    font-size: 10px;
+    padding: 4px;
+    word-break: break-word;
+    white-space: normal;
+  }
+}

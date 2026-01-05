@@ -11,12 +11,12 @@ function getErrorMessage(error: unknown): string {
 }
 
 export class LoyaltyController {
-  constructor(private loyaltyService: LoyaltyService) {}
+  constructor(private loyaltyService: LoyaltyService) { }
 
   async processInvoice(req: Request, res: Response) {
     try {
       const { invoiceId } = req.params;
-      
+
       await this.loyaltyService.processInvoiceForLoyalty(invoiceId);
 
       res.json({
@@ -25,9 +25,9 @@ export class LoyaltyController {
       });
     } catch (error) {
       logger.error('Invoice processing error:', error);
-      res.status(400).json({ 
-        success: false, 
-        error: getErrorMessage(error) 
+      res.status(400).json({
+        success: false,
+        error: getErrorMessage(error)
       });
     }
   }
@@ -42,7 +42,7 @@ export class LoyaltyController {
       const tenantId = (req as any).user?.tenantId;
       const { customerId, amount, invoiceId } = req.body;
 
-   //   console.log("redeemCashback_customerId",customerId,"amount",amount,"invoiceId",invoiceId);
+      // console.log("redeemCashback_customerId",customerId,"amount",amount,"invoiceId",invoiceId);
 
       const transaction = await this.loyaltyService.redeemCashback(
         tenantId,
@@ -58,9 +58,9 @@ export class LoyaltyController {
       });
     } catch (error) {
       logger.error('Cashback redemption error:', error);
-      res.status(400).json({ 
-        success: false, 
-        error: getErrorMessage(error) 
+      res.status(400).json({
+        success: false,
+        error: getErrorMessage(error)
       });
     }
   }
@@ -78,9 +78,9 @@ export class LoyaltyController {
       });
     } catch (error) {
       logger.error('Customer summary error:', error);
-      res.status(400).json({ 
-        success: false, 
-        error: getErrorMessage(error) 
+      res.status(400).json({
+        success: false,
+        error: getErrorMessage(error)
       });
     }
   }
@@ -105,9 +105,9 @@ export class LoyaltyController {
       });
     } catch (error) {
       logger.error('Program update error:', error);
-      res.status(400).json({ 
-        success: false, 
-        error: getErrorMessage(error) 
+      res.status(400).json({
+        success: false,
+        error: getErrorMessage(error)
       });
     }
   }
@@ -125,9 +125,9 @@ export class LoyaltyController {
       });
     } catch (error) {
       logger.error('Program stats error:', error);
-      res.status(400).json({ 
-        success: false, 
-        error: getErrorMessage(error) 
+      res.status(400).json({
+        success: false,
+        error: getErrorMessage(error)
       });
     }
   }
@@ -150,9 +150,9 @@ export class LoyaltyController {
       });
     } catch (error) {
       logger.error('Cashback calculation error:', error);
-      res.status(400).json({ 
-        success: false, 
-        error: getErrorMessage(error) 
+      res.status(400).json({
+        success: false,
+        error: getErrorMessage(error)
       });
     }
   }

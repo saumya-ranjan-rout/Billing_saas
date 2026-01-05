@@ -17,6 +17,14 @@ class EmailService {
                 pass: process.env.SMTP_PASS,
             },
         });
+        this.transporter.verify((error, success) => {
+            if (error) {
+                console.error("SMTP Error:", error);
+            }
+            else {
+                console.log("SMTP Server is ready to send emails");
+            }
+        });
     }
     async sendInvitationEmail(to, userId, tenantId) {
         const invitationLink = `${process.env.FRONTEND_URL}/invite?token=${this.generateInvitationToken(userId, tenantId)}`;
@@ -39,7 +47,7 @@ class EmailService {
         }
     }
     async sendPasswordResetEmail(to, resetToken) {
-        const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+        const resetLink = `${process.env.FRONTEND_URL}/auth/reset-password?token=${resetToken}`;
         const mailOptions = {
             from: process.env.EMAIL_FROM,
             to,
@@ -86,6 +94,55 @@ class EmailService {
     }
     generateInvitationToken(userId, tenantId) {
         return "invitation-token";
+    }
+    async sendSubscriptionExpiryMail({ to, daysLeft, endDate, }) {
+        const subject = daysLeft === 0
+            ? "Your subscription expires today"
+            : `Your subscription expires in ${daysLeft} days`;
+        const html = `
+    <h2>Subscription Expiry Notice</h2>
+
+    <p>
+      ${daysLeft === 0
+            ? "Your subscription expires <strong>today</strong>."
+            : `Your subscription will expire in <strong>${daysLeft} days</strong>.`}
+    </p>
+
+    <p>
+      <strong>Expiry Date:</strong> ${endDate.toDateString()}
+    </p>
+
+    <p>
+      Please renew your subscription to avoid any interruption in services.
+    </p>
+
+    <a
+      href="${process.env.FRONTEND_URL}/auth/login"
+      style="
+        display:inline-block;
+        padding:10px 16px;
+        background:#2563eb;
+        color:#ffffff;
+        text-decoration:none;
+        border-radius:6px;
+        margin-top:10px;
+      "
+    >
+      Renew Subscription
+    </a>
+
+    <p style="margin-top:20px">
+      Regards,<br />
+      Billing Team
+    </p>
+  `;
+        const mailOptions = {
+            from: process.env.EMAIL_FROM,
+            to,
+            subject,
+            html,
+        };
+        await this.transporter.sendMail(mailOptions);
     }
 }
 exports.EmailService = EmailService;

@@ -623,7 +623,7 @@ export class ReportService {
         cess,
         totalAmount: Number(invoice.totalAmount) || 0,
         paymentStatus: invoice.status,
-        paymentDate: invoice.paidDate,
+        // paymentDate: invoice.paidDate,
         placeOfSupply: invoice.customer?.billingAddress?.state || 'Not specified'
       };
     });

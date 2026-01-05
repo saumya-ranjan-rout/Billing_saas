@@ -22,7 +22,7 @@ class VendorService {
     async getVendorBalance(tenantId, vendorId) {
         const totalDueResult = await this.purchaseRepository
             .createQueryBuilder("purchase_orders")
-            .select("SUM(purchase_orders.balanceDue)", "totalDue")
+            .select("SUM(purchase_orders.totalAmount)", "totalDue")
             .where("purchase_orders.tenantId = :tenantId", { tenantId })
             .andWhere("purchase_orders.vendorId = :vendorId", { vendorId })
             .getRawOne();
@@ -72,6 +72,38 @@ class VendorService {
             if (vendorData.pan && !(0, validators_1.validatePAN)(vendorData.pan)) {
                 throw new Error('Invalid PAN format');
             }
+            if (vendorData.email) {
+                const existingEmail = await this.vendorRepository.findOne({
+                    where: { email: vendorData.email, tenantId, deletedAt: (0, typeorm_1.IsNull)() }
+                });
+                if (existingEmail) {
+                    throw new Error("Email already exists");
+                }
+            }
+            if (vendorData.phone) {
+                const existingPhone = await this.vendorRepository.findOne({
+                    where: { phone: vendorData.phone, tenantId, deletedAt: (0, typeorm_1.IsNull)() }
+                });
+                if (existingPhone) {
+                    throw new Error("Phone number already exists");
+                }
+            }
+            if (vendorData.gstin) {
+                const existingGST = await this.vendorRepository.findOne({
+                    where: { gstin: vendorData.gstin, tenantId, deletedAt: (0, typeorm_1.IsNull)() }
+                });
+                if (existingGST) {
+                    throw new Error("GST number already exists");
+                }
+            }
+            if (vendorData.pan) {
+                const existingPAN = await this.vendorRepository.findOne({
+                    where: { pan: vendorData.pan, tenantId, deletedAt: (0, typeorm_1.IsNull)() }
+                });
+                if (existingPAN) {
+                    throw new Error("PAN number already exists");
+                }
+            }
             const existingVendor = await this.vendorRepository.findOne({
                 where: { name: vendorData.name, tenantId, deletedAt: (0, typeorm_1.IsNull)() }
             });
@@ -120,14 +152,19 @@ class VendorService {
             if (options.phone) {
                 whereConditions.phone = (0, typeorm_1.ILike)(`%${options.phone}%`);
             }
-            if (options.joinedFrom || options.joinedTo) {
-                whereConditions.createdAt = {};
-                if (options.joinedFrom) {
-                    whereConditions.createdAt = (0, typeorm_1.MoreThanOrEqual)(new Date(options.joinedFrom));
-                }
-                if (options.joinedTo) {
-                    whereConditions.createdAt = (0, typeorm_1.LessThanOrEqual)(new Date(options.joinedTo));
-                }
+            if (joinedFrom && joinedTo) {
+                const from = new Date(joinedFrom);
+                const to = new Date(joinedTo);
+                to.setHours(23, 59, 59, 999);
+                whereConditions.createdAt = (0, typeorm_1.Between)(from, to);
+            }
+            else if (joinedFrom) {
+                whereConditions.createdAt = (0, typeorm_1.MoreThanOrEqual)(new Date(joinedFrom));
+            }
+            else if (joinedTo) {
+                const to = new Date(joinedTo);
+                to.setHours(23, 59, 59, 999);
+                whereConditions.createdAt = (0, typeorm_1.LessThanOrEqual)(to);
             }
             let [vendors, total] = await this.vendorRepository.findAndCount({
                 where: whereConditions,

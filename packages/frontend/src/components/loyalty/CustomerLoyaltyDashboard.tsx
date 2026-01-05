@@ -13,15 +13,15 @@ const CustomerLoyaltyDashboard: React.FC<CustomerLoyaltyDashboardProps> = ({
 }) => {
   const { summary, recentTransactions, program } = loyaltyData;
 
-const getTierColor = (tier: string) => {
-  const colors: Record<string, string> = {
-    bronze: 'bg-amber-100 text-amber-800',
-    silver: 'bg-gray-100 text-gray-800',
-    gold: 'bg-yellow-100 text-yellow-800',
-    platinum: 'bg-blue-100 text-blue-800'
+  const getTierColor = (tier: string) => {
+    const colors: Record<string, string> = {
+      bronze: 'bg-amber-100 text-amber-800',
+      silver: 'bg-gray-100 text-gray-800',
+      gold: 'bg-yellow-100 text-yellow-800',
+      platinum: 'bg-blue-100 text-blue-800'
+    };
+    return colors[tier] || 'bg-gray-100 text-gray-800';
   };
-  return colors[tier] || 'bg-gray-100 text-gray-800';
-};
 
   return (
     <div className="space-y-6">
@@ -97,14 +97,13 @@ const getTierColor = (tier: string) => {
                   {new Date(transaction.createdAt).toLocaleDateString()}
                 </div>
               </div>
-              <div className={`font-medium ${
-                transaction.cashbackAmount > 0 ? 'text-green-600' : 'text-red-600'
-              }`}>
+              <div className={`font-medium ${transaction.cashbackAmount > 0 ? 'text-green-600' : 'text-red-600'
+                }`}>
                 {transaction.cashbackAmount > 0 ? '+' : ''}{transaction.cashbackAmount}
               </div>
             </div>
           ))}
-          
+
           {(!recentTransactions || recentTransactions.length === 0) && (
             <div className="text-center text-gray-500 py-4">
               No transactions yet

@@ -46,8 +46,18 @@ const UserList: React.FC<UserListProps> = ({ onEditUser, refreshTrigger }) => {
   const { user: loggedInUser } = useAuth();
   console.log("Loggeninuser Data", loggedInUser);
 
-  const isAdminOrSuperAdmin =
-    ["admin", "super_admin"].includes(loggedInUser?.role ?? "");
+  const restrictedRoles = [
+    "finance",
+    "sales",
+    "support",
+    "member",
+    "user",
+  ];
+
+  const adminRoles = ["admin", "super_admin"];
+
+  const isRestrictedRole = restrictedRoles.includes(loggedInUser?.role ?? "");
+  const isAdminRole = adminRoles.includes(loggedInUser?.role ?? "");
 
   const { get, del } = useApi<PaginatedResponse<User>>();
 
@@ -72,9 +82,15 @@ const UserList: React.FC<UserListProps> = ({ onEditUser, refreshTrigger }) => {
       );
 
       let list = response.data;
-      
-      if (!isAdminOrSuperAdmin) {
-        list = list.filter((u) => !["admin", "super_admin"].includes(u.role));
+
+      // ❌ Remove own record for ALL roles
+      list = list.filter((u) => u.id !== loggedInUser?.id);
+
+      // ❌ Restricted roles can see Restricted roles
+      if (isRestrictedRole) {
+        list = list.filter((u) =>
+          restrictedRoles.includes(u.role)
+        );
       }
 
       setUsers(list);
@@ -162,7 +178,8 @@ const UserList: React.FC<UserListProps> = ({ onEditUser, refreshTrigger }) => {
       render: (value: any, row: User) => (
         <div className="flex space-x-3">
           {/* Hide Edit/Delete for logged-in user AND non-admin users */}
-          {isAdminOrSuperAdmin && loggedInUser?.id !== row.id && (
+          {/* {isAdminOrSuperAdmin && loggedInUser?.id !== row.id && ( */}
+          {!isRestrictedRole && (
             <>
               <button
                 onClick={() => onEditUser(row)}

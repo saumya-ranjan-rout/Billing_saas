@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/Input';
 // import { Select } from '@/components/ui/Select';
 import { useApi } from '../../hooks/useApi';
 import { toast } from 'sonner';
-import {Select, SelectTrigger, SelectContent, SelectItem, SelectValue} from "@/components/ui/Select";
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/Select";
 
 interface LoyaltySettingsProps {
   program: any;        // should include id
@@ -40,9 +40,32 @@ const LoyaltySettings: React.FC<LoyaltySettingsProps> = ({ program, onUpdate }) 
       toast.error("Program ID is missing");
       return;
     }
+
+    const payload = { ...data };
+
+    // 🔥 CLEANUP BASED ON REWARD TYPE
+    if (payload.rewardType === "discount") {
+      delete payload.cashbackPercentage;
+      delete payload.minimumPurchaseAmount;
+      delete payload.maximumCashbackAmount;
+      delete payload.pointsPerUnit;
+      delete payload.pointValue;
+    }
+
+    if (payload.rewardType === "cashback") {
+      delete payload.pointsPerUnit;
+      delete payload.pointValue;
+    }
+
+    if (payload.rewardType === "points") {
+      delete payload.cashbackPercentage;
+      delete payload.minimumPurchaseAmount;
+      delete payload.maximumCashbackAmount;
+    }
+
     setLoading(true);
     try {
-      await put(`/api/loyalty/program/${program.id}`, data);
+      await put(`/api/loyalty/program/${program.id}`, payload);
       toast.success('Loyalty program updated successfully');
       onUpdate();
     } catch (error: any) {
@@ -52,53 +75,54 @@ const LoyaltySettings: React.FC<LoyaltySettingsProps> = ({ program, onUpdate }) 
     }
   };
 
+  const Required = () => <span className="text-red-500">*</span>;
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
       <h3 className="text-lg font-semibold mb-4">Loyalty Program Settings</h3>
-      
+
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-  <Input
-  label="Program Name"
-  {...register('name', { required: 'Program name is required' })}
-  error={String(errors.name?.message || '')}
-/>
+        <Input
+          label={<span>Program Name <Required /></span>}
+          {...register('name', { required: 'Program name is required' })}
+          error={String(errors.name?.message || '')}
+        />
 
-
- <div>
-  <label className="block text-sm font-medium mb-1">Reward Type</label>
-  <Select
-    value={watch('rewardType')}
-    onValueChange={(value) => setValue('rewardType', value)}
-  >
-    <SelectTrigger>
-      <SelectValue placeholder="Select Reward Type" />
-    </SelectTrigger>
-    <SelectContent>
-      <SelectItem value="cashback">Cashback</SelectItem>
-      <SelectItem value="points">Points</SelectItem>
-      <SelectItem value="discount">Discount</SelectItem>
-    </SelectContent>
-  </Select>
-</div>
+        <div>
+          <label className="block text-sm font-medium mb-1">Reward Type <Required /></label>
+          <Select
+            value={watch('rewardType')}
+            onValueChange={(value) => setValue('rewardType', value)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select Reward Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="cashback">Cashback</SelectItem>
+              <SelectItem value="points">Points</SelectItem>
+              <SelectItem value="discount">Discount</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
         {rewardType === 'cashback' && (
           <>
             <Input
-              label="Cashback Percentage"
+              label={<span>Cashback Percentage <Required /></span>}
               type="number"
               step="0.1"
-              {...register('cashbackPercentage', { 
+              {...register('cashbackPercentage', {
                 required: 'Percentage is required',
                 min: { value: 0, message: 'Percentage must be positive' },
                 max: { value: 100, message: 'Percentage cannot exceed 100' }
               })}
-           error={String(errors.cashbackPercentage?.message || '')}
+              error={String(errors.cashbackPercentage?.message || '')}
             />
 
             <Input
-              label="Minimum Purchase Amount (₹)"
+              label={<span>Minimum Purchase Amount (₹) <Required /></span>}
               type="number"
-              {...register('minimumPurchaseAmount', { 
+              {...register('minimumPurchaseAmount', {
                 required: 'Minimum amount is required',
                 min: { value: 0, message: 'Amount must be positive' }
               })}
@@ -108,10 +132,10 @@ const LoyaltySettings: React.FC<LoyaltySettingsProps> = ({ program, onUpdate }) 
             <Input
               label="Maximum Cashback Amount (₹)"
               type="number"
-              {...register('maximumCashbackAmount', { 
+              {...register('maximumCashbackAmount', {
                 min: { value: 0, message: 'Amount must be positive' }
               })}
-           error={String(errors.maximumCashbackAmount?.message || '')}
+              error={String(errors.maximumCashbackAmount?.message || '')}
             />
           </>
         )}
@@ -119,9 +143,9 @@ const LoyaltySettings: React.FC<LoyaltySettingsProps> = ({ program, onUpdate }) 
         {rewardType === 'points' && (
           <>
             <Input
-              label="Points per ₹100 spent"
+              label={<span>Points per ₹100 spent <Required /></span>}
               type="number"
-              {...register('pointsPerUnit', { 
+              {...register('pointsPerUnit', {
                 required: 'Points per unit is required',
                 min: { value: 1, message: 'Must be at least 1 point' }
               })}
@@ -129,10 +153,10 @@ const LoyaltySettings: React.FC<LoyaltySettingsProps> = ({ program, onUpdate }) 
             />
 
             <Input
-              label="Point Value (₹)"
+              label={<span>Point Value (₹) <Required /></span>}
               type="number"
               step="0.01"
-              {...register('pointValue', { 
+              {...register('pointValue', {
                 required: 'Point value is required',
                 min: { value: 0.01, message: 'Value must be positive' }
               })}

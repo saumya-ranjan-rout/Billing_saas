@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { NotificationService } from "services/NotificationService";
+import { NotificationService } from "../services/NotificationService";
 
 export class NotificationController {
   private notificationService = new NotificationService();

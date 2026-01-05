@@ -32,29 +32,55 @@ const database_1 = require("../../config/database");
 const User_1 = require("../../entities/User");
 const logger_1 = __importDefault(require("../../utils/logger"));
 const bcrypt = __importStar(require("bcryptjs"));
+const Subscription_1 = require("../../entities/Subscription");
+const SubscriptionPlan_1 = require("../../entities/SubscriptionPlan");
 class UserService {
     constructor() {
         this.userRepository = database_1.AppDataSource.getRepository(User_1.User);
+        this.subscriptionRepository = database_1.AppDataSource.getRepository(Subscription_1.Subscription);
+        this.subscriptionPlanRepository = database_1.AppDataSource.getRepository(SubscriptionPlan_1.SubscriptionPlan);
     }
     async createUser(tenantId, userData) {
         try {
             const existingUser = await this.userRepository.findOne({
                 where: { email: userData.email, tenantId },
             });
-            if (existingUser)
+            if (existingUser) {
                 throw new Error("User with this email already exists");
+            }
+            const activeSubscription = await this.subscriptionRepository.findOne({
+                where: {
+                    tenantId,
+                    startDate: (0, typeorm_1.LessThanOrEqual)(new Date()),
+                    endDate: (0, typeorm_1.MoreThan)(new Date()),
+                },
+                order: { endDate: "DESC" },
+                relations: ["plan"],
+            });
+            if (!activeSubscription) {
+                throw new Error("No active subscription found for this tenant");
+            }
+            const maxUsers = activeSubscription.plan?.maxUsers;
+            if (!maxUsers) {
+                throw new Error("Subscription plan has no maxUsers defined");
+            }
             const activeUsersCount = await this.userRepository.count({
                 where: { status: User_1.UserStatus.ACTIVE, tenantId },
             });
-            if (activeUsersCount >= 3) {
-                throw new Error("Tenant already has 3 active users");
+            if (activeUsersCount >= maxUsers) {
+                const msg = `User limit reached. Allowed: ${maxUsers}, Current: ${activeUsersCount}`;
+                throw new Error(msg);
             }
-            const user = this.userRepository.create({ ...userData, tenantId });
-            const savedUser = await this.userRepository.save(user);
-            return await this.userRepository.findOneOrFail({
+            const newUser = this.userRepository.create({
+                ...userData,
+                tenantId,
+            });
+            const savedUser = await this.userRepository.save(newUser);
+            const finalUser = await this.userRepository.findOneOrFail({
                 where: { id: savedUser.id },
                 relations: ["tenant"],
             });
+            return finalUser;
         }
         catch (error) {
             logger_1.default.error("Error creating user:", error);
@@ -92,10 +118,35 @@ class UserService {
         };
     }
     async updateUser(tenantId, userId, updates) {
-        const user = await this.getUser(tenantId, userId);
-        Object.assign(user, updates);
-        await this.userRepository.save(user);
-        return this.userRepository.findOneOrFail({ where: { id: userId }, relations: ["tenant"] });
+        try {
+            const user = await this.getUser(tenantId, userId);
+            if (updates.email && updates.email !== user.email) {
+                const emailExists = await this.userRepository.findOne({
+                    where: { email: updates.email, tenantId },
+                });
+                if (emailExists) {
+                    throw new Error("User with this email already exists");
+                }
+            }
+            if (updates.status === User_1.UserStatus.ACTIVE && user.status !== User_1.UserStatus.ACTIVE) {
+                const activeUsersCount = await this.userRepository.count({
+                    where: { status: User_1.UserStatus.ACTIVE, tenantId },
+                });
+                if (activeUsersCount >= 3) {
+                    throw new Error("Tenant already has 3 active users");
+                }
+            }
+            Object.assign(user, updates);
+            await this.userRepository.save(user);
+            return await this.userRepository.findOneOrFail({
+                where: { id: userId },
+                relations: ["tenant"],
+            });
+        }
+        catch (error) {
+            logger_1.default.error("Error updating user:", error);
+            throw error;
+        }
     }
     async deleteUser(tenantId, userId) {
         const user = await this.getUser(tenantId, userId);
@@ -107,6 +158,20 @@ class UserService {
         user.password = await bcrypt.hash(newPassword, 12);
         await this.userRepository.save(user);
         return user;
+    }
+    async changePassword(userId, tenantId, oldPassword, newPassword) {
+        const user = await this.userRepository.findOne({
+            where: { id: userId, tenantId },
+        });
+        if (!user) {
+            throw new Error("User not found");
+        }
+        const isMatch = await user.validatePassword(oldPassword);
+        if (!isMatch) {
+            throw new Error("Old password is incorrect");
+        }
+        user.password = await bcrypt.hash(newPassword, 12);
+        await this.userRepository.save(user);
     }
 }
 exports.UserService = UserService;

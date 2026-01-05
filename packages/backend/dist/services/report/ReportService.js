@@ -39,6 +39,7 @@ const Product_1 = require("../../entities/Product");
 const User_1 = require("../../entities/User");
 const Expense_1 = require("../../entities/Expense");
 const TaxDetail_1 = require("../../entities/TaxDetail");
+const PurchaseOrder_1 = require("../../entities/PurchaseOrder");
 const logger_1 = __importDefault(require("../../utils/logger"));
 const ExcelJS = __importStar(require("exceljs"));
 const fs = __importStar(require("fs"));
@@ -57,6 +58,7 @@ class ReportService {
         this.userRepository = database_1.AppDataSource.getRepository(User_1.User);
         this.expenseRepository = database_1.AppDataSource.getRepository(Expense_1.Expense);
         this.taxDetailRepository = database_1.AppDataSource.getRepository(TaxDetail_1.TaxDetail);
+        this.purchaseOrderRepository = database_1.AppDataSource.getRepository(PurchaseOrder_1.PurchaseOrder);
         this.cacheService = new CacheService_1.CacheService();
     }
     async generateReport(tenantId, reportType, format, filters) {
@@ -503,9 +505,9 @@ class ReportService {
                 cgst,
                 sgst,
                 igst,
+                cess,
                 totalAmount: Number(invoice.totalAmount) || 0,
                 paymentStatus: invoice.status,
-                paymentDate: invoice.paidDate,
                 placeOfSupply: invoice.customer?.billingAddress?.state || 'Not specified'
             };
         });
@@ -801,9 +803,17 @@ class ReportService {
             },
             relations: ['vendor']
         });
+        const purchases = await this.purchaseOrderRepository.find({
+            where: {
+                tenantId,
+                orderDate: (0, typeorm_1.Between)(new Date(filters.fromDate), new Date(filters.toDate)),
+                deletedAt: (0, typeorm_1.IsNull)()
+            },
+            relations: ['vendor', 'items']
+        });
         return {
             summary: {
-                totalPurchases: payments.length,
+                totalPurchases: purchases.length,
                 totalAmount: payments.reduce((sum, p) => sum + Number(p.amount), 0)
             },
             records: payments.map(p => ({
