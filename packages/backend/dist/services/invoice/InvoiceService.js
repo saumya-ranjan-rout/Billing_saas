@@ -18,6 +18,7 @@ const CacheService_1 = require("../cache/CacheService");
 const TaxDetail_1 = require("../../entities/TaxDetail");
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
+const EmailService_1 = require("../external/EmailService");
 class InvoiceService {
     constructor() {
         this.invoiceRepository = database_1.AppDataSource.getRepository(Invoice_1.Invoice);
@@ -28,6 +29,10 @@ class InvoiceService {
         this.taxDetailRepository = database_1.AppDataSource.getRepository(TaxDetail_1.TaxDetail);
         this.loyaltyService = new LoyaltyService_1.LoyaltyService();
         this.cacheService = new CacheService_1.CacheService();
+        this.emailService = new EmailService_1.EmailService();
+    }
+    async sendGeneratedInvoiceEmail(to, invoiceNo, pdfBuffer) {
+        await this.emailService.sendGeneratedInvoiceEmail(to, invoiceNo, pdfBuffer);
     }
     async getInvoicesWithKeysetPagination(tenantId, options) {
         const { cursor, limit = 20, search, status, customerId, startDate, endDate, } = options;
@@ -202,6 +207,7 @@ class InvoiceService {
     }
     async safeProcessLoyalty(invoiceId) {
         try {
+            console.log("🚀 safeProcessLoyalty started for", invoiceId);
             setTimeout(async () => {
                 try {
                     await this.loyaltyService.processInvoiceForLoyalty(invoiceId);
@@ -361,8 +367,12 @@ class InvoiceService {
                 this.cacheService.invalidatePattern(`cache:${tenantId}:/api/invoices*`),
                 this.cacheService.invalidatePattern(`dashboard:${tenantId}`)
             ]);
+            console.log("🔥 Before commit");
             await queryRunner.commitTransaction();
+            console.log("🔥 After commit");
+            console.log("🔥 Calling safeProcessLoyalty");
             this.safeProcessLoyalty(savedInvoice.id);
+            console.log("🔥 Called safeProcessLoyalty");
             return savedInvoice;
         }
         catch (error) {

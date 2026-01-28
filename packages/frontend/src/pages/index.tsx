@@ -12,15 +12,18 @@ import {
   Star
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+// new
+import Head from "next/head";
+import Image from "next/image";
 
 export default function Home() {
   const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
-  const [isClient, setIsClient] = useState(false);
+  // const [isClient, setIsClient] = useState(false);
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  // useEffect(() => {
+  //   setIsClient(true);
+  // }, []);
 
   const handleGetStarted = () => {
     if (isLoading) return;
@@ -28,10 +31,81 @@ export default function Home() {
     else router.push('/auth/login');
   };
 
-  if (!isClient) return null;
+  const businesses = [
+    "Agencies",
+    "Freelancers",
+    "Consultants",
+    "Gyms",
+    "Retail Shops",
+  ];
+
+  const toSlug = (text: string) =>
+    text.toLowerCase().replace(/\s+/g, "-");
+
+  // if (!isClient) return null;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-100 text-slate-900 antialiased">
+      <Head>
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <title>
+          Best Cloud-Based Billing Software for Small Businesses & Freelancers
+          in India | Free 15-Day Trial
+        </title>
+
+        <meta name="description"
+          content="Best cloud-based billing software for small businesses and freelancers in India. Create GST-compliant invoices, automate payment reminders, manage taxes, and reduce late payments. Start a free 15-day trial today – no credit card required." />
+
+        <meta name="keywords"
+          content="billing software, GST invoicing software, cloud billing, invoice generator, payment reminders, small business billing, freelancer invoicing" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://billingsoftwareonline.com/" />
+
+        {/* SoftwareApplication Schema */}
+        <script type="application/ld+json" dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context"
+              : "https://schema.org", "@type": "SoftwareApplication", name: "Billing Software Online",
+            applicationCategory: "BusinessApplication", operatingSystem: "Web", offers: {
+              "@type": "Offer",
+              price: "0", priceCurrency: "INR",
+            }, aggregateRating: {
+              "@type": "AggregateRating", ratingValue: "4.8",
+              reviewCount: "250",
+            },
+          }),
+        }} />
+
+        {/* FAQ Schema */}
+        <script type="application/ld+json" dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context"
+              : "https://schema.org", "@type": "FAQPage", mainEntity: [{
+                "@type": "Question",
+                name: "Is this billing software GST compliant?", acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Yes, fully compliant with Indian GST invoicing standards.",
+                },
+              }, {
+                "@type": "Question",
+                name: "Do I need a credit card for the trial?", acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "No. Free 15-day trial without any payment details.",
+                },
+              }, {
+                "@type": "Question",
+                name: "Who is this billing software best for?", acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Freelancers, agencies, SMEs, consultants, and service businesses in India.",
+                },
+              },],
+          }),
+        }} />
+      </Head>
+
       {/* Decorative floating blobs */}
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
         <svg className="absolute top-0 left-1/2 -translate-x-1/2 opacity-40 blur-3xl mix-blend-plus-lighter" width="1200" height="600" viewBox="0 0 1200 600" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -50,7 +124,15 @@ export default function Home() {
       <header className="sticky top-0 z-50 backdrop-blur-md bg-white/60 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold shadow-md">3S</div>
+            {/* <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold shadow-md">3S</div> */}
+            <Image
+              src="/logo.png"
+              alt="Billing Software Logo"
+              width={60}
+              height={60}
+              className="rounded-lg"
+              priority
+            />
             <div>
               <h1 className="text-lg font-semibold tracking-tight">Billing Software</h1>
               <p className="text-xs text-slate-500 -mt-0.5">Simple. Secure. Scalable.</p>
@@ -58,6 +140,7 @@ export default function Home() {
           </div>
 
           <nav className="hidden md:flex items-center gap-6 text-sm">
+            {/* <a href="/indexMerge" className="hover:text-slate-900">Index</a> */}
             <a href="#features" className="hover:text-slate-900">Features</a>
             <a href="#pricing" className="hover:text-slate-900">Pricing</a>
             <a href="#testimonials" className="hover:text-slate-900">Customers</a>
@@ -78,8 +161,107 @@ export default function Home() {
 
       {/* Hero */}
       <main>
-        <section className="max-w-7xl mx-auto px-6 pt-12 pb-10">
+       
+
+        <section className="max-w-10xl mx-auto px-6 pt-12 pb-10">
+          <div className="absolute inset-0 bg-[radial-gradient(#e0e7ff_1px,transparent_1px)] [background-size:24px_24px] opacity-25" />
+                
+
+          <div className="relative max-w-10xl mx-auto px-6 pt-0 pb-24 text-center">
+
+            {/* <span className="inline-flex items-center rounded-full bg-blue-100 text-blue-700 px-4 py-1 text-sm font-semibold">
+              🇮🇳 Made for Indian Businesses
+            </span> */}
+
+            <h1 className="mt-6 max-w-7xl mx-auto text-3xl sm:text-4xl lg:text-5xl font-bold leading-[1.15] tracking-tight text-slate-900">
+              Best Cloud-Based Billing Software for Small Businesses & Freelancers
+            </h1>
+
+            <p className="mt-5 max-w-4xl mx-auto text-base sm:text-lg text-slate-600 leading-relaxed">
+              Create professional GST invoices, automate payment reminders,
+              manage taxes effortlessly, and get paid faster — all from a
+              secure, user-friendly dashboard.
+            </p>
+   <div className="mt-10 flex flex-wrap justify-center gap-3">
+              {["🔒 SSL Secured", "📊 GST Ready", "☁️ Encrypted Cloud", "⚡ Fast Setup"].map(
+                (item) => (
+                  <span
+                    key={item}
+                    className="rounded-full bg-blue-100 px-4 py-2 text-sm text-slate-600"
+                  >
+                    {item}
+                  </span>
+                )
+              )}
+            </div>
+            <div className="mt-10 flex flex-wrap justify-center gap-4">
+             {/* <a
+                href="/signup"
+                className="rounded-xl bg-blue-600 px-8 py-4 text-white font-semibold shadow-lg hover:shadow-xl hover:bg-blue-700 transition-all"
+              >
+                Start Free 15-Day Trial
+              </a>*/}
+
+              <a
+                href="#"
+                className="rounded-xl border border-slate-300 px-8 py-4 font-semibold text-slate-700 hover:bg-slate-50"
+              >
+                Try Free Invoice Generator →
+              </a>
+                </div>
+                <p className="mt-2 text-slate-600 text-sm">
+                  Choose your business to explore tools, workflows, and features designed specifically for your industry.
+                </p>
+
+                {/* BUTTONS */}
+                <div className="mt-8 flex flex-wrap justify-center gap-4">
+                  {[
+                    ["Agencies", "agencies"],
+                    ["Consultants", "consultants"],
+                    ["Freelancers", "freelancers"],
+                    ["Gyms", "gyms"],
+                    ["Retail Shops", "retail-shops"],
+                  ].map(([name, slug]) => (
+                    <button
+                      key={slug}
+                      onClick={() => router.push(`/tools/${slug}`)}
+className="rounded-full border border-slate-200 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-2.5 text-sm font-medium
+           hover:border-blue-500 hover:text-blue-700 hover:bg-gradient-to-r hover:from-white hover:to-indigo-600
+           shadow-sm transition-all duration-300"
+
+
+
+                    >
+                      {name}
+                    </button>
+                  ))}
+                </div>
+
+                <p className="mt-5 text-sm text-slate-600">
+                  Freelancers • Digital Agencies • Consultants • Retail Shops • Gyms • Service Providers
+                </p>
+
+                {/* TESTIMONIAL */}
+                <div className="mt-8 mx-auto max-w-4xl rounded-xl bg-slate-50 border border-slate-200 p-5">
+                  <p className="text-slate-700 font-semibold">
+                    “Reduced late payments by 40% in just 2 months – game-changer for my freelance business!”
+                  </p>
+                  <span className="mt-2 block text-sm text-slate-500">
+                    – Priya S., Freelancer
+                  </span>
+                </div>
+          
+
+         
+          </div>
+        </section>
+
+        <section className="max-w-7xl mx-auto px-6 pt-0 pb-0">
+                         <span className="inline-block mb-3 rounded-full bg-blue-100 text-blue-700 px-4 py-1 text-sm font-semibold text-center">
+                  Trusted by 10,000+ Businesses Across India
+                </span>
           <div className="grid gap-8 lg:grid-cols-12 items-center">
+
             <div className="lg:col-span-7">
               <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
                 <h2 className="text-4xl sm:text-5xl font-bold leading-tight">Simplify billing. Accelerate growth.</h2>
@@ -167,6 +349,181 @@ export default function Home() {
           </div>
         </section>
 
+
+
+        {/* PAIN → SOLUTION */}
+        <section className="py-24 border-b border-slate-200">
+          <div className="max-w-6xl mx-auto px-6">
+
+            {/* Section heading */}
+            <div className="text-center mb-14">
+              <span className="inline-block mb-3 rounded-full bg-blue-100 text-blue-700 px-4 py-1 text-sm font-semibold">
+                Problems → Solutions
+              </span>
+
+              <h2 className="text-3xl md:text-4xl font-bold text-slate-900">
+                Turn Business Pain Points Into Growth
+              </h2>
+
+              <p className="mt-4 text-slate-600 max-w-2xl mx-auto">
+                Designed to remove billing friction and help Indian businesses
+                scale faster with confidence.
+              </p>
+            </div>
+
+            {/* Cards */}
+            <div className="grid gap-8 md:grid-cols-3">
+
+              {/* Card 1 */}
+              <article className="group relative rounded-2xl border border-slate-200 bg-white p-8 shadow-sm transition hover:shadow-xl hover:-translate-y-1">
+                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600 text-xl">
+                  ⏳
+                </div>
+
+                <h3 className="text-xl font-semibold text-slate-900 mb-3">
+                  Struggling with Late Payments?
+                </h3>
+
+                <p className="text-slate-600 mb-4">
+                  Automated reminders and smart late-fee calculations help you recover
+                  payments faster — without awkward follow-ups.
+                </p>
+
+                <span className="text-sm font-medium text-blue-600">
+                  ✔ Get paid on time
+                </span>
+              </article>
+
+              {/* Card 2 */}
+              <article className="group relative rounded-2xl border border-slate-200 bg-white p-8 shadow-sm transition hover:shadow-xl hover:-translate-y-1">
+                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600 text-xl">
+                  📄
+                </div>
+
+                <h3 className="text-xl font-semibold text-slate-900 mb-3">
+                  GST Compliance Headaches?
+                </h3>
+
+                <p className="text-slate-600 mb-4">
+                  Generate GST-ready invoices, summaries, and reports instantly —
+                  fully compliant with Indian tax regulations.
+                </p>
+
+                <span className="text-sm font-medium text-blue-600">
+                  ✔ Stay audit-ready
+                </span>
+              </article>
+
+              {/* Card 3 */}
+              <article className="group relative rounded-2xl border border-slate-200 bg-white p-8 shadow-sm transition hover:shadow-xl hover:-translate-y-1">
+                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600 text-xl">
+                  ⚙️
+                </div>
+
+                <h3 className="text-xl font-semibold text-slate-900 mb-3">
+                  Too Much Manual Work?
+                </h3>
+
+                <p className="text-slate-600 mb-4">
+                  Bulk uploads, reusable templates, and integrations eliminate repetitive
+                  data entry and save hours every week.
+                </p>
+
+                <span className="text-sm font-medium text-blue-600">
+                  ✔ Save hours weekly
+                </span>
+              </article>
+
+            </div>
+          </div>
+        </section>
+
+        {/* FREE TOOLS */}
+        <section className="py-24 border-b border-slate-200">
+          <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+            {/* LEFT CONTENT */}
+            <div>
+              <span className="inline-block mb-4 rounded-full bg-blue-100 text-blue-700 px-4 py-1 text-sm font-semibold">
+                100% Free Tools
+              </span>
+
+              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6">
+                Free Business Tools – No Signup Required
+              </h2>
+
+              <p className="text-slate-600 mb-8 max-w-xl">
+                Save time, stay compliant, and get paid faster using our free tools —
+                designed especially for Indian businesses.
+              </p>
+
+              <ul className="space-y-4 mb-10">
+                <li className="flex items-start gap-3">
+                  <span className="text-lg">🧾</span>
+                  <span>
+                    <strong>Free Online Invoice Generator</strong> – Create and download
+                    professional PDF invoices instantly.
+                  </span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-lg">🧮</span>
+                  <span>
+                    <strong>GST Calculator</strong> – Quickly calculate taxes for any
+                    transaction.
+                  </span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-lg">📉</span>
+                  <span>
+                    <strong>Late Fee Calculator</strong> – Estimate costs from unpaid
+                    invoices and plan better.
+                  </span>
+                </li>
+              </ul>
+
+              <a
+                href="/tools/free-invoice-generator"
+                className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-4 text-white font-semibold shadow-lg hover:scale-105 transition"
+              >
+                Use Free Invoice Generator Now →
+              </a>
+            </div>
+
+            {/* RIGHT VISUAL / BILLING INFO */}
+            <div className="relative">
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-8 shadow-lg">
+
+                <h3 className="text-xl font-semibold text-slate-900 mb-6">
+                  Smart Billing at a Glance
+                </h3>
+
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center rounded-lg bg-white p-4 border">
+                    <span className="text-slate-600">Invoices Generated</span>
+                    <span className="font-bold text-slate-900">1,245</span>
+                  </div>
+
+                  <div className="flex justify-between items-center rounded-lg bg-white p-4 border">
+                    <span className="text-slate-600">GST Calculated</span>
+                    <span className="font-bold text-slate-900">₹8.6L</span>
+                  </div>
+
+                  <div className="flex justify-between items-center rounded-lg bg-white p-4 border">
+                    <span className="text-slate-600">Late Fees Saved</span>
+                    <span className="font-bold text-green-600">₹1.2L</span>
+                  </div>
+                </div>
+
+                <p className="mt-6 text-sm text-slate-500">
+                  Real-time insights that help Indian businesses invoice smarter and get
+                  paid faster.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
         {/* Features Section */}
         <section id="features" className="max-w-7xl mx-auto px-6 py-12">
           <h3 className="text-3xl font-semibold text-center mb-8">Why teams choose Billing Software</h3>
@@ -196,10 +553,77 @@ export default function Home() {
         {/* Pricing Section */}
         <section id="pricing" className="max-w-6xl mx-auto px-6 py-12">
           <h3 className="text-3xl font-semibold text-center mb-6">Transparent pricing</h3>
-          <p className="text-center text-slate-500 mb-8">No surprises. Cancel anytime. 14-day free trial on all plans.</p>
+          <p className="text-center text-slate-500 mb-8">No surprises. Cancel anytime. 15-day free trial on all plans.</p>
 
           <div className="grid gap-6 md:grid-cols-3">
-            <motion.div className="p-6 bg-white rounded-2xl border border-slate-100 shadow-sm text-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
+              {/* Free Trial */}
+  <motion.div
+    className="p-6 bg-gradient-to-b from-white to-slate-50 rounded-2xl border-2 border-indigo-600 shadow-lg text-center transform scale-105"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ delay: 0.1 }}
+  >
+    <h4 className="text-lg font-semibold text-blue-700">Free Trial</h4>
+    <div className="mt-4 text-3xl font-bold">₹0<span className="text-sm font-medium"> / 15 Days</span></div>
+    <p className="text-sm text-slate-500 mt-2">Try all premium features free for 15 days. No credit card required.</p>
+    <ul className="mt-4 text-sm text-slate-700 space-y-2">
+      <li>Unlimited invoices</li>
+      <li>All features unlocked</li>
+      <li>Priority support</li>
+    </ul>
+    <button
+      onClick={handleGetStarted}
+      className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md"
+    >
+      Start Free Trial
+    </button>
+  </motion.div>
+  {/* Starter */}
+  <motion.div
+    className="p-6 bg-gradient-to-b from-white to-slate-50 rounded-2xl shadow-lg text-center"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ delay: 0.2 }}
+  >
+    <h4 className="text-lg font-semibold">Starter</h4>
+    <div className="mt-4 text-3xl font-bold">₹299<span className="text-sm font-medium">/mo</span></div>
+    <p className="text-sm text-slate-500 mt-2">For new businesses — unlimited invoices, up to 500 customers.</p>
+    <ul className="mt-4 text-sm text-slate-700 space-y-2">
+      <li>Unlimited invoices</li>
+      <li>Basic analytics</li>
+      <li>Email support</li>
+    </ul>
+    <button
+      onClick={handleGetStarted}
+      className="mt-6 w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-2 rounded-md"
+    >
+      Choose Starter
+    </button>
+  </motion.div>
+
+  {/* Business */}
+  <motion.div
+    className="p-6 bg-gradient-to-b from-white to-slate-50 rounded-2xl shadow-lg text-center"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ delay: 0.3 }}
+  >
+    <h4 className="text-lg font-semibold">Business</h4>
+    <div className="mt-4 text-3xl font-bold">₹1499<span className="text-sm font-medium">/yr</span></div>
+    <p className="text-sm text-slate-500 mt-2">Best value — advanced analytics, API access and priority support.</p>
+    <ul className="mt-4 text-sm text-slate-700 space-y-2">
+      <li>Unlimited customers</li>
+      <li>Advanced analytics</li>
+      <li>API & integrations</li>
+    </ul>
+    <button
+      onClick={handleGetStarted}
+      className="mt-6 w-full bg-indigo-600 text-white py-2 rounded-md"
+    >
+      Get Business
+    </button>
+  </motion.div>
+            {/* <motion.div className="p-6 bg-white rounded-2xl border border-slate-100 shadow-sm text-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
               <h4 className="text-lg font-semibold">Starter</h4>
               <div className="mt-4 text-3xl font-bold">₹299<span className="text-sm font-medium">/mo</span></div>
               <p className="text-sm text-slate-500 mt-2">For new businesses — unlimited invoices, up to 500 customers.</p>
@@ -221,9 +645,9 @@ export default function Home() {
                 <li>API & integrations</li>
               </ul>
               <button onClick={handleGetStarted} className="mt-6 w-full bg-indigo-600 text-white py-2 rounded-md">Get Business</button>
-            </motion.div>
+            </motion.div> */}
 
-            <motion.div className="p-6 bg-white rounded-2xl border border-slate-100 shadow-sm text-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
+            {/* <motion.div className="p-6 bg-white rounded-2xl border border-slate-100 shadow-sm text-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
               <h4 className="text-lg font-semibold">Enterprise</h4>
               <div className="mt-4 text-3xl font-bold">Custom</div>
               <p className="text-sm text-slate-500 mt-2">Custom plans with SLAs, dedicated support and onboarding assistance.</p>
@@ -233,7 +657,140 @@ export default function Home() {
                 <li>Priority integrations</li>
               </ul>
               <button onClick={() => router.push('/contact')} className="mt-6 w-full border border-slate-200 py-2 rounded-md">Contact Sales</button>
-            </motion.div>
+            </motion.div> */}
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section className="py-24">
+          <div className="max-w-6xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-start">
+
+            {/* LEFT CONTENT */}
+            <div>
+              <span className="inline-block mb-4 rounded-full bg-blue-100 text-blue-700 px-4 py-1 text-sm font-semibold">
+                FAQs
+              </span>
+
+              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight">
+                Questions about our billing software?
+              </h2>
+
+              <p className="mt-4 text-slate-600 max-w-md">
+                Everything you need to know about GST compliance, free trials,
+                integrations, and who this software is best suited for.
+              </p>
+
+              {/* Trust points */}
+              <div className="mt-8 space-y-4">
+                <div className="flex items-start gap-3">
+                  <span className="text-blue-600">✔</span>
+                  <p className="text-slate-700">
+                    Built specifically for Indian GST regulations
+                  </p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-blue-600">✔</span>
+                  <p className="text-slate-700">
+                    No credit card required for free trial
+                  </p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-blue-600">✔</span>
+                  <p className="text-slate-700">
+                    Trusted by freelancers, SMEs & agencies
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* RIGHT FAQ LIST */}
+            <div className="space-y-4">
+              {[
+                {
+                  q: "Is this billing software GST compliant for Indian businesses?",
+                  a: "Yes, it is fully compliant with Indian GST regulations, including e-invoicing and tax reporting.",
+                },
+                {
+                  q: "Do I need a credit card to start the free trial?",
+                  a: "No. Our 15-day free trial does not require any payment details upfront.",
+                },
+                {
+                  q: "Who is this cloud billing software best suited for?",
+                  a: "Freelancers, agencies, consultants, retail shops, gyms, and service-based SMEs across India.",
+                },
+                {
+                  q: "Can I integrate it with other tools?",
+                  a: "Yes, it integrates seamlessly with accounting software, payment gateways, and more.",
+                },
+              ].map((item, index) => (
+                <div
+                  key={index}
+                  className="rounded-xl border border-slate-200 bg-slate-50 p-5 hover:border-blue-300 transition"
+                >
+                  <h3 className="font-semibold text-slate-900">{item.q}</h3>
+                  <p className="mt-2 text-slate-600 text-sm">{item.a}</p>
+                </div>
+              ))}
+            </div>
+
+          </div>
+        </section>
+
+        {/* CTA */}
+        <section className="pt-8 py-24">
+          <div className="max-w-6xl mx-auto px-6">
+
+            <div className="rounded-3xl border border-slate-200 px-10 py-16 bg-white">
+
+              <div className="grid md:grid-cols-2 gap-10 items-center">
+
+                {/* Left */}
+                <div>
+                  <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+                    Stop late payments.<br />Start billing smarter.
+                  </h2>
+
+                  <p className="text-slate-600 max-w-md mb-8">
+                    Create GST invoices, automate reminders, and get paid faster
+                    with a secure cloud billing platform built for India.
+                  </p>
+
+                  <div className="flex gap-4 flex-wrap">
+                    <button
+                      onClick={handleGetStarted}
+                      className="inline-flex items-center justify-center rounded-xl bg-blue-600 text-white px-8 py-4 font-semibold shadow hover:bg-blue-700 transition"
+                    >
+                      Start Free Trial
+                    </button>
+
+                    <a
+                      href="#pricing"
+                      className="inline-flex items-center justify-center rounded-xl border border-slate-300 text-slate-700 px-8 py-4 font-semibold hover:bg-slate-50 transition"
+                    >
+                      See Plans
+                    </a>
+                  </div>
+
+                  <p className="mt-4 text-sm text-slate-500">
+                    No credit card required • Cancel anytime
+                  </p>
+                </div>
+
+                {/* Right visual */}
+                <div className="hidden md:block">
+                  <div className="rounded-2xl bg-slate-50 p-6 border border-slate-200">
+                    <ul className="space-y-3 text-sm text-slate-700">
+                      <li>✔ GST-ready invoices</li>
+                      <li>✔ Automated reminders</li>
+                      <li>✔ Secure cloud storage</li>
+                      <li>✔ Fast setup</li>
+                    </ul>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
           </div>
         </section>
 
@@ -244,10 +801,10 @@ export default function Home() {
             {[{
               quote: 'BillingSoftware transformed our cash-flow in under 30 days — reliable, fast and easy to use.',
               name: 'Sarah Johnson', role: 'CEO, TechStart'
-            },{
+            }, {
               quote: 'Subscription management works like a charm. Integrations were painless.',
               name: 'Mike Chen', role: 'Founder, InnovateHub'
-            },{
+            }, {
               quote: 'Secure, scalable, and the support team is outstanding.',
               name: 'Emily Rodriguez', role: 'Operations Lead, GrowthForge'
             }].map((t, i) => (
@@ -265,11 +822,11 @@ export default function Home() {
           <div className="rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-8 shadow-lg flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
               <h4 className="text-xl font-bold">Ready to transform your billing?</h4>
-              <p className="text-sm opacity-90 mt-1">Start your free 14-day trial — no credit card required.</p>
+              <p className="text-sm opacity-90 mt-1">Start your free 15-day trial — no credit card required.</p>
             </div>
             <div className="flex gap-3">
               <button onClick={handleGetStarted} className="px-6 py-3 rounded-md bg-white text-blue-600 font-semibold">Start Free Trial</button>
-              <button onClick={() => router.push('/pricing')} className="px-4 py-3 rounded-md border border-white/30">See Plans</button>
+              <a href="#pricing" className="px-4 py-3 rounded-md border border-white/30">See Plans</a>
             </div>
           </div>
         </section>
@@ -281,7 +838,7 @@ export default function Home() {
             <div className="flex gap-4 text-sm">
               <a href="/privacy" className="hover:underline">Privacy</a>
               <a href="/terms" className="hover:underline">Terms</a>
-              <a href="#" className="hover:underline">Status</a>
+              {/* <a href="#" className="hover:underline">Status</a> */}
             </div>
           </div>
         </footer>

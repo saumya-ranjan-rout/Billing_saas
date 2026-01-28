@@ -46,6 +46,7 @@ import { AuditLog } from '../entities/AuditLog';
 import { LoyaltyProgram } from '../entities/LoyaltyProgram';
 import { LoyaltyTransaction } from '../entities/LoyaltyTransaction';
 import { CustomerLoyalty } from '../entities/CustomerLoyalty';
+import { FreeGST } from '../entities/FreeGST';
 
 // ✅ pgPool for raw queries / health checks
 export const pgPool = new Pool({
@@ -86,7 +87,7 @@ export const AppDataSource = new DataSource({
     ProfessionalUser, ProfessionalTenant, PurchaseOrder, PurchaseItem,
     SubscriptionPlan, SubscriptionChange, SuperAdmin, Vendor, Category,
     PaymentInvoice, Payment, Setting, Report, Expense, TaxDetail, AuditLog,
-    LoyaltyProgram, LoyaltyTransaction, CustomerLoyalty,
+    LoyaltyProgram, LoyaltyTransaction, CustomerLoyalty,FreeGST
   ],
    synchronize: process.env.NODE_ENV !== 'production',
   // synchronize: false,

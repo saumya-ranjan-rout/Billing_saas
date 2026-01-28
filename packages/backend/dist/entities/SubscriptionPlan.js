@@ -22,6 +22,7 @@ var PlanType;
 var BillingCycle;
 (function (BillingCycle) {
     BillingCycle["FIVE_DAYS"] = "5days";
+    BillingCycle["FIFTEEN_DAYS"] = "15days";
     BillingCycle["WEEKLY"] = "weekly";
     BillingCycle["MONTHLY"] = "monthly";
     BillingCycle["YEARLY"] = "yearly";

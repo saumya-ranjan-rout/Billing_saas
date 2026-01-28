@@ -23,6 +23,63 @@ export class EmailService {
       }
     });
   }
+  async sendGeneratedInvoiceEmail(
+    to: string,
+    invoiceNo: string,
+    pdfBuffer: Buffer
+  ): Promise<void> {
+    const resetLink = `${process.env.FRONTEND_URL}/auth/login`;
+ 
+    const mailOptions = {
+      from: process.env.EMAIL_FROM,
+      to,
+      subject: `GST Invoice ${invoiceNo}`,
+      html: `
+      <h2>Your GST Invoice</h2>
+      <p>Please find the attached invoice.</p>
+      <p>Invoice No: <strong>${invoiceNo}</strong></p>
+ 
+      <hr />
+ 
+      <p><strong>Automate Your Billing</strong></p>
+      <p>
+        Invoices, reminders & GST reports — done automatically.
+      </p>
+ 
+      <p>
+        <a href="${resetLink}"
+           style="
+             display: inline-block;
+             padding: 10px 18px;
+             background: #3182ce;
+             color: #ffffff;
+             text-decoration: none;
+             border-radius: 6px;
+             font-weight: 500;
+           ">
+          Start Free 15-Day Trial
+        </a>
+      </p>
+ 
+      <p style="font-size: 12px; color: #718096;">
+        No credit card required.
+      </p>
+    `,
+      attachments: [
+        {
+          filename: `GST-Invoice-${invoiceNo}.pdf`,
+          content: pdfBuffer,
+          contentType: "application/pdf",
+        },
+      ],
+    };
+ 
+    try {
+      await this.transporter.sendMail(mailOptions);
+    } catch (error) {
+      throw new BadRequestError("Failed to send GST invoice email");
+    }
+  }
 
   async sendInvitationEmail(to: string, userId: string, tenantId: string): Promise<void> {
     const invitationLink = `${process.env.FRONTEND_URL}/invite?token=${this.generateInvitationToken(

@@ -75,10 +75,20 @@ export class CustomerService {
     .andWhere("payment_invoice.customerId = :customerId", { customerId })
     .getRawOne();
 
+  const totalRedeemedResult = await this.transactionRepository
+    .createQueryBuilder("loyalty_transactions")
+    .select("SUM(loyalty_transactions.cashbackAmount)", "totalredeemed")
+    .where("loyalty_transactions.tenantId = :tenantId", { tenantId })
+    .andWhere("loyalty_transactions.customerId = :customerId", { customerId })
+     .andWhere("loyalty_transactions.type = :type", {
+      type: TransactionType.REDEEM,
+    })
+    .getRawOne();
    // console.log(" totalDueResult, totalPaidResult",totalDueResult, totalPaidResult);
 
   const totalDue = Number(totalDueResult?.totalDue ?? 0);
   const totalPaid = Number(totalPaidResult?.totalPaid ?? 0);
+    const totalRedeemed = Number(totalRedeemedResult?.totalredeemed ?? 0);
 
   const balance= totalDue - totalPaid
   //console.log(" totalDue, totalPaid",totalDue, totalPaid ,balance);
@@ -86,7 +96,8 @@ export class CustomerService {
     customerId,
     totalDue,
     totalPaid,
-    balance: totalDue - totalPaid
+    totalRedeemed,
+    balance: totalDue - totalRedeemed - totalPaid
   };
 }
 
@@ -114,7 +125,7 @@ export class CustomerService {
     }
  
       // Check if customer with same email already exists for this tenant
-      const existingCustomer = await this.customerRepository.findOne({
+      const existingCustomeremail = await this.customerRepository.findOne({
         where: {
           email: customerData.email,
           tenantId,
@@ -122,8 +133,20 @@ export class CustomerService {
         }
       });
  
-      if (existingCustomer) {
+      if (existingCustomeremail) {
         throw new Error('Customer with this email already exists');
+      }
+
+   const existingCustomergstin = await this.customerRepository.findOne({
+        where: {
+          gstin: customerData.gstin,
+          tenantId,
+          deletedAt: IsNull()
+        }
+      });
+ 
+      if (existingCustomergstin) {
+        throw new Error('Customer with this gstin already exists');
       }
  
        const customer = this.customerRepository.create({
@@ -271,10 +294,12 @@ for (const customer of customers) {
      
 
 const totalDueNum = Number(balance.totalDue ?? 0);
+const totalRedeemedNum = Number(balance.totalRedeemed ?? 0);
 const totalPaidNum = Number(balance.totalPaid ?? 0);
 const balanceNum = Number(balance.balance ?? 0);
 
 customer.totalDue = Number(totalDueNum.toFixed(2));
+customer.totalRedeemed = Number(totalRedeemedNum.toFixed(2));
 customer.totalPaid = Number(totalPaidNum.toFixed(2));
 customer.balance = Number(balanceNum.toFixed(2));
 
@@ -357,9 +382,9 @@ if (options.status) {
  
       const customer = await this.getCustomer(tenantId, customerId);
  
-      // Check if email is being changed and if it's already taken
+      //Check if email is being changed and if it's already taken
       if (updates.email && updates.email !== customer.email) {
-        const existingCustomer = await this.customerRepository.findOne({
+        const existingCustomeremail = await this.customerRepository.findOne({
           where: {
             email: updates.email,
             tenantId,
@@ -367,11 +392,24 @@ if (options.status) {
           }
         });
  
-        if (existingCustomer && existingCustomer.id !== customerId) {
+        if (existingCustomeremail && existingCustomeremail.id !== customerId) {
           throw new Error('Customer with this email already exists');
         }
       }
+            if (updates.gstin && updates.gstin !== customer.gstin) {
+        const existingCustomergstin = await this.customerRepository.findOne({
+          where: {
+            gstin: updates.gstin,
+            tenantId,
+            deletedAt: IsNull()
+          }
+        });
  
+        if (existingCustomergstin && existingCustomergstin.id !== customerId) {
+          throw new Error('Customer with this gstin already exists');
+        }
+      }
+
       // Update customer
       Object.assign(customer, updates);
       await this.customerRepository.save(customer);

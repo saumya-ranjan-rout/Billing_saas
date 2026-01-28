@@ -65,14 +65,25 @@ class CustomerService {
             .where("payment_invoice.tenantId = :tenantId", { tenantId })
             .andWhere("payment_invoice.customerId = :customerId", { customerId })
             .getRawOne();
+        const totalRedeemedResult = await this.transactionRepository
+            .createQueryBuilder("loyalty_transactions")
+            .select("SUM(loyalty_transactions.cashbackAmount)", "totalredeemed")
+            .where("loyalty_transactions.tenantId = :tenantId", { tenantId })
+            .andWhere("loyalty_transactions.customerId = :customerId", { customerId })
+            .andWhere("loyalty_transactions.type = :type", {
+            type: LoyaltyTransaction_1.TransactionType.REDEEM,
+        })
+            .getRawOne();
         const totalDue = Number(totalDueResult?.totalDue ?? 0);
         const totalPaid = Number(totalPaidResult?.totalPaid ?? 0);
+        const totalRedeemed = Number(totalRedeemedResult?.totalredeemed ?? 0);
         const balance = totalDue - totalPaid;
         return {
             customerId,
             totalDue,
             totalPaid,
-            balance: totalDue - totalPaid
+            totalRedeemed,
+            balance: totalDue - totalRedeemed - totalPaid
         };
     }
     async getCustomerPaymentHistory(tenantId, customerId) {
@@ -90,15 +101,25 @@ class CustomerService {
             if (customerData.phone && !/^[6-9]\d{9}$/.test(customerData.phone)) {
                 throw new Error('Invalid phone number format');
             }
-            const existingCustomer = await this.customerRepository.findOne({
+            const existingCustomeremail = await this.customerRepository.findOne({
                 where: {
                     email: customerData.email,
                     tenantId,
                     deletedAt: (0, typeorm_1.IsNull)()
                 }
             });
-            if (existingCustomer) {
+            if (existingCustomeremail) {
                 throw new Error('Customer with this email already exists');
+            }
+            const existingCustomergstin = await this.customerRepository.findOne({
+                where: {
+                    gstin: customerData.gstin,
+                    tenantId,
+                    deletedAt: (0, typeorm_1.IsNull)()
+                }
+            });
+            if (existingCustomergstin) {
+                throw new Error('Customer with this gstin already exists');
             }
             const customer = this.customerRepository.create({
                 ...customerData,
@@ -182,9 +203,11 @@ class CustomerService {
             for (const customer of customers) {
                 const balance = await this.getCustomerBalance(tenantId, customer.id);
                 const totalDueNum = Number(balance.totalDue ?? 0);
+                const totalRedeemedNum = Number(balance.totalRedeemed ?? 0);
                 const totalPaidNum = Number(balance.totalPaid ?? 0);
                 const balanceNum = Number(balance.balance ?? 0);
                 customer.totalDue = Number(totalDueNum.toFixed(2));
+                customer.totalRedeemed = Number(totalRedeemedNum.toFixed(2));
                 customer.totalPaid = Number(totalPaidNum.toFixed(2));
                 customer.balance = Number(balanceNum.toFixed(2));
                 if (balanceNum === 0 && totalDueNum > 0) {
@@ -249,15 +272,27 @@ class CustomerService {
             }
             const customer = await this.getCustomer(tenantId, customerId);
             if (updates.email && updates.email !== customer.email) {
-                const existingCustomer = await this.customerRepository.findOne({
+                const existingCustomeremail = await this.customerRepository.findOne({
                     where: {
                         email: updates.email,
                         tenantId,
                         deletedAt: (0, typeorm_1.IsNull)()
                     }
                 });
-                if (existingCustomer && existingCustomer.id !== customerId) {
+                if (existingCustomeremail && existingCustomeremail.id !== customerId) {
                     throw new Error('Customer with this email already exists');
+                }
+            }
+            if (updates.gstin && updates.gstin !== customer.gstin) {
+                const existingCustomergstin = await this.customerRepository.findOne({
+                    where: {
+                        gstin: updates.gstin,
+                        tenantId,
+                        deletedAt: (0, typeorm_1.IsNull)()
+                    }
+                });
+                if (existingCustomergstin && existingCustomergstin.id !== customerId) {
+                    throw new Error('Customer with this gstin already exists');
                 }
             }
             Object.assign(customer, updates);

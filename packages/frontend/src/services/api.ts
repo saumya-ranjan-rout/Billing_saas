@@ -2,7 +2,8 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import type { RootState } from '../store/store'
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: process.env.API_BASE_URL || 'http://192.168.29.179:3001/api',
+ 
+  baseUrl:'http://192.168.29.179:3001/api',
 
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).auth.token

@@ -41,6 +41,7 @@ router.post('/super-user-login', authController.superUserlogin.bind(authControll
 router.post('/enable-biometric', authMiddleware, authController.enableBiometric.bind(authController));
 router.post('/biometric/enable', authMiddleware, authController.enableBiometric.bind(authController));
 router.post('/register', authController.registerWithTenant.bind(authController));
+router.post('/freegst', authController.registerFreeGST.bind(authController));
 router.use("/validate-license", validateLicenseRouter);
 router.get(
   '/all-tenants',

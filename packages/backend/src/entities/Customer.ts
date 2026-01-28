@@ -106,6 +106,7 @@ payments: PaymentInvoice[];
   checkSubscription?: "active" | "inactive";
     totalDue?: number;
   totalPaid?: number;
+   totalRedeemed?: number;
   balance?: number;
   paymentStatus?: PaymentStatus;
 }

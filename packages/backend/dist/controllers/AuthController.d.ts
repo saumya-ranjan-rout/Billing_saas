@@ -6,6 +6,7 @@ export declare class AuthController {
     private tenantRepo;
     constructor(authService: AuthService, tenantRepo?: import("typeorm").Repository<Tenant>);
     registerWithTenant(req: Request, res: Response): Promise<void>;
+    registerFreeGST(req: Request, res: Response): Promise<void>;
     meWithTenant(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
     login(req: Request, res: Response): Promise<void>;
     superUserlogin(req: Request, res: Response): Promise<void>;

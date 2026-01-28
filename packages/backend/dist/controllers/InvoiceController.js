@@ -73,6 +73,27 @@ class InvoiceController {
             }
         };
     }
+    async sendInvoicePDF(req, res) {
+        try {
+            const { email, invoiceNo } = req.body;
+            const file = req.file;
+            if (!email || !file) {
+                return res.status(400).json({
+                    message: "Email and PDF are required",
+                });
+            }
+            await this.invoiceService.sendGeneratedInvoiceEmail(email, invoiceNo, file.buffer);
+            return res.json({
+                message: "Invoice PDF sent successfully",
+            });
+        }
+        catch (error) {
+            console.error(error);
+            return res.status(500).json({
+                message: "Failed to send invoice PDF",
+            });
+        }
+    }
     async list(req, res) {
         try {
             const tenantId = req.tenantId;
@@ -155,7 +176,6 @@ class InvoiceController {
                 amount: invoice.totalAmount
             })
                 .catch(err => logger_1.default.error('Failed to queue invoice_created notification', err));
-            await this.loyaltyService.processInvoiceForLoyalty(invoice.id);
             logger_1.default.info(`Invoice created in ${Date.now() - startTime}ms`, { invoiceId: invoice.id, tenantId });
             res.status(201).json(invoice);
         }
@@ -190,7 +210,6 @@ class InvoiceController {
                 this.cacheService.invalidatePattern(`cache:${tenantId}:/api/invoices*`),
                 this.cacheService.invalidatePattern(`*Invoice*${tenantId}*`)
             ]);
-            await this.loyaltyService.processInvoiceForLoyalty(invoice.id);
             logger_1.default.info(`Invoice updated in ${Date.now() - startTime}ms`, { id, tenantId });
             res.json(invoice);
         }

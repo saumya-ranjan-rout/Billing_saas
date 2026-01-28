@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description"
+        content="{{DESCRIPTION}} – Best billing software for {{INDUSTRY}} in India. Create GST invoices, automate reminders, and reduce late payments. Free 14-day trial, no credit card.">
+    <meta name="keywords"
+        content="billing software for {{INDUSTRY}}, GST invoicing for {{SLUG}}, {{INDUSTRY}} billing tool, cloud billing {{INDUSTRY}}, invoice generator {{INDUSTRY}}">
+    <meta name="robots" content="index, follow">
+    <title>Billing Software for {{INDUSTRY}} | GST-Compliant Invoicing & Payment Automation</title>
+    <link rel="canonical" href="https://billingsoftwareonline.com/billing-software-for-{{SLUG}}">
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #111;
+            background: #fff;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            padding: 40px 20px;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-weight: 600;
+            margin: 0 0 15px;
+        }
+
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #0a66ff, #0052d4);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: transform 0.2s;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .hero {
+            background: linear-gradient(to bottom, #e6f0ff 0%, #fff 100%);
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid #eee;
+            margin: 30px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+
+    <!-- Enhanced Schema: FAQPage + BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [{
+        "@type": "Question",
+        "name": "Is this billing software suitable for {{INDUSTRY}}?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes, it's tailored for {{INDUSTRY}} needs, including GST compliance, automated reminders, and industry-specific invoicing." }
+      }, {
+        "@type": "Question",
+        "name": "Is the software GST compliant for {{INDUSTRY}} businesses?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes, fully compliant with Indian GST regulations, e-invoicing, and tax reporting." }
+      }, {
+        "@type": "Question",
+        "name": "Can {{INDUSTRY}} teams and individuals use it?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Absolutely, it supports solo users, teams, and scalable operations." }
+      }{{FAQ_EXTRA}}]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://billingsoftwareonline.com/"
+      }, {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Billing Software for {{INDUSTRY}}",
+        "item": "https://billingsoftwareonline.com/billing-software-for-{{SLUG}}"
+      }]
+    }
+    </script>
+</head>
+
+<body>
+
+    <div class="hero">
+        <div class="container">
+            <h1>Billing Software for {{INDUSTRY}}</h1>
+            <p>{{DESCRIPTION}} Our cloud-based billing software simplifies invoicing, payments, and compliance for
+                {{INDUSTRY}} businesses in India.</p>
+            <a href="/signup" class="btn">Start Free 14-Day Trial – No Credit Card</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Why {{INDUSTRY}} Businesses Choose Our Billing Software</h2>
+        <ul>
+            {{BENEFITS_LIST}}
+            <li>GST-compliant invoicing and automated tax reports</li>
+            <li>Automated payment reminders to reduce late payments</li>
+            <li>Recurring billing for subscriptions and retainers</li>
+            <li>Centralized dashboard for financial records and analytics</li>
+        </ul>
+
+        <h2>Common Problems We Solve for {{INDUSTRY}}</h2>
+        <ul>
+            {{PROBLEMS_LIST}}
+            <li>Delayed client payments and cash flow issues</li>
+            <li>Manual GST calculations and compliance errors</li>
+            <li>Disorganized records and time-consuming data entry</li>
+        </ul>
+
+        <h2>Get Started in Minutes</h2>
+        <p>No credit card required. Simple setup for {{INDUSTRY}} workflows.</p>
+        <a href="/signup" class="btn">Start Free Trial Now</a>
+
+        <hr>
+
+        <h2>Frequently Asked Questions for {{INDUSTRY}} Billing</h2>
+        <h3>Is this software GST compliant?</h3>
+        <p>Yes, fully compliant with Indian GST regulations, including automated reports.</p>
+
+        <h3>Can freelancers and teams in {{INDUSTRY}} use it?</h3>
+        <p>Yes, it supports individual users, teams, and multi-user access.</p>
+
+        {{FAQ_EXTRA_HTML}}
+    </div>
+
+    <footer class="footer container">
+        © 2026 Billing Software Online • Tailored Billing Solutions for {{INDUSTRY}} • <a href="/">Home</a>
+    </footer>
+
+<!-- =========================
+     🔥 PLACEHOLDER ENGINE
+========================= -->
+
+<script>
+const INDUSTRIES = {
+  "agencies": {
+    INDUSTRY: "Agencies",
+    SLUG: "agencies",
+    DESCRIPTION: "All-in-one billing and invoicing software for agencies",
+    BENEFITS_LIST: `
+      <li>Manage multiple clients and projects easily</li>
+      <li>Automate retainer billing</li>
+    `,
+    PROBLEMS_LIST: `
+      <li>Manual invoicing for multiple clients</li>
+      <li>Time wasted in payment follow-ups</li>
+    `,
+    FAQ_EXTRA: "",
+    FAQ_EXTRA_HTML: ""
+  },
+  "consultants": {
+    INDUSTRY: "Consultants",
+    SLUG: "consultants",
+    DESCRIPTION: "Smart billing software for consultants and advisory firms",
+    BENEFITS_LIST: `
+      <li>Bill by hours or projects</li>
+      <li>Professional GST invoices</li>
+    `,
+    PROBLEMS_LIST: `
+      <li>Untracked billable hours</li>
+      <li>Delayed client payments</li>
+    `,
+    FAQ_EXTRA: "",
+    FAQ_EXTRA_HTML: ""
+  },
+  "freelancers": {
+    INDUSTRY: "Freelancers",
+    SLUG: "freelancers",
+    DESCRIPTION: "Simple and fast billing software for freelancers",
+    BENEFITS_LIST: `
+      <li>Create invoices in 30 seconds</li>
+      <li>Recurring billing for clients</li>
+    `,
+    PROBLEMS_LIST: `
+      <li>Chasing payments</li>
+      <li>Manual invoice creation</li>
+    `,
+    FAQ_EXTRA: "",
+    FAQ_EXTRA_HTML: ""
+  },
+  "gyms": {
+    INDUSTRY: "Gyms",
+    SLUG: "gyms",
+    DESCRIPTION: "Billing and membership management software for gyms",
+    BENEFITS_LIST: `
+      <li>Membership billing automation</li>
+      <li>Monthly subscription management</li>
+    `,
+    PROBLEMS_LIST: `
+      <li>Manual fee collection</li>
+      <li>Missed renewals</li>
+    `,
+    FAQ_EXTRA: "",
+    FAQ_EXTRA_HTML: ""
+  },
+  "retail-shops": {
+    INDUSTRY: "Retail Shops",
+    SLUG: "retail-shops",
+    DESCRIPTION: "GST billing software for retail shops and stores",
+    BENEFITS_LIST: `
+      <li>Fast POS billing</li>
+      <li>Stock and billing integration</li>
+    `,
+    PROBLEMS_LIST: `
+      <li>Manual billing</li>
+      <li>Stock mismatch issues</li>
+    `,
+    FAQ_EXTRA: "",
+    FAQ_EXTRA_HTML: ""
+  }
+}
+
+// Read URL param
+const params = new URLSearchParams(window.location.search);
+const key = params.get("industry") || "agencies";
+const data = INDUSTRIES[key] || INDUSTRIES["agencies"];
+
+// Debug check
+console.log("Industry key =", key, data);
+
+// Walk DOM and replace placeholders
+function replaceNode(node) {
+  if (node.nodeType === 3) { // text node
+    let text = node.nodeValue;
+    for (const k in data) {
+      text = text.replaceAll(`{{${k}}}`, data[k]);
+    }
+    node.nodeValue = text;
+  }
+
+  if (node.attributes) {
+    for (const attr of node.attributes) {
+      for (const k in data) {
+        attr.value = attr.value.replaceAll(`{{${k}}}`, data[k]);
+      }
+    }
+  }
+
+  for (const child of node.childNodes) {
+    replaceNode(child);
+  }
+}
+
+// Run after DOM loaded
+replaceNode(document.documentElement);
+</script>
+
+
+
+</body>
+</html>

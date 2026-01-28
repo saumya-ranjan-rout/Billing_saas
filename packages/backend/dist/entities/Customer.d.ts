@@ -47,6 +47,7 @@ export declare class Customer extends TenantAwareEntity {
     checkSubscription?: "active" | "inactive";
     totalDue?: number;
     totalPaid?: number;
+    totalRedeemed?: number;
     balance?: number;
     paymentStatus?: PaymentStatus;
 }

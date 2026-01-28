@@ -46,6 +46,7 @@ const LoyaltyPage: React.FC = () => {
     try {
       const res = await get(`/api/loyalty/customer/${customerId}/summary`);
       if (res.success) {
+    
         setLoyaltyData({
           summary: res.summary,
           recentTransactions: res.recentTransactions,

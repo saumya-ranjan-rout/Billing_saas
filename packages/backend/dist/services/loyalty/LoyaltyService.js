@@ -154,7 +154,7 @@ class LoyaltyService {
         await queryRunner.startTransaction();
         try {
             const check = await this.transactionRepository.findOne({
-                where: { invoiceId },
+                where: { invoiceId, type: LoyaltyTransaction_1.TransactionType.EARN },
             });
             if (check) {
                 await queryRunner.release();
@@ -326,7 +326,7 @@ class LoyaltyService {
             where: { customerId, tenantId }
         });
         const transactions = await this.transactionRepository.find({
-            where: { customerId, tenantId, type: LoyaltyTransaction_1.TransactionType.EARN },
+            where: { customerId, tenantId },
             order: { createdAt: 'DESC' },
             take: 10
         });

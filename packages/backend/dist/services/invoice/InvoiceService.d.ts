@@ -15,7 +15,9 @@ export declare class InvoiceService {
     private taxDetailRepository;
     private loyaltyService;
     private cacheService;
+    private emailService;
     constructor();
+    sendGeneratedInvoiceEmail(to: string, invoiceNo: string, pdfBuffer: Buffer): Promise<void>;
     getInvoicesWithKeysetPagination(tenantId: string, options: {
         cursor?: string;
         limit?: number;

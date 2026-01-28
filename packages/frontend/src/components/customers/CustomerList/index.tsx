@@ -75,7 +75,7 @@ const CustomerList: React.FC<CustomerListProps> = ({ onEditCustomer, refreshTrig
       //   `/api/customers?page=${pagination.page}&limit=${pagination.limit}`
       // );
 
-      //  console.log("customers",response.data);
+        console.log("customers",response.data);
       setCustomers(response.data);
       setPagination(response.pagination);
     } catch (error: any) {
@@ -268,7 +268,9 @@ const CustomerList: React.FC<CustomerListProps> = ({ onEditCustomer, refreshTrig
       render: (value: string) => new Date(value).toLocaleDateString()
     },
     { key: 'totalDue', header: 'Total Due' },
+    { key: 'totalRedeemed', header: 'Redeemed' },
     { key: 'totalPaid', header: 'Total Paid' },
+     
     { key: 'balance', header: 'Balance' },
     {
       key: 'paymentStatus',

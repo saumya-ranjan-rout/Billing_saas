@@ -97,7 +97,7 @@ export function SubscriptionPlans({ plans, currentPlan, history = [], isLoading 
   plan.billingCycle === 'yearly' ? 'year' :
   plan.billingCycle === 'monthly' ? 'month' :
   plan.billingCycle === 'weekly' ? 'week' :
-  plan.billingCycle === '5days' ? '5 days' :
+  plan.billingCycle === '15days' ? '15 days' :
   ''
 }
 

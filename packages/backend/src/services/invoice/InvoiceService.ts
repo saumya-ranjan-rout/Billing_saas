@@ -16,6 +16,7 @@ import { TaxDetail } from '../../entities/TaxDetail';
 //Newly added
 import fs from 'fs';
 import path from 'path';
+import { EmailService } from "../external/EmailService";
 
 
 export class InvoiceService {
@@ -27,6 +28,7 @@ export class InvoiceService {
   private taxDetailRepository: Repository<TaxDetail>;
   private loyaltyService: LoyaltyService;
   private cacheService: CacheService;
+  private emailService: EmailService;
 
   
 
@@ -39,9 +41,22 @@ export class InvoiceService {
     this.taxDetailRepository = AppDataSource.getRepository(TaxDetail);
     this.loyaltyService = new LoyaltyService();
     this.cacheService = new CacheService();
+    this.emailService = new EmailService();
 
   }
 
+ 
+async sendGeneratedInvoiceEmail(
+    to: string,
+    invoiceNo: string,
+    pdfBuffer: Buffer
+  ) {
+    await this.emailService.sendGeneratedInvoiceEmail(
+      to,
+      invoiceNo,
+      pdfBuffer
+    );
+  }
 
     async getInvoicesWithKeysetPagination(
     tenantId: string,
@@ -288,9 +303,11 @@ private calculateDueDate(issueDate: Date, paymentTerms: PaymentTerms): Date {
         taxableAmount
     };
 }
+
   private async safeProcessLoyalty(invoiceId: string): Promise<void> {
     try {
       // Add delay to ensure invoice is fully committed
+  console.log("🚀 safeProcessLoyalty started for", invoiceId);
       setTimeout(async () => {
         try {
           await this.loyaltyService.processInvoiceForLoyalty(invoiceId);
@@ -304,7 +321,6 @@ private calculateDueDate(issueDate: Date, paymentTerms: PaymentTerms): Date {
       logger.error('Error scheduling loyalty processing:', error);
     }
   }
-
 
   /**
    * Create invoice - optimized to batch product lookups to reduce DB roundtrips.
@@ -501,11 +517,16 @@ this.cacheService.invalidatePattern(`cache:${tenantId}:/api/invoices*`),
         this.cacheService.invalidatePattern(`dashboard:${tenantId}`)
       ]);
 
-      await queryRunner.commitTransaction();
+      // await queryRunner.commitTransaction();
 
-      // Process loyalty asynchronously (non-blocking)
-      this.safeProcessLoyalty(savedInvoice.id);
-
+      // // Process loyalty asynchronously (non-blocking)
+      // this.safeProcessLoyalty(savedInvoice.id);
+console.log("🔥 Before commit");
+await queryRunner.commitTransaction();
+console.log("🔥 After commit");
+console.log("🔥 Calling safeProcessLoyalty");
+this.safeProcessLoyalty(savedInvoice.id);
+console.log("🔥 Called safeProcessLoyalty");
       return savedInvoice;
     } catch (error) {
       await queryRunner.rollbackTransaction();

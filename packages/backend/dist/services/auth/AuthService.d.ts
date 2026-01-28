@@ -1,4 +1,5 @@
 import { User } from "../../entities/User";
+import { FreeGST } from "../../entities/FreeGST";
 import { Tenant } from "../../entities/Tenant";
 import { BaseService } from "../BaseService";
 export interface AuthPayload {
@@ -31,6 +32,11 @@ export declare class AuthService extends BaseService<User> {
         pan?: string;
         gst?: string;
     }): Promise<User>;
+    freeGSTregistration(data: {
+        fullName: string;
+        email: string;
+        phone: string;
+    }): Promise<FreeGST>;
     register(userData: Partial<User>, tenantId: string): Promise<User>;
     switchTenant(updatedPayload: AuthPayload): Promise<{
         user: User;

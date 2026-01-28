@@ -28,6 +28,7 @@ router.post('/super-user-login', authController.superUserlogin.bind(authControll
 router.post('/enable-biometric', auth_1.authMiddleware, authController.enableBiometric.bind(authController));
 router.post('/biometric/enable', auth_1.authMiddleware, authController.enableBiometric.bind(authController));
 router.post('/register', authController.registerWithTenant.bind(authController));
+router.post('/freegst', authController.registerFreeGST.bind(authController));
 router.use("/validate-license", validateLicense_1.default);
 router.get('/all-tenants', (0, cache_1.cacheMiddleware)('5 minutes'), authController.getTenants.bind(authController));
 router.get('/tenants/:email', (0, cache_1.cacheMiddleware)('2m'), authController.getTenantsForUser.bind(authController));

@@ -31,6 +31,7 @@ const jwt = __importStar(require("jsonwebtoken"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const typeorm_1 = require("typeorm");
 const User_1 = require("../../entities/User");
+const FreeGST_1 = require("../../entities/FreeGST");
 const Tenant_1 = require("../../entities/Tenant");
 const Subscription_1 = require("../../entities/Subscription");
 const database_1 = require("../../config/database");
@@ -111,6 +112,38 @@ class AuthService extends BaseService_1.BaseService {
             throw {
                 status: error.status || 400,
                 message: error.error || error.message || "Registration failed"
+            };
+        }
+        finally {
+            await queryRunner.release();
+        }
+    }
+    async freeGSTregistration(data) {
+        const queryRunner = database_1.AppDataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+        try {
+            const freeGSTrepo = queryRunner.manager.getRepository(FreeGST_1.FreeGST);
+            if (data.email) {
+                const existingUser = await freeGSTrepo.findOne({ where: { email: data.email } });
+                if (existingUser) {
+                    return existingUser;
+                }
+            }
+            const freeGSTuser = freeGSTrepo.create({
+                fullName: data.fullName,
+                email: data.email,
+                phone: data.phone,
+            });
+            const savedUser = await freeGSTrepo.save(freeGSTuser);
+            await queryRunner.commitTransaction();
+            return savedUser;
+        }
+        catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw {
+                status: error.status || 400,
+                message: error.error || error.message || "GST Registration failed"
             };
         }
         finally {

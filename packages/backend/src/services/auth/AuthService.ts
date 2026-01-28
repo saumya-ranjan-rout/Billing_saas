@@ -3,6 +3,7 @@ import * as jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { Repository, QueryRunner, Not, MoreThanOrEqual } from "typeorm";
 import { User, UserStatus,UserRole } from "../../entities/User";
+import { FreeGST } from "../../entities/FreeGST";
 import { Tenant,TenantStatus } from "../../entities/Tenant";
 import { Subscription } from "../../entities/Subscription";
 import { AppDataSource } from "../../config/database";
@@ -162,6 +163,51 @@ if (data.licenseNo) {
       await queryRunner.release();
     }
   }
+
+
+
+
+
+   async freeGSTregistration(data: {
+    fullName: string;
+    email: string;
+    phone: string;
+  }): Promise<FreeGST> {
+    const queryRunner: QueryRunner = AppDataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const freeGSTrepo = queryRunner.manager.getRepository(FreeGST);
+      if (data.email) {
+      const existingUser = await freeGSTrepo.findOne({ where: { email: data.email } });
+if (existingUser) {
+  // throw { status: 400, message: "This email is already registered" };
+  return existingUser;
+}
+      }
+
+      // ✅ 3. Create User
+      const freeGSTuser = freeGSTrepo.create({
+        fullName: data.fullName,
+        email: data.email,
+        phone: data.phone,
+      });
+      const savedUser = await freeGSTrepo.save(freeGSTuser);
+      await queryRunner.commitTransaction();
+      return savedUser;
+    } catch (error: any) {
+      await queryRunner.rollbackTransaction();
+
+      throw {
+        status: error.status || 400,
+        message: error.error || error.message || "GST Registration failed"
+      };
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+
 
   async register(userData: Partial<User>, tenantId: string): Promise<User> {
     const existingUser = await this.repository.findOne({

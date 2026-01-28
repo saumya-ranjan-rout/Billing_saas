@@ -7,6 +7,7 @@ export declare enum PlanType {
 }
 export declare enum BillingCycle {
     FIVE_DAYS = "5days",
+    FIFTEEN_DAYS = "15days",
     WEEKLY = "weekly",
     MONTHLY = "monthly",
     YEARLY = "yearly"

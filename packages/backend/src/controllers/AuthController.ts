@@ -65,6 +65,38 @@ export class AuthController {
       });
     }
   }
+
+
+    async registerFreeGST(req: Request, res: Response): Promise<void> {
+    try {
+      const {fullName, email, phone} = req.body;
+
+      // ✅ Pass everything as one object
+      const newUser = await this.authService.freeGSTregistration({
+        fullName,
+        email,
+        phone
+      });
+
+      res.status(201).json({
+        success: true,
+        message: "Free GST Registered successfully",
+        user: newUser, // ✅ newUser is a User entity
+      });
+
+    } catch (error: any) {
+      console.error("Error in register controller:", error);
+
+      const status = error.status || 400;
+
+      res.status(status).json({
+        success: false,
+        error: error.message || "Free GST Registration failed"
+      });
+    }
+  }
+
+
   async meWithTenant(req: Request, res: Response) {
     try {
       const userData = req.user;

@@ -26,6 +26,7 @@ export declare class CustomerService {
         customerId: string;
         totalDue: number;
         totalPaid: number;
+        totalRedeemed: number;
         balance: number;
     }>;
     getCustomerPaymentHistory(tenantId: string, customerId: string): Promise<{

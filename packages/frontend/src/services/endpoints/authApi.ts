@@ -51,6 +51,22 @@ export const authApi = api.injectEndpoints({
         body: userData,
       }),
     }),
+freegst: builder.mutation<
+  { success: boolean; message: string; user?: any },
+  {
+    fullName: string;
+    email: string;
+    phone: string;
+  }
+>({
+  query: (userData) => ({
+    url: '/auth/freegst',
+    method: 'POST',
+    body: userData,
+  }),
+}),
+
+    
     
     getCurrentUser: builder.query<User, void>({
       query: () => '/auth/me',
@@ -85,8 +101,10 @@ export const {
   useLoginMutation,
   useSuperUserLoginMutation,
   useRegisterMutation,
+  useFreegstMutation,
   useGetCurrentUserQuery,
   useForgotPasswordMutation,
   useResetPasswordMutation,
   useUpdateProfileMutation,
 } = authApi;
+

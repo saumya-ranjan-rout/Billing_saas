@@ -1,4 +1,7 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const InvoiceController_1 = require("../controllers/InvoiceController");
@@ -14,6 +17,8 @@ const validation_1 = require("../middleware/validation");
 const validators_1 = require("../utils/validators");
 const cache_1 = require("../middleware/cache");
 const checkSubscription_1 = require("../middleware/checkSubscription");
+const multer_1 = __importDefault(require("multer"));
+const upload = (0, multer_1.default)();
 const router = (0, express_1.Router)();
 const invoiceService = new InvoiceService_1.InvoiceService();
 const settingService = new SettingService_1.SettingService();
@@ -21,6 +26,7 @@ const cacheService = new CacheService_1.CacheService();
 const queueService = new QueueService_1.QueueService();
 const loyaltyService = new LoyaltyService_1.LoyaltyService();
 const invoiceController = new InvoiceController_1.InvoiceController(invoiceService, settingService, cacheService, queueService, loyaltyService);
+router.post("/send-invoicepdf", upload.single("pdf"), invoiceController.sendInvoicePDF.bind(invoiceController));
 router.use(auth_1.authMiddleware, tenant_1.tenantMiddleware, checkSubscription_1.checkSubscription);
 router.post('/', (0, rbac_1.rbacMiddleware)(['create:invoices']), (0, validation_1.validationMiddleware)(validators_1.invoiceSchema), invoiceController.createInvoice.bind(invoiceController));
 router.put('/:id', (0, rbac_1.rbacMiddleware)(['update:invoices']), (0, validation_1.validationMiddleware)(validators_1.invoiceSchema), invoiceController.updateInvoice.bind(invoiceController));

@@ -48,6 +48,7 @@ const AuditLog_1 = require("../entities/AuditLog");
 const LoyaltyProgram_1 = require("../entities/LoyaltyProgram");
 const LoyaltyTransaction_1 = require("../entities/LoyaltyTransaction");
 const CustomerLoyalty_1 = require("../entities/CustomerLoyalty");
+const FreeGST_1 = require("../entities/FreeGST");
 exports.pgPool = new pg_1.Pool({
     host: process.env.DB_HOST || 'localhost',
     port: parseInt(process.env.DB_PORT || '5432'),
@@ -81,7 +82,7 @@ exports.AppDataSource = new typeorm_1.DataSource({
         ProfessionalUser_1.ProfessionalUser, ProfessionalTenant_1.ProfessionalTenant, PurchaseOrder_1.PurchaseOrder, PurchaseItem_1.PurchaseItem,
         SubscriptionPlan_1.SubscriptionPlan, SubscriptionChange_1.SubscriptionChange, SuperAdmin_1.SuperAdmin, Vendor_1.Vendor, Category_1.Category,
         PaymentInvoice_1.PaymentInvoice, Payment_1.Payment, Setting_1.Setting, Report_1.Report, Expense_1.Expense, TaxDetail_1.TaxDetail, AuditLog_1.AuditLog,
-        LoyaltyProgram_1.LoyaltyProgram, LoyaltyTransaction_1.LoyaltyTransaction, CustomerLoyalty_1.CustomerLoyalty,
+        LoyaltyProgram_1.LoyaltyProgram, LoyaltyTransaction_1.LoyaltyTransaction, CustomerLoyalty_1.CustomerLoyalty, FreeGST_1.FreeGST
     ],
     synchronize: process.env.NODE_ENV !== 'production',
     logging: false,

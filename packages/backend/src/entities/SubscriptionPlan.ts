@@ -10,10 +10,12 @@ export enum PlanType {
 
 export enum BillingCycle {
   FIVE_DAYS = '5days',
+  FIFTEEN_DAYS = '15days',
   WEEKLY = 'weekly',
   MONTHLY = 'monthly',
   YEARLY = 'yearly',
 }
+
 
 @Entity('subscription_plans')
 @Index(['tenantId', 'isActive'])

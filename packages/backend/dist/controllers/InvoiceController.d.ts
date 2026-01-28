@@ -11,6 +11,7 @@ export declare class InvoiceController {
     private queueService;
     private loyaltyService;
     constructor(invoiceService: InvoiceService, settingService: SettingService, cacheService: CacheService, queueService: QueueService, loyaltyService: LoyaltyService);
+    sendInvoicePDF(req: Request, res: Response): Promise<Response<any, Record<string, any>>>;
     list(req: Request, res: Response): Promise<Response<any, Record<string, any>>>;
     get(req: Request, res: Response): Promise<Response<any, Record<string, any>>>;
     createInvoice(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;

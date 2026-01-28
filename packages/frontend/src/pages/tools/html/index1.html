@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Free GST Invoice Generator Online (India)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description"
+        content="Free GST invoice generator online for Indian businesses. Create GST invoices with HSN/SAC, logo, bank details & download PDF instantly. No signup required.">
+
+    <!-- TOOL SCHEMA -->
+    <script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "WebApplication",
+ "name": "Free GST Invoice Generator",
+ "applicationCategory": "BusinessApplication",
+ "operatingSystem": "Web",
+ "offers": {
+   "@type": "Offer",
+   "price": "0",
+   "priceCurrency": "INR"
+ }
+}
+</script>
+
+    <style>
+        body {
+            font-family: system-ui;
+            background: #f4f4f4;
+            margin: 0
+        }
+
+        .container {
+            max-width: 950px;
+            background: #fff;
+            margin: 20px auto;
+            padding: 25px;
+            border-radius: 8px
+        }
+
+        h1,
+        h3 {
+            margin-top: 0
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin: 6px 0
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center
+        }
+
+        button {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer
+        }
+
+        .primary {
+            background: #0a66ff;
+            color: #fff
+        }
+
+        .secondary {
+            background: #333;
+            color: #fff
+        }
+
+        .total {
+            font-size: 18px;
+            text-align: right;
+            margin-top: 15px
+        }
+
+        .note {
+            font-size: 13px;
+            color: #666
+        }
+
+        #popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, .6);
+            display: none
+        }
+
+        #popupBox {
+            background: #fff;
+            max-width: 400px;
+            margin: 15% auto;
+            padding: 25px;
+            border-radius: 8px;
+            text-align: center
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Free GST Invoice Generator</h1>
+        <p>Create GST-compliant invoices with logo, HSN/SAC, bank details & download PDF instantly.</p>
+
+        <h3>Invoice Logo</h3>
+        <input type="file" id="logo" accept="image/*">
+
+        <h3>Seller Details</h3>
+        <input id="seller" placeholder="Business Name">
+        <input id="sellerGst" placeholder="GSTIN">
+        <textarea id="sellerAddr" placeholder="Address"></textarea>
+
+        <h3>Buyer Details</h3>
+        <input id="buyer" placeholder="Client Name">
+        <input id="buyerGst" placeholder="Client GSTIN (Optional)">
+        <textarea id="buyerAddr" placeholder="Client Address"></textarea>
+
+        <h3>Invoice Info</h3>
+        <input id="invoiceNo" readonly>
+        <input type="date" id="invoiceDate">
+
+        <h3>Items</h3>
+        <table id="items">
+            <tr>
+                <th>Description</th>
+                <th>HSN/SAC</th>
+                <th>Qty</th>
+                <th>Rate</th>
+                <th>Total</th>
+            </tr>
+            <tr>
+                <td><input></td>
+                <td><input></td>
+                <td><input type="number" value="1"></td>
+                <td><input type="number" value="0"></td>
+                <td class="lineTotal">0</td>
+            </tr>
+        </table>
+
+        <button class="secondary" onclick="addRow()">+ Add Item</button>
+
+        <h3>GST</h3>
+        <select id="gstRate">
+            <option value="5">5%</option>
+            <option value="12">12%</option>
+            <option value="18" selected>18%</option>
+            <option value="28">28%</option>
+        </select>
+
+        <h3>Bank Details</h3>
+        <textarea id="bank" placeholder="Bank Name, A/C No, IFSC"></textarea>
+
+        <h3>Terms & Conditions</h3>
+        <textarea id="terms">Payment due within 15 days.</textarea>
+
+        <div class="total" id="grandTotal">Grand Total: ₹0</div>
+
+        <br>
+        <button class="primary" onclick="generatePDF()">Download PDF</button>
+        <button class="secondary" onclick="emailInvoice()">Email Invoice</button>
+
+        <p class="note">
+            Want automation, reminders & GST reports?
+            <a href="/signup">Try full billing software free</a>
+        </p>
+    </div>
+
+    <!-- POPUP -->
+    <div id="popup">
+        <div id="popupBox">
+            <h3>Automate Your Billing</h3>
+            <p>Invoices, reminders & GST reports — done automatically.</p>
+            <a href="/signup" class="primary">Start Free 14-Day Trial</a>
+            <br><br>
+            <button onclick="closePopup()">Maybe Later</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script>
+        const invoiceNo = "INV-" + Date.now();
+        document.getElementById("invoiceNo").value = invoiceNo;
+        document.getElementById("invoiceDate").valueAsDate = new Date();
+
+        function addRow() {
+            let r = document.getElementById("items").insertRow();
+            r.innerHTML = `<td><input></td><td><input></td>
+ <td><input type="number" value="1"></td>
+ <td><input type="number" value="0"></td>
+ <td class="lineTotal">0</td>`;
+        }
+
+        document.addEventListener("input", calculate);
+
+        function calculate() {
+            let subtotal = 0;
+            document.querySelectorAll("#items tr").forEach((r, i) => {
+                if (i == 0) return;
+                let q = r.cells[2].children[0].value || 0;
+                let rate = r.cells[3].children[0].value || 0;
+                let t = q * rate;
+                r.cells[4].innerText = t.toFixed(2);
+                subtotal += t;
+            });
+            let gst = subtotal * document.getElementById("gstRate").value / 100;
+            document.getElementById("grandTotal").innerText = "Grand Total: ₹" + (subtotal + gst).toFixed(2);
+        }
+
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            let doc = new jsPDF();
+            let y = 15;
+
+            if (logo.files[0]) {
+                let reader = new FileReader();
+                reader.onload = e => {
+                    doc.addImage(e.target.result, "PNG", 10, 10, 30, 20);
+                    renderPDF(doc);
+                };
+                reader.readAsDataURL(logo.files[0]);
+            } else renderPDF(doc);
+        }
+
+        function renderPDF(doc) {
+            doc.setFontSize(14);
+            doc.text("GST INVOICE", 105, 15, null, null, "center");
+            doc.setFontSize(10);
+            doc.text(`Seller: ${seller.value}`, 10, 40);
+            doc.text(`Buyer: ${buyer.value}`, 10, 50);
+            doc.text(invoiceNo, 150, 40);
+            let y = 70;
+            doc.text("Desc | HSN | Qty | Rate | Total", 10, y);
+            y += 6;
+            document.querySelectorAll("#items tr").forEach((r, i) => {
+                if (i == 0) return;
+                doc.text(
+                    `${r.cells[0].children[0].value} | ${r.cells[1].children[0].value} | ${r.cells[2].children[0].value} | ${r.cells[3].children[0].value} | ${r.cells[4].innerText}`,
+                    10, y
+                );
+                y += 6;
+            });
+            doc.text(document.getElementById("grandTotal").innerText, 150, y + 10);
+            doc.text("Bank: " + bank.value, 10, y + 20);
+            doc.text("Terms: " + terms.value, 10, y + 30);
+            doc.save("GST-Invoice.pdf");
+            setTimeout(() => popup.style.display = "block", 1200);
+        }
+
+        function emailInvoice() {
+            window.location.href = `mailto:?subject=GST Invoice ${invoiceNo}&body=Invoice generated using BillingSoftwareOnline.com`;
+        }
+
+        function closePopup() { popup.style.display = "none"; }
+    </script>
+
+</body>
+
+</html>

@@ -12,6 +12,8 @@ import { validationMiddleware } from '../middleware/validation';
 import { invoiceSchema, paymentSchema } from '../utils/validators';
 import { cacheMiddleware } from "../middleware/cache";  // ✅ add import
 import { checkSubscription } from "../middleware/checkSubscription";
+import multer from "multer";
+const upload = multer();
 
 
 const router = Router();
@@ -29,6 +31,11 @@ const invoiceController = new InvoiceController(
   loyaltyService
 );
 
+router.post(
+  "/send-invoicepdf",
+  upload.single("pdf"),
+  invoiceController.sendInvoicePDF.bind(invoiceController)
+);
 // All routes require authentication and tenant context
 router.use(authMiddleware, tenantMiddleware, checkSubscription);
 

@@ -13,6 +13,7 @@ interface UseApiReturn<T> extends ApiState<T> {
   patch: (url: string, body: any) => Promise<T>;
   del: (url: string) => Promise<T>;
   getBlob: (url: string) => Promise<Blob>;
+    postForm: (url: string, formData: FormData) => Promise<any>;
 }
 
 export const useApi = <T>(): UseApiReturn<T> => {
@@ -77,6 +78,28 @@ export const useApi = <T>(): UseApiReturn<T> => {
   const put = useCallback((url: string, body: any) => request(url, { method: "PUT", body: JSON.stringify(body) }), [request]);
   const patch = useCallback((url: string, body: any) => request(url, { method: "PATCH", body: JSON.stringify(body) }), [request]);
   const del = useCallback((url: string) => request(url, { method: "DELETE" }), [request]);
+  const postForm = useCallback(
+    async (url: string, formData: FormData) => {
+      const token = localStorage.getItem("authToken");
+ 
+      const response = await fetch(`${API_BASE}${url}`, {
+        method: "POST",
+        body: formData, // ✅ FormData
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          // ❌ DO NOT set Content-Type
+        },
+      });
+ 
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(text || "Failed to send request");
+      }
+ 
+      return response.json();
+    },
+    []
+  );
 
   const getBlob = async (url: string, options: RequestInit = {}) => {
     const token = localStorage.getItem("authToken");
@@ -121,6 +144,7 @@ export const useApi = <T>(): UseApiReturn<T> => {
     put,
     patch, // ✅ Added patch here
     del,
+    postForm,
     getBlob,
   };
 };

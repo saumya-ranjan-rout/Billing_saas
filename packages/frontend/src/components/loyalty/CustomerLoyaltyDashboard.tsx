@@ -13,6 +13,8 @@ const CustomerLoyaltyDashboard: React.FC<CustomerLoyaltyDashboardProps> = ({
 }) => {
   const { summary, recentTransactions, program } = loyaltyData;
 
+ 
+
   const getTierColor = (tier: string) => {
     const colors: Record<string, string> = {
       bronze: 'bg-amber-100 text-amber-800',
