@@ -12,11 +12,8 @@ class PDFGenerator {
             try {
                 const doc = new pdfkit_1.default({ margin: 50 });
                 const buffers = [];
-                doc.on('data', buffers.push.bind(buffers));
-                doc.on('end', () => {
-                    const pdfData = Buffer.concat(buffers);
-                    resolve(pdfData);
-                });
+                doc.on('data', (chunk) => buffers.push(chunk));
+                doc.on('end', () => resolve(Buffer.concat(buffers)));
                 this.addHeader(doc, invoice);
                 this.addCustomerInfo(doc, customer);
                 this.addInvoiceDetails(doc, invoice);
@@ -25,8 +22,8 @@ class PDFGenerator {
                 this.addFooter(doc);
                 doc.end();
             }
-            catch (error) {
-                reject(error);
+            catch (err) {
+                reject(err);
             }
         });
     }
@@ -46,11 +43,6 @@ class PDFGenerator {
             .fontSize(10)
             .text(customer.name, 350, 95)
             .text(customer.email, 350, 110);
-        if (customer.address) {
-            doc.text(customer.address.street, 350, 125);
-            doc.text(`${customer.address.city}, ${customer.address.state} ${customer.address.pincode}`, 350, 140);
-            doc.text(customer.address.country, 350, 155);
-        }
     }
     static addInvoiceDetails(doc, invoice) {
         doc
@@ -59,14 +51,13 @@ class PDFGenerator {
             .text(`Payment Terms: ${invoice.paymentTerms} days`, 50, 155);
     }
     static addItemsTable(doc, invoice) {
-        const tableTop = 200;
+        let y = 220;
         doc
             .fontSize(10)
-            .text('Description', 50, tableTop)
-            .text('Quantity', 250, tableTop)
-            .text('Unit Price', 350, tableTop)
-            .text('Amount', 450, tableTop);
-        let y = tableTop + 20;
+            .text('Description', 50, 200)
+            .text('Qty', 250, 200)
+            .text('Rate', 350, 200)
+            .text('Amount', 450, 200);
         invoice.items.forEach(item => {
             doc
                 .text(item.description, 50, y)
@@ -77,16 +68,16 @@ class PDFGenerator {
         });
     }
     static addTotals(doc, invoice) {
-        const totalsY = 400;
+        const y = 400;
         doc
             .fontSize(10)
-            .text('Subtotal:', 350, totalsY)
-            .text((0, helpers_1.formatCurrency)(invoice.subtotal), 450, totalsY)
-            .text('Tax:', 350, totalsY + 15)
-            .text((0, helpers_1.formatCurrency)(invoice.taxAmount), 450, totalsY + 15)
+            .text('Subtotal:', 350, y)
+            .text((0, helpers_1.formatCurrency)(invoice.subtotal), 450, y)
+            .text('Tax:', 350, y + 15)
+            .text((0, helpers_1.formatCurrency)(invoice.taxAmount), 450, y + 15)
             .fontSize(12)
-            .text('Total:', 350, totalsY + 35)
-            .text((0, helpers_1.formatCurrency)(invoice.totalAmount), 450, totalsY + 35);
+            .text('Total:', 350, y + 35)
+            .text((0, helpers_1.formatCurrency)(invoice.totalAmount), 450, y + 35);
     }
     static addFooter(doc) {
         doc

@@ -1,48 +1,40 @@
 import PDFDocument from 'pdfkit';
-import fs from 'fs';
-import path from 'path';
+import type PDFKit from 'pdfkit';
+
 import { Invoice, Customer } from '../types/customTypes';
 import { formatCurrency, formatDate } from './helpers';
 
 export class PDFGenerator {
-  static async generateInvoicePDF(invoice: Invoice, customer: Customer): Promise<Buffer> {
+  static async generateInvoicePDF(
+    invoice: Invoice,
+    customer: Customer
+  ): Promise<Buffer> {
     return new Promise((resolve, reject) => {
       try {
         const doc = new PDFDocument({ margin: 50 });
         const buffers: Buffer[] = [];
-        
-        doc.on('data', buffers.push.bind(buffers));
-        doc.on('end', () => {
-          const pdfData = Buffer.concat(buffers);
-          resolve(pdfData);
-        });
-        
-        // Add header
+
+        doc.on('data', (chunk: Buffer) => buffers.push(chunk));
+        doc.on('end', () => resolve(Buffer.concat(buffers)));
+
         this.addHeader(doc, invoice);
-        
-        // Add customer information
         this.addCustomerInfo(doc, customer);
-        
-        // Add invoice details
         this.addInvoiceDetails(doc, invoice);
-        
-        // Add items table
         this.addItemsTable(doc, invoice);
-        
-        // Add totals
         this.addTotals(doc, invoice);
-        
-        // Add footer
         this.addFooter(doc);
-        
+
         doc.end();
-      } catch (error) {
-        reject(error);
+      } catch (err) {
+        reject(err);
       }
     });
   }
-  
-  private static addHeader(doc: PDFKit.PDFDocument, invoice: Invoice) {
+
+  private static addHeader(
+    doc: PDFKit.PDFDocument,
+    invoice: Invoice
+  ): void {
     doc
       .fontSize(20)
       .text('INVOICE', 50, 50)
@@ -51,68 +43,70 @@ export class PDFGenerator {
       .text(`Issue Date: ${formatDate(invoice.issueDate)}`, 50, 95)
       .text(`Due Date: ${formatDate(invoice.dueDate)}`, 50, 110);
   }
-  
-  private static addCustomerInfo(doc: PDFKit.PDFDocument, customer: Customer) {
+
+  private static addCustomerInfo(
+    doc: PDFKit.PDFDocument,
+    customer: Customer
+  ): void {
     doc
       .fontSize(12)
       .text('Bill To:', 350, 80)
       .fontSize(10)
       .text(customer.name, 350, 95)
       .text(customer.email, 350, 110);
-    
-    if (customer.address) {
-      doc.text(customer.address.street, 350, 125);
-      doc.text(`${customer.address.city}, ${customer.address.state} ${customer.address.pincode}`, 350, 140);
-      doc.text(customer.address.country, 350, 155);
-    }
   }
-  
-  private static addInvoiceDetails(doc: PDFKit.PDFDocument, invoice: Invoice) {
+
+  private static addInvoiceDetails(
+    doc: PDFKit.PDFDocument,
+    invoice: Invoice
+  ): void {
     doc
       .fontSize(10)
       .text(`Status: ${invoice.status.toUpperCase()}`, 50, 140)
       .text(`Payment Terms: ${invoice.paymentTerms} days`, 50, 155);
   }
-  
-  private static addItemsTable(doc: PDFKit.PDFDocument, invoice: Invoice) {
-    const tableTop = 200;
-    
-    // Table headers
+
+  private static addItemsTable(
+    doc: PDFKit.PDFDocument,
+    invoice: Invoice
+  ): void {
+    let y = 220;
+
     doc
       .fontSize(10)
-      .text('Description', 50, tableTop)
-      .text('Quantity', 250, tableTop)
-      .text('Unit Price', 350, tableTop)
-      .text('Amount', 450, tableTop);
-    
-    // Table rows
-    let y = tableTop + 20;
+      .text('Description', 50, 200)
+      .text('Qty', 250, 200)
+      .text('Rate', 350, 200)
+      .text('Amount', 450, 200);
+
     invoice.items.forEach(item => {
       doc
         .text(item.description, 50, y)
         .text(item.quantity.toString(), 250, y)
         .text(formatCurrency(item.unitPrice), 350, y)
         .text(formatCurrency(item.quantity * item.unitPrice), 450, y);
-      
       y += 15;
     });
   }
-  
-  private static addTotals(doc: PDFKit.PDFDocument, invoice: Invoice) {
-    const totalsY = 400;
-    
+
+  private static addTotals(
+    doc: PDFKit.PDFDocument,
+    invoice: Invoice
+  ): void {
+    const y = 400;
+
     doc
       .fontSize(10)
-      .text('Subtotal:', 350, totalsY)
-      .text(formatCurrency(invoice.subtotal), 450, totalsY)
-      .text('Tax:', 350, totalsY + 15)
-      .text(formatCurrency(invoice.taxAmount), 450, totalsY + 15)
+      .text('Subtotal:', 350, y)
+      .text(formatCurrency(invoice.subtotal), 450, y)
+      .text('Tax:', 350, y + 15)
+      .text(formatCurrency(invoice.taxAmount), 450, y + 15)
       .fontSize(12)
-      .text('Total:', 350, totalsY + 35)
-      .text(formatCurrency(invoice.totalAmount), 450, totalsY + 35);
+      .text('Total:', 350, y + 35)
+      .text(formatCurrency(invoice.totalAmount), 450, y + 35);
   }
-  
-  private static addFooter(doc: PDFKit.PDFDocument) {
+
+  private static addFooter(doc: PDFKit.PDFDocument): void {
     doc
       .fontSize(8)
       .text('Thank you for your business!', 50, 500)
