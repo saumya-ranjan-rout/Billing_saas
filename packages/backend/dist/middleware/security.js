@@ -49,7 +49,7 @@ exports.securityMiddleware = [
     async (req, res, next) => {
         try {
             const tenantId = req.tenantId || 'unknown';
-            const ip = req.ip || req.connection.remoteAddress || 'unknown';
+            const ip = req.ip || req.socket.remoteAddress || 'unknown';
             const rateKey = `${tenantId}:${ip}`;
             await rateLimiter.consume(rateKey);
             next();
