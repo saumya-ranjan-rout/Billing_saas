@@ -1,21 +1,27 @@
 // E:\BillingSoftware-SaaS\packages\backend\src\types\express\index.d.ts
 
+import { Multer } from 'multer';
 import { JWTPayload } from '../customTypes';
 import { SuperAdmin } from '../../entities/SuperAdmin';
 import { Tenant } from '../../entities/Tenant';
 import { User } from '../../entities/User';
-import { Professional } from "../../entities/Professional";
+import { Professional } from '../../entities/Professional';
 
 declare global {
   namespace Express {
     interface Request {
-      user?: JWTPayload | User; // ✅ can be token payload or DB user
+      user?: JWTPayload | User;
       tenant?: Tenant;
       superAdmin?: SuperAdmin;
-            professional?: Professional;
+      professional?: Professional;
+      file?: Multer.File;
+      files?: Multer.File[];
     }
   }
 }
+
+export {};
+
 
 
 

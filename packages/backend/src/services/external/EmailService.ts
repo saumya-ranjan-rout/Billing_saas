@@ -1,4 +1,4 @@
-import nodemailer from "nodemailer";
+import nodemailer, { SentMessageInfo } from "nodemailer";
 import { BadRequestError } from "../../utils/errors";
 
 export class EmailService {
@@ -15,13 +15,16 @@ export class EmailService {
       },
     });
 
-    this.transporter.verify((error, success) => {
-      if (error) {
-        console.error("SMTP Error:", error);
-      } else {
-        console.log("SMTP Server is ready to send emails");
-      }
-    });
+this.transporter.verify(
+  (error: Error | null, success: boolean) => {
+    if (error) {
+      console.error("SMTP Error:", error);
+    } else {
+      console.log("SMTP Server is ready to send emails");
+    }
+  }
+);
+
   }
   async sendGeneratedInvoiceEmail(
     to: string,
@@ -76,7 +79,8 @@ export class EmailService {
  
     try {
       await this.transporter.sendMail(mailOptions);
-    } catch (error) {
+ } catch (error: unknown) {
+
       throw new BadRequestError("Failed to send GST invoice email");
     }
   }
@@ -101,7 +105,8 @@ export class EmailService {
 
     try {
       await this.transporter.sendMail(mailOptions);
-    } catch (error) {
+  } catch (error: unknown) {
+
       throw new BadRequestError("Failed to send invitation email");
     }
   }
@@ -147,7 +152,8 @@ export class EmailService {
 
     try {
       await this.transporter.sendMail(mailOptions);
-    } catch (error) {
+   } catch (error: unknown) {
+
       throw new BadRequestError("Failed to send password reset email");
     }
   }
@@ -173,7 +179,8 @@ export class EmailService {
 
     try {
       await this.transporter.sendMail(mailOptions);
-    } catch (error) {
+} catch (error: unknown) {
+
       throw new BadRequestError("Failed to send invoice email");
     }
   }

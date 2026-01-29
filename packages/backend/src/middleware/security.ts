@@ -2,8 +2,9 @@ import helmet from 'helmet';
 import compression from 'compression';
 import cors from 'cors';
 import { RateLimiterRedis } from 'rate-limiter-flexible';
+import { Request, Response, NextFunction } from 'express';
 import { redis } from '../config/redis';
-import logger  from '../utils/logger';
+import logger from '../utils/logger';
 
 // Advanced rate limiting with Redis storage
 const rateLimiter = new RateLimiterRedis({
@@ -39,16 +40,20 @@ export const securityMiddleware = [
   compression({
     level: 6,
     threshold: 1024,
-    filter: (req, res) => {
+    filter: (req: Request, res: Response) => {
       if (req.headers['x-no-compression']) return false;
       return compression.filter(req, res);
     },
   }),
 
-  async (req: any, res: any, next: any) => {
+  async (
+    req: Request & { tenantId?: string },
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
       const tenantId = req.tenantId || 'unknown';
-      const ip = req.ip || req.connection.remoteAddress || 'unknown';
+      const ip = req.ip || req.socket.remoteAddress || 'unknown';
 
       const rateKey = `${tenantId}:${ip}`;
 
