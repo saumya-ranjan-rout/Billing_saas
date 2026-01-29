@@ -623,11 +623,13 @@ const updated = await this.userRepository.findOne({
 
   private generateToken(payload: AuthPayload): string {
 
-    return jwt.sign(payload, process.env.JWT_SECRET!, {
-
-      expiresIn: process.env.JWT_EXPIRES_IN || "1d", // short expiry for access tokens
-
-    });
+   return jwt.sign(
+  payload,
+  process.env.JWT_SECRET as any,
+  {
+    expiresIn: process.env.JWT_EXPIRES_IN || "1d",
+  } as any
+);
 
   }
 
@@ -641,11 +643,14 @@ const updated = await this.userRepository.findOne({
 
   private generateRefreshToken(payload: AuthPayload): string {
 
-    return jwt.sign(payload, process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET!, {
+   return jwt.sign(
+  payload,
+  (process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET) as string,
+  {
+    expiresIn: (process.env.JWT_REFRESH_EXPIRES_IN ?? "7d") as jwt.SignOptions["expiresIn"],
+  }
+);
 
-      expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || "7d",
-
-    });
 
   }
 async recordPayment(data: any) {

@@ -323,7 +323,9 @@ class AuthService extends BaseService_1.BaseService {
         if (!user) {
             return;
         }
-        const resetToken = jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "1d" });
+        const resetToken = jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_SECRET, {
+            expiresIn: (process.env.JWT_EXPIRES_IN ?? "1d"),
+        });
         await this.emailService.sendPasswordResetEmail(user.email, resetToken);
     }
     async confirmResetPassword(token, newPassword) {
@@ -339,12 +341,12 @@ class AuthService extends BaseService_1.BaseService {
     }
     generateToken(payload) {
         return jwt.sign(payload, process.env.JWT_SECRET, {
-            expiresIn: process.env.JWT_EXPIRES_IN || "1d",
+            expiresIn: (process.env.JWT_EXPIRES_IN ?? "1d"),
         });
     }
     generateRefreshToken(payload) {
-        return jwt.sign(payload, process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET, {
-            expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || "7d",
+        return jwt.sign(payload, (process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET), {
+            expiresIn: (process.env.JWT_REFRESH_EXPIRES_IN ?? "7d"),
         });
     }
     verifyToken(token) {

@@ -223,7 +223,9 @@ const generateToken = (user) => {
         tenantId: user.tenant.id,
         role: user.role,
         permissions: user.permissions,
-    }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN || '24h' });
+    }, process.env.JWT_SECRET, {
+        expiresIn: (process.env.JWT_EXPIRES_IN ?? "24h"),
+    });
 };
 exports.generateToken = generateToken;
 const refreshToken = async (req, res, next) => {

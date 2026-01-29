@@ -298,8 +298,10 @@ export const generateToken = (user: any): string => {
       role: user.role, 
         permissions: user.permissions, 
     },
-    process.env.JWT_SECRET!,
-    { expiresIn: process.env.JWT_EXPIRES_IN || '24h' }
+    process.env.JWT_SECRET as string,
+  {
+    expiresIn: (process.env.JWT_EXPIRES_IN ?? "24h") as jwt.SignOptions["expiresIn"],
+  }
   );
 };
  

@@ -483,8 +483,10 @@ async superUserlogin(
 
     const resetToken = jwt.sign(
       { userId: user.id, email: user.email },
-      process.env.JWT_SECRET!,
-      { expiresIn: "1d" }
+  process.env.JWT_SECRET as string,
+  {
+    expiresIn: (process.env.JWT_EXPIRES_IN ?? "1d") as jwt.SignOptions["expiresIn"],
+  }
     );
 
     await this.emailService.sendPasswordResetEmail(user.email, resetToken);
@@ -512,18 +514,27 @@ async superUserlogin(
    * Generate JWT Access Token
    */
   private generateToken(payload: AuthPayload): string {
-    return jwt.sign(payload, process.env.JWT_SECRET!, {
-      expiresIn: process.env.JWT_EXPIRES_IN || "1d", // short expiry for access tokens
-    });
+    return jwt.sign(
+  payload,
+  process.env.JWT_SECRET as string,
+  {
+    expiresIn: (process.env.JWT_EXPIRES_IN ?? "1d") as jwt.SignOptions["expiresIn"],
+  }
+);
+
   }
 
   /**
    * Generate JWT Refresh Token
    */
   private generateRefreshToken(payload: AuthPayload): string {
-    return jwt.sign(payload, process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET!, {
-      expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || "7d",
-    });
+   return jwt.sign(
+  payload,
+  (process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET) as string,
+  {
+    expiresIn: (process.env.JWT_REFRESH_EXPIRES_IN ?? "7d") as jwt.SignOptions["expiresIn"],
+  }
+);
   }
 
   /**
