@@ -61,6 +61,7 @@ async getActivePlans(role: string): Promise<SubscriptionPlan[]> {
     planId: string,
     paymentGateway: PaymentGateway = PaymentGateway.RAZORPAY
   ): Promise<{ subscription: Subscription; payment: Payment }> {
+    console.log("SubscriptionService-createSubscription");
     const user = await this.userRepository.findOne({ where: { id: userId } });
     if (!user) throw new Error('User not found');
 
@@ -134,6 +135,7 @@ async getActivePlans(role: string): Promise<SubscriptionPlan[]> {
     }
   }
 async activateFreeTrial(subscriptionId: string): Promise<void> {
+  console.log("SubscriptionService-activateFreeTrial");
   const subscriptionRepo = AppDataSource.getRepository(Subscription);
   const subscription = await subscriptionRepo.findOne({ where: { id: subscriptionId } });
 
@@ -379,6 +381,7 @@ async activateFreeTrial(subscriptionId: string): Promise<void> {
   }
 
   async getPlanById(planId: string): Promise<SubscriptionPlan | null> {
+    console.log("SubscriptionService-getPlanById");
   return this.planRepository.findOne({ where: { id: planId } });
 }
 

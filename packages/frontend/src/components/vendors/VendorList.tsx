@@ -60,6 +60,7 @@ const VendorList: React.FC<VendorListProps> = ({ onEditVendor, refreshTrigger })
       }).toString();
       const response = await get(`/api/vendors?${query}`);
       setVendors(response.data);
+    //  console.log("vendor-pagination",response.pagination);
       setPagination(response.pagination);
     } catch (error: any) {
       console.error('Failed to fetch vendors:', error);

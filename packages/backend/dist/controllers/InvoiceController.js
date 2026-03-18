@@ -7,9 +7,23 @@ exports.InvoiceController = void 0;
 const express_validator_1 = require("express-validator");
 const logger_1 = __importDefault(require("../utils/logger"));
 const response_1 = require("../utils/response");
+const generateInvoicePDF_1 = require("../utils/generateInvoicePDF");
 function getErrorMessage(error) {
     return error instanceof Error ? error.message : String(error);
 }
+const normalizeInvoiceData = (body) => {
+    return {
+        ...body,
+        gstRate: Number(body.gstRate || 0),
+        items: Array.isArray(body.items)
+            ? body.items.map((i) => ({
+                ...i,
+                qty: Number(i.qty),
+                rate: Number(i.rate),
+            }))
+            : [],
+    };
+};
 class InvoiceController {
     constructor(invoiceService, settingService, cacheService, queueService, loyaltyService) {
         this.invoiceService = invoiceService;
@@ -72,6 +86,22 @@ class InvoiceController {
                 return res.status(500).json({ error: "Failed to generate invoice PDF ❌" });
             }
         };
+    }
+    async sendPDFMobile(req, res) {
+        try {
+            const data = req.body;
+            if (typeof data.items === "string") {
+                data.items = JSON.parse(data.items);
+            }
+            const normalizedData = normalizeInvoiceData(data);
+            const pdfBuffer = await (0, generateInvoicePDF_1.generateInvoicePDF)(normalizedData);
+            await this.invoiceService.sendGeneratedInvoiceEmail(normalizedData.email, normalizedData.invoiceNo, pdfBuffer);
+            res.json({ message: "Invoice sent successfully" });
+        }
+        catch (err) {
+            console.error(err);
+            res.status(500).json({ message: "Failed to send invoice" });
+        }
     }
     async sendInvoicePDF(req, res) {
         try {

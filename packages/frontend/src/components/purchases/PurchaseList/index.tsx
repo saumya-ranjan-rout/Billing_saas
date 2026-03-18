@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 // import Table from '../../common/Table';
 import { Table } from '@/components/ui/Table';
 import { useApi } from '../../../hooks/useApi';
@@ -35,27 +35,33 @@ const PurchaseList: React.FC<PurchaseListProps> = ({ onEditPurchase }) => {
   const { get, del,patch } = useApi<PaginatedResponse<PurchaseOrder>>();
 
   // ✅ moved outside so reusable
-  const fetchPurchaseOrders = async () => {
-    try {
-      const response = await get(`/api/purchases?page=${pagination.page}&limit=${pagination.limit}`);
-      setPurchaseOrders(response.data);
-      setPagination(response.pagination);
-    } catch ( error: any) {
-      console.error('Failed to fetch purchase orders:', error);
-      toast.error( error?.message || 'Failed to load purchase orders');
-    } finally {
-      setLoading(false);
-    }
-  };
+const fetchPurchaseOrders = useCallback(async () => {
+  try {
+    setLoading(true);
 
-  useEffect(() => {
-    fetchPurchaseOrders();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pagination.page, pagination.limit]);
+    const response = await get(
+      `/api/purchases?page=${pagination.page}&limit=${pagination.limit}`
+    );
 
-  const handlePageChange = (newPage: number) => {
-    setPagination(prev => ({ ...prev, page: newPage }));
-  };
+    //console.log("pagerrrr",response.pagination);
+    
+
+    setPurchaseOrders(response.data);
+    setPagination(response.pagination);
+
+  } catch (error: any) {
+    console.error('Failed to fetch purchase orders:', error);
+    toast.error(error?.message || 'Failed to load purchase orders');
+  } finally {
+    setLoading(false);
+  }
+}, [get, pagination.page, pagination.limit]);
+
+useEffect(() => {
+  fetchPurchaseOrders();
+}, [fetchPurchaseOrders]);
+
+
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this purchase order?')) return;
@@ -211,13 +217,13 @@ const getStatusBadge = (status: string) => {
         // onRowClick={onEditPurchase}
         emptyMessage="No purchase orders found"
       />
-      {pagination.pages > 1 && (
-        <Pagination
-          currentPage={pagination.page}
-          totalPages={pagination.pages}
-          onPageChange={handlePageChange}
-        />
-      )}
+<Pagination
+  currentPage={pagination.page}
+  totalPages={pagination.pages}
+  onPageChange={(page) =>
+    setPagination((prev) => ({ ...prev, page }))
+  }
+/>
     </div>
   );
 };

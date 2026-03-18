@@ -8,10 +8,24 @@ import { LoyaltyService } from '../services/loyalty/LoyaltyService';
 import { InvoiceStatus, InvoiceType } from '../entities/Invoice';
 import logger from '../utils/logger';
 import { ok, errorResponse } from '../utils/response';
+import { generateInvoicePDF } from "../utils/generateInvoicePDF";
 
 function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
+const normalizeInvoiceData = (body: any) => {
+  return {
+    ...body,
+    gstRate: Number(body.gstRate || 0),
+    items: Array.isArray(body.items)
+      ? body.items.map((i: any) => ({
+          ...i,
+          qty: Number(i.qty),
+          rate: Number(i.rate),
+        }))
+      : [],
+  };
+};
 
 export class InvoiceController {
   constructor(
@@ -21,6 +35,35 @@ export class InvoiceController {
     private queueService: QueueService,
     private loyaltyService: LoyaltyService
   ) {}
+
+async sendPDFMobile(req: Request, res: Response) {
+  try {
+    const data = req.body;
+
+    if (typeof data.items === "string") {
+      data.items = JSON.parse(data.items);
+    }
+
+    const normalizedData = normalizeInvoiceData(data);
+
+    const pdfBuffer = await generateInvoicePDF(normalizedData);
+
+
+
+    await this.invoiceService.sendGeneratedInvoiceEmail(
+      normalizedData.email,
+      normalizedData.invoiceNo,
+      pdfBuffer
+    );
+
+    res.json({ message: "Invoice sent successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to send invoice" });
+  }
+}
+
+
 async sendInvoicePDF(req: Request, res: Response) {
   try {
     const { email, invoiceNo } = req.body;

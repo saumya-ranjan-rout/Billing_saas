@@ -60,10 +60,7 @@ exports.pgPool = new pg_1.Pool({
     connectionTimeoutMillis: 5000,
     maxUses: 7500,
 });
-exports.redisClient = new ioredis_1.default({
-    host: process.env.REDIS_HOST || '127.0.0.1',
-    port: parseInt(process.env.REDIS_PORT || '6379'),
-    password: process.env.REDIS_PASSWORD || undefined,
+exports.redisClient = new ioredis_1.default(process.env.REDIS_URL, {
     maxRetriesPerRequest: null,
 });
 exports.redisClient.on('connect', () => logger_1.default.info('✅ Redis connected'));

@@ -181,28 +181,28 @@ const Dashboard: React.FC = () => {
           <MetricCard
             title="Total Revenue"
             value={`₹${dashboardData.totalRevenue.toLocaleString()}`}
-            change={12.5}
+            // change={12.5}
             icon={DollarSign}
             color="blue"
           />
           <MetricCard
             title="New Customers"
             value={dashboardData.newCustomers}
-            change={8.2}
+            // change={8.2}
             icon={Users}
             color="green"
           />
           <MetricCard
             title="Pending Invoices"
             value={dashboardData.pendingInvoices}
-            change={-3.4}
+            // change={-3.4}
             icon={FileText}
             color="yellow"
           />
           <MetricCard
             title="Paid Invoices"
             value={dashboardData.paidInvoices}
-            change={5.7}
+            // change={5.7}
             icon={TrendingUp}
             color="blue"
           />
@@ -210,7 +210,7 @@ const Dashboard: React.FC = () => {
             title="Today's Earnings"
             value={dashboardData.todayIncome}
             // value={`₹${data?.earningsToday?.toLocaleString()}`}
-            change={0}
+            // change={0}
             icon={DollarSign}
             color="green"
           />
@@ -219,7 +219,7 @@ const Dashboard: React.FC = () => {
             title="Today's Spend"
             value={dashboardData.todayExpense}
             // value={`₹${data?.spendToday?.toLocaleString()}`}
-            change={0}
+            // change={0}
             icon={TrendingUp}
             color="red"
           />
@@ -228,7 +228,7 @@ const Dashboard: React.FC = () => {
             title="Today Pending"
             value={dashboardData.todayDue}
             // value={`₹${data?.pendingToday?.toLocaleString()}`}
-            change={0}
+            // change={0}
             icon={FileText}
             color="yellow"
           />
@@ -323,20 +323,54 @@ const Dashboard: React.FC = () => {
 
           <div className="h-72 chart-wrapper">
             {revenueData.length > 0 ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={revenueData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <Tooltip />
-                  <Line
-                    type="monotone"
-                    dataKey="revenue"
-                    stroke="#3b82f6"
-                    strokeWidth={2}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+              // <ResponsiveContainer width="100%" height="100%">
+              //   <LineChart data={revenueData}>
+              //     <CartesianGrid strokeDasharray="3 3" />
+              //     <XAxis dataKey="date" />
+              //     <YAxis />
+              //     <Tooltip />
+              //     <Line
+              //       type="monotone"
+              //       dataKey="revenue"
+              //       stroke="#3b82f6"
+              //       strokeWidth={2}
+              //     />
+              //   </LineChart>
+              // </ResponsiveContainer>
+             <ResponsiveContainer width="100%" height="100%">
+  <LineChart data={revenueData}>
+    <CartesianGrid
+      stroke="#dbeafe"
+      strokeDasharray="6 6"
+    />
+    <XAxis dataKey="date" />
+    <YAxis
+      domain={["dataMin - 200", "dataMax + 200"]}
+      tickFormatter={(v) => `₹${v}`}
+    />
+    <Tooltip />
+    <Line
+      type="basis"
+      dataKey="revenue"
+      stroke="#3b82f6"
+      strokeWidth={2}
+      dot={{
+        r: 4,
+        fill: "#3b82f6",
+        stroke: "#ffffff",
+        strokeWidth: 2,
+      }}
+      activeDot={{
+        r: 6,
+        fill: "#3b82f6",
+        stroke: "#ffffff",
+        strokeWidth: 2,
+      }}
+    />
+  </LineChart>
+</ResponsiveContainer>
+
+
             ) : (
               <div className="h-full flex items-center justify-center text-gray-400">
                 No revenue data available

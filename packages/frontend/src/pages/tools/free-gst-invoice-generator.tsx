@@ -2,6 +2,7 @@ import Head from "next/head";
 import { useEffect, useState, ChangeEvent } from "react";
 import { jsPDF } from "jspdf";
 import { useApi } from '../../hooks/useApi';
+import { useRouter } from 'next/router';
 type InvoiceItem = {
     description: string;
     hsn: string;
@@ -34,7 +35,7 @@ export default function FreeGSTInvoiceGenerator() {
     const [sendingEmail, setSendingEmail] = useState(false);
     const { postForm } = useApi<any>();
     const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailTo);
-
+  const router = useRouter();
 
     useEffect(() => {
         setInvoiceNo("INV-" + Date.now());
@@ -67,7 +68,16 @@ export default function FreeGSTInvoiceGenerator() {
         });
     };
 
+useEffect(() => {
+  const previousBg = document.body.style.background;
 
+  document.body.style.background =
+    "linear-gradient(180deg, #e8ecf3 0%, #b9c8f8 100%)";
+
+  return () => {
+    document.body.style.background = previousBg;
+  };
+}, []);
     const addItem = () => setItems((prev) => [...prev, { description: "", hsn: "", qty: 1, rate: 0, total: 0 }]);
     const removeItem = (index: number) => setItems((prev) => prev.filter((_, idx) => idx !== index));
 
@@ -585,7 +595,7 @@ export default function FreeGSTInvoiceGenerator() {
                 />
             </Head>
 
-            <div className="container">
+            <div className="container ">
                 <h1>Free GST Invoice Generator</h1>
                 <p>
                     Create professional, GST-compliant invoices with your logo, HSN/SAC codes, bank details, and more.
@@ -692,9 +702,15 @@ export default function FreeGSTInvoiceGenerator() {
                     </button>
                 </div>
 
-                <p className="note">
-                    Want automation, reminders & GST reports? <a href="/signup">Try our full billing software free for 15 days</a>
-                </p>
+          <p className="note">
+  Want automation, reminders & GST reports?{" "}
+  <a
+    onClick={() => router.push("/auth/login")}
+    style={{ cursor: "pointer" }}
+  >
+    Try our full billing software free for 15 days
+  </a>
+</p>
             </div>
 
             {showPopup && (
@@ -702,7 +718,10 @@ export default function FreeGSTInvoiceGenerator() {
                     <div id="popupBox">
                         <h3>Automate Your Billing</h3>
                         <p>Invoices, reminders & GST reports — done automatically.</p>
-                        <a href="/signup" className="primary">Start Free 15-Day Trial</a>
+                         <a
+    onClick={() => router.push("/auth/login")}
+    style={{ cursor: "pointer" }}
+   className="primary">Start Free 15-Day Trial</a>
                         <button onClick={() => setShowPopup(false)}>Maybe Later</button>
                     </div>
                 </div>
@@ -750,13 +769,7 @@ export default function FreeGSTInvoiceGenerator() {
             <style jsx>{`
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
-        body {
-          font-family: 'Roboto', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-          background: #f0f4f8;
-          margin: 0;
-          color: #333;
-        }
-
+       
         .container {
           max-width: 950px;
           background: #fff;

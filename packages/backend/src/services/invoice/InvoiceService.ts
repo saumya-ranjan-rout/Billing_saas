@@ -45,7 +45,7 @@ export class InvoiceService {
 
   }
 
- 
+
 async sendGeneratedInvoiceEmail(
     to: string,
     invoiceNo: string,

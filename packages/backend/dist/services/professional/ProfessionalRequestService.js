@@ -118,6 +118,7 @@ class ProfessionalRequestService {
             })
                 .orderBy("tenant.name", "ASC")
                 .getMany();
+            console.log("tenants", tenants);
             const result = [];
             for (const tenant of tenants) {
                 const user = await this.userRepo
@@ -127,7 +128,9 @@ class ProfessionalRequestService {
                     .andWhere("u.status = :status", { status: "active" })
                     .orderBy("u.createdAt", "ASC")
                     .getOne();
+                console.log("user", user);
                 if (user) {
+                    console.log("if User");
                     result.push({
                         tenantId: tenant.id,
                         tenantName: tenant.name,
@@ -138,9 +141,11 @@ class ProfessionalRequestService {
                     });
                 }
             }
+            console.log("tenantsWithAdmins", result);
             return result;
         }
         else {
+            console.log("else User");
             const professionals = await this.userRepo
                 .createQueryBuilder("user")
                 .leftJoinAndSelect("user.tenant", "tenant")

@@ -5,7 +5,7 @@ import { toast } from 'sonner';
  
 // ✅ Base URL setup
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://192.168.29.179:3001/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://192.168.0.110:3001/api';
 
 
 

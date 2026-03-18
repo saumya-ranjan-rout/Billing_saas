@@ -45,6 +45,7 @@ class SubscriptionService {
         });
     }
     async createSubscription(userId, planId, paymentGateway = Payment_1.PaymentGateway.RAZORPAY) {
+        console.log("SubscriptionService-createSubscription");
         const user = await this.userRepository.findOne({ where: { id: userId } });
         if (!user)
             throw new Error('User not found');
@@ -110,6 +111,7 @@ class SubscriptionService {
         }
     }
     async activateFreeTrial(subscriptionId) {
+        console.log("SubscriptionService-activateFreeTrial");
         const subscriptionRepo = database_1.AppDataSource.getRepository(Subscription_1.Subscription);
         const subscription = await subscriptionRepo.findOne({ where: { id: subscriptionId } });
         if (!subscription)
@@ -299,6 +301,7 @@ class SubscriptionService {
         return activeSubs;
     }
     async getPlanById(planId) {
+        console.log("SubscriptionService-getPlanById");
         return this.planRepository.findOne({ where: { id: planId } });
     }
     async createSubscriptionAfterPayment(userId, tenantId, planId, razorpayPaymentId, razorpayOrderId) {

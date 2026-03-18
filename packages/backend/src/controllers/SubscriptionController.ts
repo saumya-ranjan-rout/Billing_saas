@@ -50,6 +50,7 @@ const currentPlan = history.find((s: any) => {
   // ✅ POST /api/subscriptions/create-order
   async createSubscription(req: Request, res: Response) {
     try {
+      console.log("SubscriptionController-createSubscription");
       if (!req.user) {
         return res.status(401).json({ error: 'Unauthorized' });
       }

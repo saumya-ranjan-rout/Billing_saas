@@ -166,6 +166,8 @@ class VendorService {
                 to.setHours(23, 59, 59, 999);
                 whereConditions.createdAt = (0, typeorm_1.LessThanOrEqual)(to);
             }
+            console.log("joinedFrom", joinedFrom);
+            console.log("whereConditions", whereConditions);
             let [vendors, total] = await this.vendorRepository.findAndCount({
                 where: whereConditions,
                 skip,

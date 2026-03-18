@@ -120,7 +120,7 @@ export class ProfessionalRequestService {
 
   async getProfessionals(user: User) {
     const today = new Date();
-
+//console.log("User",User);
     if (user.role === UserRole.PROFESSIONAL) {
       // CASE 1: PROFESSIONAL → get all tenants with active subscriptions
       const today = new Date();
@@ -134,7 +134,7 @@ export class ProfessionalRequestService {
         .orderBy("tenant.name", "ASC")
         .getMany();
 
-      //console.log("tenants", tenants);
+      console.log("tenants", tenants);
       const result = [];
 
       for (const tenant of tenants) {
@@ -146,7 +146,9 @@ export class ProfessionalRequestService {
           .andWhere("u.status = :status", { status: "active" })
           .orderBy("u.createdAt", "ASC")
           .getOne();
+          console.log("user",user);
         if (user) {
+          console.log("if User");
           result.push({
             tenantId: tenant.id,
             tenantName: tenant.name,
@@ -158,10 +160,11 @@ export class ProfessionalRequestService {
         }
       }
 
-      //console.log("tenantsWithAdmins", result);
+      console.log("tenantsWithAdmins", result);
       return result;
     } else {
       // CASE 2: ADMIN → get PROFESSIONAL users with active tenant subscriptions
+          console.log("else User");
       const professionals = await this.userRepo
         .createQueryBuilder("user")
         .leftJoinAndSelect("user.tenant", "tenant")

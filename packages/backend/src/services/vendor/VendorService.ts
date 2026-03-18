@@ -237,6 +237,7 @@ export class VendorService {
       // }
 
       // 10-12-2025(Y)
+
       if (joinedFrom && joinedTo) {
         const from = new Date(joinedFrom);
         const to = new Date(joinedTo);
@@ -254,6 +255,8 @@ export class VendorService {
         to.setHours(23, 59, 59, 999);
         whereConditions.createdAt = LessThanOrEqual(to);
       }
+      console.log("joinedFrom",joinedFrom);
+      console.log("whereConditions",whereConditions);
 
       let [vendors, total] = await this.vendorRepository.findAndCount({
         where: whereConditions,

@@ -27,6 +27,7 @@ const queueService = new QueueService_1.QueueService();
 const loyaltyService = new LoyaltyService_1.LoyaltyService();
 const invoiceController = new InvoiceController_1.InvoiceController(invoiceService, settingService, cacheService, queueService, loyaltyService);
 router.post("/send-invoicepdf", upload.single("pdf"), invoiceController.sendInvoicePDF.bind(invoiceController));
+router.post("/send-pdfmobile", upload.none(), invoiceController.sendPDFMobile.bind(invoiceController));
 router.use(auth_1.authMiddleware, tenant_1.tenantMiddleware, checkSubscription_1.checkSubscription);
 router.post('/', (0, rbac_1.rbacMiddleware)(['create:invoices']), (0, validation_1.validationMiddleware)(validators_1.invoiceSchema), invoiceController.createInvoice.bind(invoiceController));
 router.put('/:id', (0, rbac_1.rbacMiddleware)(['update:invoices']), (0, validation_1.validationMiddleware)(validators_1.invoiceSchema), invoiceController.updateInvoice.bind(invoiceController));

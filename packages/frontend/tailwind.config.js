@@ -15,6 +15,9 @@ module.exports = {
           700: '#1d4ed8',
         },
       },
+       maxWidth: {
+        '7xl': '100rem', // 🔥 changed from 80rem → 100rem
+      },
     },
   },
   plugins: [],

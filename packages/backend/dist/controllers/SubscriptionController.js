@@ -38,6 +38,7 @@ class SubscriptionController {
     }
     async createSubscription(req, res) {
         try {
+            console.log("SubscriptionController-createSubscription");
             if (!req.user) {
                 return res.status(401).json({ error: 'Unauthorized' });
             }

@@ -36,7 +36,7 @@ class ApplicationServer {
 
       origin: process.env.NODE_ENV === 'production' 
         ? ['https://yourdomain.com', 'https://www.yourdomain.com'] 
-        : ['http://192.168.29.179:3000', 'http://192.168.29.179:3001'],
+        : ['http://192.168.0.110:3000', 'http://192.168.0.110:3001'],
 
       credentials: true
     }));

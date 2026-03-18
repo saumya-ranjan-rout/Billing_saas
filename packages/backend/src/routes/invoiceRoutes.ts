@@ -36,6 +36,11 @@ router.post(
   upload.single("pdf"),
   invoiceController.sendInvoicePDF.bind(invoiceController)
 );
+router.post(
+  "/send-pdfmobile",
+   upload.none(),
+  invoiceController.sendPDFMobile.bind(invoiceController)
+);
 // All routes require authentication and tenant context
 router.use(authMiddleware, tenantMiddleware, checkSubscription);
 

@@ -121,8 +121,9 @@ export default function Home() {
       </div>
 
       {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-md bg-white/60 border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      {/* <header className="sticky top-0 z-50 backdrop-blur-md bg-blue/60 border-b border-slate-200"> */}
+      <header className="sticky top-0 z-50 backdrop-blur-md bg-blue-500/10 border-b border-indigo-100">
+        <div className="max-w-7xl mx-auto px-5 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             {/* <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold shadow-md">3S</div> */}
             <Image
@@ -162,26 +163,49 @@ export default function Home() {
       {/* Hero */}
       <main>
        
+{/* <section
+  id="pricing"
+  className="relative overflow-hidden py-20 bg-gradient-to-b from-slate-50 via-white to-slate-100"
+> */}
+<section
+  id="pricing"
+  className="relative overflow-hidden py-20 
+             bg-gradient-to-b 
+             from-[#95ADFF] 
+             via-white 
+             to-[#AEC7FF]"
+>
+  {/* Background glow */}
+  <div className="absolute inset-0 -z-10">
+    <div className="absolute left-1/2 top-0 h-[400px] w-[800px] -translate-x-1/2 rounded-full bg-indigo-400/20 blur-3xl" />
+  </div>
 
-        <section className="max-w-10xl mx-auto px-6 pt-12 pb-10">
-          <div className="absolute inset-0 bg-[radial-gradient(#e0e7ff_1px,transparent_1px)] [background-size:24px_24px] opacity-25" />
-                
+  <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
 
-          <div className="relative max-w-10xl mx-auto px-6 pt-0 pb-24 text-center">
+    {/* LEFT – VALUE */}
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      viewport={{ once: true }}
+    >
+      
+      <span className="inline-flex items-center rounded-full bg-blue-100 text-blue-700 px-4 py-1 text-sm font-semibold">
+        Built for Indian Businesses 🇮🇳
+      </span>
 
-            {/* <span className="inline-flex items-center rounded-full bg-blue-100 text-blue-700 px-4 py-1 text-sm font-semibold">
-              🇮🇳 Made for Indian Businesses
-            </span> */}
+      <h2 className="mt-6 text-4xl lg:text-5xl font-bold leading-tight">
+        Billing that helps you  
+        <span className="text-indigo-600"> get paid faster</span>
+      </h2>
 
-            <h1 className="mt-6 max-w-7xl mx-auto text-3xl sm:text-4xl lg:text-5xl font-bold leading-[1.15] tracking-tight text-slate-900">
-              Best Cloud-Based Billing Software for Small Businesses & Freelancers
-            </h1>
-
-            <p className="mt-5 max-w-4xl mx-auto text-base sm:text-lg text-slate-600 leading-relaxed">
+     <p className="mt-5 max-w-4xl mx-auto text-base sm:text-lg text-slate-600 leading-relaxed">
               Create professional GST invoices, automate payment reminders,
               manage taxes effortlessly, and get paid faster — all from a
               secure, user-friendly dashboard.
             </p>
+
+      {/* Trust chips */}
    <div className="mt-10 flex flex-wrap justify-center gap-3">
               {["🔒 SSL Secured", "📊 GST Ready", "☁️ Encrypted Cloud", "⚡ Fast Setup"].map(
                 (item) => (
@@ -194,7 +218,9 @@ export default function Home() {
                 )
               )}
             </div>
-            <div className="mt-10 flex flex-wrap justify-center gap-4">
+
+      {/* Business selector */}
+       <div className="mt-10 flex flex-wrap justify-center gap-4">
              {/* <a
                 href="/signup"
                 className="rounded-xl bg-blue-600 px-8 py-4 text-white font-semibold shadow-lg hover:shadow-xl hover:bg-blue-700 transition-all"
@@ -213,7 +239,6 @@ export default function Home() {
                   Choose your business to explore tools, workflows, and features designed specifically for your industry.
                 </p>
 
-                {/* BUTTONS */}
                 <div className="mt-8 flex flex-wrap justify-center gap-4">
                   {[
                     ["Agencies", "agencies"],
@@ -225,8 +250,8 @@ export default function Home() {
                     <button
                       key={slug}
                       onClick={() => router.push(`/tools/${slug}`)}
-className="rounded-full border border-slate-200 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-2.5 text-sm font-medium
-           hover:border-blue-500 hover:text-blue-700 hover:bg-gradient-to-r hover:from-white hover:to-indigo-600
+className="rounded-full border border-slate-200 bg-gradient-to-r from-blue-400 to-indigo-400 text-white px-8 py-2.5 text-sm font-medium
+           hover:border-blue-500 hover:text-blue-700 hover:bg-gradient-to-r hover:from-blue-200 hover:to-indigo-400
            shadow-sm transition-all duration-300"
 
 
@@ -237,9 +262,8 @@ className="rounded-full border border-slate-200 bg-gradient-to-r from-blue-600 t
                   ))}
                 </div>
 
-                <p className="mt-5 text-sm text-slate-600">
-                  Freelancers • Digital Agencies • Consultants • Retail Shops • Gyms • Service Providers
-                </p>
+      {/* Testimonial */}
+ 
 
                 {/* TESTIMONIAL */}
                 <div className="mt-8 mx-auto max-w-4xl rounded-xl bg-slate-50 border border-slate-200 p-5">
@@ -250,11 +274,80 @@ className="rounded-full border border-slate-200 bg-gradient-to-r from-blue-600 t
                     – Priya S., Freelancer
                   </span>
                 </div>
-          
+    </motion.div>
 
-         
-          </div>
-        </section>
+    {/* RIGHT – PRICING */}
+    {/* <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.7, delay: 0.1 }}
+      viewport={{ once: true }}
+      className="grid gap-6 md:grid-cols-3 lg:grid-cols-1"
+    > */}
+    <motion.div
+  initial={{ opacity: 0, y: 40 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.7, delay: 0.1 }}
+  viewport={{ once: true }}
+  className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+>
+      {/* Free */}
+      <div className="relative rounded-2xl bg-white/80 backdrop-blur border p-6 shadow-md">
+        <h4 className="font-semibold text-blue-700">Free Trial</h4>
+        <p className="mt-3 text-3xl font-bold">₹0</p>
+        <p className="text-sm text-slate-500">15 days • No credit card</p>
+
+        <ul className="mt-4 text-sm space-y-2">
+          <li>✔ Unlimited invoices</li>
+          <li>✔ All features unlocked</li>
+          <li>✔ Priority support</li>
+        </ul>
+
+        <button onClick={handleGetStarted} className="mt-6 w-full rounded-lg bg-blue-600 text-white py-2 font-semibold hover:bg-blue-700">
+          Start Free Trial
+        </button>
+      </div>
+
+      {/* Starter – Highlight */}
+      <div className="relative rounded-2xl bg-gradient-to-br from-indigo-600 to-blue-600 text-white p-6 shadow-xl scale-[1.03]">
+        <span className="absolute -top-3 left-4 rounded-full bg-black/20 px-3 py-1 text-xs">
+          Most Popular
+        </span>
+
+        <h4 className="font-semibold">Starter</h4>
+        <p className="mt-3 text-3xl font-bold">₹299/mo</p>
+
+        <ul className="mt-4 text-sm space-y-2">
+          <li>✔ Unlimited invoices</li>
+          <li>✔ 500 customers</li>
+          <li>✔ Email support</li>
+        </ul>
+
+        <button onClick={handleGetStarted} className="mt-6 w-full rounded-lg bg-white text-indigo-600 py-2 font-semibold">
+          Choose Starter
+        </button>
+      </div>
+
+      {/* Business */}
+      <div className="rounded-2xl bg-white/80 backdrop-blur border p-6 shadow-md">
+        <h4 className="font-semibold">Business</h4>
+        <p className="mt-3 text-3xl font-bold">₹1499/yr</p>
+
+        <ul className="mt-4 text-sm space-y-2">
+          <li>✔ Unlimited customers</li>
+          <li>✔ Advanced analytics</li>
+          <li>✔ API access</li>
+        </ul>
+
+        <button  onClick={handleGetStarted} className="mt-6 w-full rounded-lg bg-indigo-600 text-white py-2 font-semibold">
+          Get Business
+        </button>
+      </div>
+    </motion.div>
+  </div>
+</section>
+
+
 
         <section className="max-w-7xl mx-auto px-6 pt-0 pb-0">
                          <span className="inline-block mb-3 rounded-full bg-blue-100 text-blue-700 px-4 py-1 text-sm font-semibold text-center">
@@ -375,8 +468,8 @@ className="rounded-full border border-slate-200 bg-gradient-to-r from-blue-600 t
             <div className="grid gap-8 md:grid-cols-3">
 
               {/* Card 1 */}
-              <article className="group relative rounded-2xl border border-slate-200 bg-white p-8 shadow-sm transition hover:shadow-xl hover:-translate-y-1">
-                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600 text-xl">
+              <article className="group relative rounded-2xl border border-slate-200 bg-blue-500/10 p-8 shadow-sm transition hover:shadow-xl hover:-translate-y-1">
+                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 text-blue-600 text-xl">
                   ⏳
                 </div>
 
@@ -395,8 +488,8 @@ className="rounded-full border border-slate-200 bg-gradient-to-r from-blue-600 t
               </article>
 
               {/* Card 2 */}
-              <article className="group relative rounded-2xl border border-slate-200 bg-white p-8 shadow-sm transition hover:shadow-xl hover:-translate-y-1">
-                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600 text-xl">
+              <article className="group relative rounded-2xl border border-slate-200 bg-blue-500/10 p-8 shadow-sm transition hover:shadow-xl hover:-translate-y-1">
+                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 text-blue-600 text-xl">
                   📄
                 </div>
 
@@ -415,8 +508,8 @@ className="rounded-full border border-slate-200 bg-gradient-to-r from-blue-600 t
               </article>
 
               {/* Card 3 */}
-              <article className="group relative rounded-2xl border border-slate-200 bg-white p-8 shadow-sm transition hover:shadow-xl hover:-translate-y-1">
-                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600 text-xl">
+              <article className="group relative rounded-2xl border border-slate-200 bg-blue-500/10 p-8 shadow-sm transition hover:shadow-xl hover:-translate-y-1">
+                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 text-blue-600 text-xl">
                   ⚙️
                 </div>
 
@@ -439,7 +532,7 @@ className="rounded-full border border-slate-200 bg-gradient-to-r from-blue-600 t
         </section>
 
         {/* FREE TOOLS */}
-        <section className="py-24 border-b border-slate-200">
+        <section className="py-24 border-b border-slate-200  bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
           <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
             {/* LEFT CONTENT */}
@@ -448,11 +541,11 @@ className="rounded-full border border-slate-200 bg-gradient-to-r from-blue-600 t
                 100% Free Tools
               </span>
 
-              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6">
+              <h2 className="text-3xl md:text-4xl font-bold text-white-900 mb-6">
                 Free Business Tools – No Signup Required
               </h2>
 
-              <p className="text-slate-600 mb-8 max-w-xl">
+              <p className="text-white-600 mb-8 max-w-xl">
                 Save time, stay compliant, and get paid faster using our free tools —
                 designed especially for Indian businesses.
               </p>
@@ -483,7 +576,7 @@ className="rounded-full border border-slate-200 bg-gradient-to-r from-blue-600 t
 
               <a
                 href="/tools/free-invoice-generator"
-                className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-4 text-white font-semibold shadow-lg hover:scale-105 transition"
+                className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-blue-100 to-blue-200 px-8 py-4 text-blue-700 font-semibold shadow-lg hover:scale-105 transition"
               >
                 Use Free Invoice Generator Now →
               </a>
@@ -550,117 +643,7 @@ className="rounded-full border border-slate-200 bg-gradient-to-r from-blue-600 t
           </div>
         </section>
 
-        {/* Pricing Section */}
-        <section id="pricing" className="max-w-6xl mx-auto px-6 py-12">
-          <h3 className="text-3xl font-semibold text-center mb-6">Transparent pricing</h3>
-          <p className="text-center text-slate-500 mb-8">No surprises. Cancel anytime. 15-day free trial on all plans.</p>
-
-          <div className="grid gap-6 md:grid-cols-3">
-              {/* Free Trial */}
-  <motion.div
-    className="p-6 bg-gradient-to-b from-white to-slate-50 rounded-2xl border-2 border-indigo-600 shadow-lg text-center transform scale-105"
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    transition={{ delay: 0.1 }}
-  >
-    <h4 className="text-lg font-semibold text-blue-700">Free Trial</h4>
-    <div className="mt-4 text-3xl font-bold">₹0<span className="text-sm font-medium"> / 15 Days</span></div>
-    <p className="text-sm text-slate-500 mt-2">Try all premium features free for 15 days. No credit card required.</p>
-    <ul className="mt-4 text-sm text-slate-700 space-y-2">
-      <li>Unlimited invoices</li>
-      <li>All features unlocked</li>
-      <li>Priority support</li>
-    </ul>
-    <button
-      onClick={handleGetStarted}
-      className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md"
-    >
-      Start Free Trial
-    </button>
-  </motion.div>
-  {/* Starter */}
-  <motion.div
-    className="p-6 bg-gradient-to-b from-white to-slate-50 rounded-2xl shadow-lg text-center"
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    transition={{ delay: 0.2 }}
-  >
-    <h4 className="text-lg font-semibold">Starter</h4>
-    <div className="mt-4 text-3xl font-bold">₹299<span className="text-sm font-medium">/mo</span></div>
-    <p className="text-sm text-slate-500 mt-2">For new businesses — unlimited invoices, up to 500 customers.</p>
-    <ul className="mt-4 text-sm text-slate-700 space-y-2">
-      <li>Unlimited invoices</li>
-      <li>Basic analytics</li>
-      <li>Email support</li>
-    </ul>
-    <button
-      onClick={handleGetStarted}
-      className="mt-6 w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-2 rounded-md"
-    >
-      Choose Starter
-    </button>
-  </motion.div>
-
-  {/* Business */}
-  <motion.div
-    className="p-6 bg-gradient-to-b from-white to-slate-50 rounded-2xl shadow-lg text-center"
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    transition={{ delay: 0.3 }}
-  >
-    <h4 className="text-lg font-semibold">Business</h4>
-    <div className="mt-4 text-3xl font-bold">₹1499<span className="text-sm font-medium">/yr</span></div>
-    <p className="text-sm text-slate-500 mt-2">Best value — advanced analytics, API access and priority support.</p>
-    <ul className="mt-4 text-sm text-slate-700 space-y-2">
-      <li>Unlimited customers</li>
-      <li>Advanced analytics</li>
-      <li>API & integrations</li>
-    </ul>
-    <button
-      onClick={handleGetStarted}
-      className="mt-6 w-full bg-indigo-600 text-white py-2 rounded-md"
-    >
-      Get Business
-    </button>
-  </motion.div>
-            {/* <motion.div className="p-6 bg-white rounded-2xl border border-slate-100 shadow-sm text-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
-              <h4 className="text-lg font-semibold">Starter</h4>
-              <div className="mt-4 text-3xl font-bold">₹299<span className="text-sm font-medium">/mo</span></div>
-              <p className="text-sm text-slate-500 mt-2">For new businesses — unlimited invoices, up to 500 customers.</p>
-              <ul className="mt-4 text-sm text-slate-700 space-y-2">
-                <li>Unlimited invoices</li>
-                <li>Basic analytics</li>
-                <li>Email support</li>
-              </ul>
-              <button onClick={handleGetStarted} className="mt-6 w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-2 rounded-md">Choose</button>
-            </motion.div>
-
-            <motion.div className="p-6 bg-gradient-to-b from-white to-slate-50 rounded-2xl border-2 border-indigo-600 shadow-lg text-center transform scale-105" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
-              <h4 className="text-lg font-semibold">Business</h4>
-              <div className="mt-4 text-3xl font-bold">₹1499<span className="text-sm font-medium">/yr</span></div>
-              <p className="text-sm text-slate-500 mt-2">Best value — advanced analytics, API access and priority support.</p>
-              <ul className="mt-4 text-sm text-slate-700 space-y-2">
-                <li>Unlimited customers</li>
-                <li>Advanced analytics</li>
-                <li>API & integrations</li>
-              </ul>
-              <button onClick={handleGetStarted} className="mt-6 w-full bg-indigo-600 text-white py-2 rounded-md">Get Business</button>
-            </motion.div> */}
-
-            {/* <motion.div className="p-6 bg-white rounded-2xl border border-slate-100 shadow-sm text-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
-              <h4 className="text-lg font-semibold">Enterprise</h4>
-              <div className="mt-4 text-3xl font-bold">Custom</div>
-              <p className="text-sm text-slate-500 mt-2">Custom plans with SLAs, dedicated support and onboarding assistance.</p>
-              <ul className="mt-4 text-sm text-slate-700 space-y-2">
-                <li>Dedicated success manager</li>
-                <li>Custom SLAs</li>
-                <li>Priority integrations</li>
-              </ul>
-              <button onClick={() => router.push('/contact')} className="mt-6 w-full border border-slate-200 py-2 rounded-md">Contact Sales</button>
-            </motion.div> */}
-          </div>
-        </section>
-
+       
         {/* FAQ */}
         <section className="py-24">
           <div className="max-w-6xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-start">
@@ -795,7 +778,7 @@ className="rounded-full border border-slate-200 bg-gradient-to-r from-blue-600 t
         </section>
 
         {/* Testimonials */}
-        <section id="testimonials" className="max-w-6xl mx-auto px-6 py-12 bg-gradient-to-b from-slate-50 to-white rounded-3xl">
+        <section id="testimonials" className="max-w-6xl mx-auto px-6 py-12 bg-gradient-to-b from-blue-100 to-white rounded-3xl">
           <h3 className="text-3xl font-semibold text-center mb-6">Loved by teams around the world</h3>
           <div className="grid gap-6 md:grid-cols-3">
             {[{
@@ -832,7 +815,7 @@ className="rounded-full border border-slate-200 bg-gradient-to-r from-blue-600 t
         </section>
 
         {/* Footer */}
-        <footer id="contact" className="mt-12 border-t border-slate-200">
+        <footer id="contact" className="mt-12 backdrop-blur-md bg-blue-500/10 border-t border-indigo-100" >
           <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="text-sm text-slate-600">© {new Date().getFullYear()} 3SD. All rights reserved.</div>
             <div className="flex gap-4 text-sm">
@@ -846,3 +829,214 @@ className="rounded-full border border-slate-200 bg-gradient-to-r from-blue-600 t
     </div>
   );
 }
+
+
+
+          {/* <motion.div className="p-6 bg-white rounded-2xl border border-slate-100 shadow-sm text-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
+              <h4 className="text-lg font-semibold">Starter</h4>
+              <div className="mt-4 text-3xl font-bold">₹299<span className="text-sm font-medium">/mo</span></div>
+              <p className="text-sm text-slate-500 mt-2">For new businesses — unlimited invoices, up to 500 customers.</p>
+              <ul className="mt-4 text-sm text-slate-700 space-y-2">
+                <li>Unlimited invoices</li>
+                <li>Basic analytics</li>
+                <li>Email support</li>
+              </ul>
+              <button onClick={handleGetStarted} className="mt-6 w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-2 rounded-md">Choose</button>
+            </motion.div>
+
+            <motion.div className="p-6 bg-gradient-to-b from-white to-slate-50 rounded-2xl border-2 border-indigo-600 shadow-lg text-center transform scale-105" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
+              <h4 className="text-lg font-semibold">Business</h4>
+              <div className="mt-4 text-3xl font-bold">₹1499<span className="text-sm font-medium">/yr</span></div>
+              <p className="text-sm text-slate-500 mt-2">Best value — advanced analytics, API access and priority support.</p>
+              <ul className="mt-4 text-sm text-slate-700 space-y-2">
+                <li>Unlimited customers</li>
+                <li>Advanced analytics</li>
+                <li>API & integrations</li>
+              </ul>
+              <button onClick={handleGetStarted} className="mt-6 w-full bg-indigo-600 text-white py-2 rounded-md">Get Business</button>
+            </motion.div> */}
+
+            {/* <motion.div className="p-6 bg-white rounded-2xl border border-slate-100 shadow-sm text-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
+              <h4 className="text-lg font-semibold">Enterprise</h4>
+              <div className="mt-4 text-3xl font-bold">Custom</div>
+              <p className="text-sm text-slate-500 mt-2">Custom plans with SLAs, dedicated support and onboarding assistance.</p>
+              <ul className="mt-4 text-sm text-slate-700 space-y-2">
+                <li>Dedicated success manager</li>
+                <li>Custom SLAs</li>
+                <li>Priority integrations</li>
+              </ul>
+              <button onClick={() => router.push('/contact')} className="mt-6 w-full border border-slate-200 py-2 rounded-md">Contact Sales</button>
+            </motion.div> */}
+
+
+
+//                     <section className="max-w-10xl mx-auto px-6 pt-12 pb-10">
+//           <div className="absolute inset-0 bg-[radial-gradient(#e0e7ff_1px,transparent_1px)] [background-size:24px_24px] opacity-25" />
+                
+
+//           <div className="relative max-w-10xl mx-auto px-6 pt-0 pb-24 text-center">
+
+//             {/* <span className="inline-flex items-center rounded-full bg-blue-100 text-blue-700 px-4 py-1 text-sm font-semibold">
+//               🇮🇳 Made for Indian Businesses
+//             </span> */}
+
+//             <h1 className="mt-6 max-w-7xl mx-auto text-3xl sm:text-4xl lg:text-5xl font-bold leading-[1.15] tracking-tight text-slate-900">
+//               Best Cloud-Based Billing Software for Small Businesses & Freelancers
+//             </h1>
+
+//             <p className="mt-5 max-w-4xl mx-auto text-base sm:text-lg text-slate-600 leading-relaxed">
+//               Create professional GST invoices, automate payment reminders,
+//               manage taxes effortlessly, and get paid faster — all from a
+//               secure, user-friendly dashboard.
+//             </p>
+//    <div className="mt-10 flex flex-wrap justify-center gap-3">
+//               {["🔒 SSL Secured", "📊 GST Ready", "☁️ Encrypted Cloud", "⚡ Fast Setup"].map(
+//                 (item) => (
+//                   <span
+//                     key={item}
+//                     className="rounded-full bg-blue-100 px-4 py-2 text-sm text-slate-600"
+//                   >
+//                     {item}
+//                   </span>
+//                 )
+//               )}
+//             </div>
+//             <div className="mt-10 flex flex-wrap justify-center gap-4">
+//              {/* <a
+//                 href="/signup"
+//                 className="rounded-xl bg-blue-600 px-8 py-4 text-white font-semibold shadow-lg hover:shadow-xl hover:bg-blue-700 transition-all"
+//               >
+//                 Start Free 15-Day Trial
+//               </a>*/}
+
+//               <a
+//                 href="#"
+//                 className="rounded-xl border border-slate-300 px-8 py-4 font-semibold text-slate-700 hover:bg-slate-50"
+//               >
+//                 Try Free Invoice Generator →
+//               </a>
+//                 </div>
+//                 <p className="mt-2 text-slate-600 text-sm">
+//                   Choose your business to explore tools, workflows, and features designed specifically for your industry.
+//                 </p>
+
+//                 {/* BUTTONS */}
+//                 <div className="mt-8 flex flex-wrap justify-center gap-4">
+//                   {[
+//                     ["Agencies", "agencies"],
+//                     ["Consultants", "consultants"],
+//                     ["Freelancers", "freelancers"],
+//                     ["Gyms", "gyms"],
+//                     ["Retail Shops", "retail-shops"],
+//                   ].map(([name, slug]) => (
+//                     <button
+//                       key={slug}
+//                       onClick={() => router.push(`/tools/${slug}`)}
+// className="rounded-full border border-slate-200 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-2.5 text-sm font-medium
+//            hover:border-blue-500 hover:text-blue-700 hover:bg-gradient-to-r hover:from-white hover:to-indigo-600
+//            shadow-sm transition-all duration-300"
+
+
+
+//                     >
+//                       {name}
+//                     </button>
+//                   ))}
+//                 </div>
+
+//                 <p className="mt-5 text-sm text-slate-600">
+//                   Freelancers • Digital Agencies • Consultants • Retail Shops • Gyms • Service Providers
+//                 </p>
+
+//                 {/* TESTIMONIAL */}
+//                 <div className="mt-8 mx-auto max-w-4xl rounded-xl bg-slate-50 border border-slate-200 p-5">
+//                   <p className="text-slate-700 font-semibold">
+//                     “Reduced late payments by 40% in just 2 months – game-changer for my freelance business!”
+//                   </p>
+//                   <span className="mt-2 block text-sm text-slate-500">
+//                     – Priya S., Freelancer
+//                   </span>
+//                 </div>
+          
+
+         
+//           </div>
+//         </section>
+
+
+ {/* Pricing Section */}
+  //       <section id="pricing" className="max-w-6xl mx-auto px-6 py-12">
+  //         <h3 className="text-3xl font-semibold text-center mb-6">Transparent pricing</h3>
+  //         <p className="text-center text-slate-500 mb-8">No surprises. Cancel anytime. 15-day free trial on all plans.</p>
+
+  //         <div className="grid gap-6 md:grid-cols-3">
+  //             {/* Free Trial */}
+  // <motion.div
+  //   className="p-6 bg-gradient-to-b from-white to-slate-50 rounded-2xl border-2 border-indigo-600 shadow-lg text-center transform scale-105"
+  //   initial={{ opacity: 0 }}
+  //   animate={{ opacity: 1 }}
+  //   transition={{ delay: 0.1 }}
+  // >
+  //   <h4 className="text-lg font-semibold text-blue-700">Free Trial</h4>
+  //   <div className="mt-4 text-3xl font-bold">₹0<span className="text-sm font-medium"> / 15 Days</span></div>
+  //   <p className="text-sm text-slate-500 mt-2">Try all premium features free for 15 days. No credit card required.</p>
+  //   <ul className="mt-4 text-sm text-slate-700 space-y-2">
+  //     <li>Unlimited invoices</li>
+  //     <li>All features unlocked</li>
+  //     <li>Priority support</li>
+  //   </ul>
+  //   <button
+  //     onClick={handleGetStarted}
+  //     className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md"
+  //   >
+  //     Start Free Trial
+  //   </button>
+  // </motion.div>
+  // {/* Starter */}
+  // <motion.div
+  //   className="p-6 bg-gradient-to-b from-white to-slate-50 rounded-2xl shadow-lg text-center"
+  //   initial={{ opacity: 0 }}
+  //   animate={{ opacity: 1 }}
+  //   transition={{ delay: 0.2 }}
+  // >
+  //   <h4 className="text-lg font-semibold">Starter</h4>
+  //   <div className="mt-4 text-3xl font-bold">₹299<span className="text-sm font-medium">/mo</span></div>
+  //   <p className="text-sm text-slate-500 mt-2">For new businesses — unlimited invoices, up to 500 customers.</p>
+  //   <ul className="mt-4 text-sm text-slate-700 space-y-2">
+  //     <li>Unlimited invoices</li>
+  //     <li>Basic analytics</li>
+  //     <li>Email support</li>
+  //   </ul>
+  //   <button
+  //     onClick={handleGetStarted}
+  //     className="mt-6 w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-2 rounded-md"
+  //   >
+  //     Choose Starter
+  //   </button>
+  // </motion.div>
+
+  // {/* Business */}
+  // <motion.div
+  //   className="p-6 bg-gradient-to-b from-white to-slate-50 rounded-2xl shadow-lg text-center"
+  //   initial={{ opacity: 0 }}
+  //   animate={{ opacity: 1 }}
+  //   transition={{ delay: 0.3 }}
+  // >
+  //   <h4 className="text-lg font-semibold">Business</h4>
+  //   <div className="mt-4 text-3xl font-bold">₹1499<span className="text-sm font-medium">/yr</span></div>
+  //   <p className="text-sm text-slate-500 mt-2">Best value — advanced analytics, API access and priority support.</p>
+  //   <ul className="mt-4 text-sm text-slate-700 space-y-2">
+  //     <li>Unlimited customers</li>
+  //     <li>Advanced analytics</li>
+  //     <li>API & integrations</li>
+  //   </ul>
+  //   <button
+  //     onClick={handleGetStarted}
+  //     className="mt-6 w-full bg-indigo-600 text-white py-2 rounded-md"
+  //   >
+  //     Get Business
+  //   </button>
+  // </motion.div>
+  
+  //         </div>
+  //       </section>

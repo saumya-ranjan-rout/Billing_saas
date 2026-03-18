@@ -77,6 +77,7 @@ const CustomerList: React.FC<CustomerListProps> = ({ onEditCustomer, refreshTrig
 
         console.log("customers",response.data);
       setCustomers(response.data);
+      //  console.log("Customer-pagination",response.pagination);
       setPagination(response.pagination);
     } catch (error: any) {
       console.error('Failed to fetch customers:', error);
@@ -334,6 +335,12 @@ const CustomerList: React.FC<CustomerListProps> = ({ onEditCustomer, refreshTrig
             >
               Pay
             </button>
+               <button
+              onClick={() => setHistoryModal({ open: true, customer: row })}
+              className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
+            >
+              History
+            </button>
 
             {/* ONLY SHOW FOR PROFESSIONAL */}
             {user?.role === "professional" &&
@@ -346,7 +353,7 @@ const CustomerList: React.FC<CustomerListProps> = ({ onEditCustomer, refreshTrig
                 //   View Business
                 // </button>
 
-                <button onClick={() => viewBusiness(tenantIdToCheck, "professional_user")} className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"> View Business </button>
+                <button onClick={() => viewBusiness(tenantIdToCheck, "professional_user")} className="bg-yellow-500 text-white px-3 py-1 rounded text-sm hover:bg-yellow-600"> View Business </button>
               )}
           </div>
         );

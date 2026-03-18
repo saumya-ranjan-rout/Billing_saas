@@ -48,6 +48,7 @@ const ProductList: React.FC<ProductListProps> = ({ onEditProduct }) => {
       });
 
       const response = await get(`/api/products?${queryParams}`);
+     // console.log("product-pagination",response.pagination);
       setProducts(response.data);
       setPagination(response.pagination);
     } catch (error: any) {

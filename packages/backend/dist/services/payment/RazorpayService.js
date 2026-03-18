@@ -15,6 +15,7 @@ class RazorpayService {
     }
     async createOrder(payment) {
         try {
+            console.log("RazorpayService-createOrder");
             const shortReceipt = `rcpt_${String(payment.id).slice(0, 30)}`;
             const options = {
                 amount: Math.round(1 * 100),

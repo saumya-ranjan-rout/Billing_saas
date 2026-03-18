@@ -22,6 +22,7 @@ async createOrder(payment: Payment): Promise<{
   status: string;
 }> {
   try {
+    console.log("RazorpayService-createOrder");
     const shortReceipt = `rcpt_${String(payment.id).slice(0, 30)}`; // ✅ keep <40 chars
 
     const options = {

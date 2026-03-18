@@ -23,7 +23,7 @@ export const useApi = <T>(): UseApiReturn<T> => {
     error: null,
   });
 
-  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://192.168.29.179:3001";
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://192.168.0.110:3001";
 
 
   // console.log("API_BASE", API_BASE);

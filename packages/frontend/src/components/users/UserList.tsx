@@ -94,6 +94,7 @@ const UserList: React.FC<UserListProps> = ({ onEditUser, refreshTrigger }) => {
       }
 
       setUsers(list);
+       console.log("User-pagination",response.pagination);
       setPagination(response.pagination);
     } catch (error: any) {
       console.error("Failed to fetch users:", error);
